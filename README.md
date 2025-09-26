@@ -1,2 +1,5 @@
-# PVLI-grupo-15
-repositorio para el proyecto de PVLI del grupo 15
+# Kung Fu Lava
+Grupo 15
+Juego multijugador local 1 vs 1
+Ambientado en el inframundo
+Donde se lucha por decidir quien cruza la frontera del inframundo
