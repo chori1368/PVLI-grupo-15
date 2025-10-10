@@ -1,6 +1,8 @@
 # Souls' Arena
 by Gehena Games (Grupo 15)
 
+#Proyecto Universitario
+
 ### Descripción:
 Juego de lucha estilo “smash-bros” en el que dos jugadores pelean entre sí de forma local 
 para determinar quien cruza la frontera del inframundo y regresa al mundo de los vivos. 
