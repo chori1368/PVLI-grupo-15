@@ -27,15 +27,44 @@ var Escena2 = new Phaser.Class({
      function Escena2() {
         Phaser.Scene.call(this, { key: 'Escena2' });
     },
-    create(){     
-        this.cameras.main.setBackgroundColor('#ffffff'); 
-          this.input.on('pointerdown', (pointer)=> {
-            this.scene.start('Escena1');
-             });
-    }
-    
 
+    preload() {
+        this.load.image('player', 'assets/player.png');
+    },
+
+    create(){     
+        this.cameras.main.setBackgroundColor('#3b8de5ff');
+
+        this.player = this.add.sprite(game.config.width / 2, game.config.height / 2, 'player');
+        this.player.setScale(0.5);
+        this.player.setOrigin(0.5, 0.5);
+
+     
+        this.playerSpeed = 300;
+        this.jumpSpeed = 200; 
+
+        this.keys = this.input.keyboard.addKeys({
+            left: Phaser.Input.Keyboard.KeyCodes.A,
+            right: Phaser.Input.Keyboard.KeyCodes.D,
+            up: Phaser.Input.Keyboard.KeyCodes.W
+        });
+    },
+
+    update(time, delta) {
+        if(this.keys.left.isDown){
+            this.player.x -= this.playerSpeed * delta / 1000;
+        } 
+        else if(this.keys.right.isDown){
+            this.player.x += this.playerSpeed * delta / 1000;
+        }
+        if(this.keys.up.isDown){
+            this.player.y -= this.jumpSpeed * delta / 1000;
+        }
+
+    }
 });
+
+
 
 var config = {
     type: Phaser.AUTO,
