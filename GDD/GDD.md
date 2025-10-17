@@ -1,6 +1,6 @@
-# ***Souls’ Arena***
+***<h1 align="center">Souls’ Arena</h1>***
 
-##### *Documento de Diseño*
+*<h5 align="center">Documento de Diseño</h5>*
 
 #### *Grupo 15 - Gehena Games*
 
@@ -91,14 +91,15 @@ Destinado a la condena eterna, Hades, deidad del infierno, te concede una gran o
   - Movimiento horizontal (Izquierda - Derecha) 
   - Salto (Flecha Arriba) 
   - "Dash" con lanza (flecha arriba x2) 
-  - Golpe de lanza horizontal (Shift Derecho) 
+  - Golpe de lanza (Shift Derecho) 
   - Golpe de lanza vertical (Guión)
+ 
+    El movimiento de los personajes determinará de forma direccional el ataque de las arams de ambos jugadores en su ataque
     
-- #### **Floor is lava:** 
+- #### **Floor is lava:**
+  Cada partida tiene un tiempo limitado de juego de 2 minutos. Al alcanzarse el minuto y medio de partida la lava comenzará a subir por 30 segundos). Desaparecerán las plataformas existentes y aparecerán progresivamente plataformas en forma de columnas y estructuras (conectadas al suelo) que permitirán a los jugadores evitar la lava, estas estructuras se irán sumergiendo y reapareciendo en distintas localicaciones de forma aleatoria a lo largo del evento floor is lava hasta que finalmente se sumergan y no reaparezcan más (al final del contador de tiempo).
 
-Cada partida tiene un tiempo limitado de juego de 2 minutos. Al alcanzarse el minuto y medio de partida la lava comenzará a subir por 30 segundos). Desaparecerán las plataformas existentes y aparecerán progresivamente plataformas en forma de columnas y estructuras (conectadas al suelo) que permitirán a los jugadores evitar la lava, estas estructuras se irán sumergiendo y reapareciendo en distintas localicaciones de forma aleatoria a lo largo del evento floor is lava hasta que finalmente se sumergan y no reaparezcan más (al final del contador de tiempo).
-
-![](https://i.imgur.com/Caj0Z8r.jpeg)
+  ![](https://i.imgur.com/Caj0Z8r.jpeg)
   
 ### **Interfaz:** 
 
@@ -106,9 +107,9 @@ La interfaz es la básica de un juego de lucha, contando con dos barras de vida 
 
 ### **Personajes:** 
 
-- Gladiador espadachín: Este gladiador posee una espada en sus manos con la que podrá atacar a corta-media distancia con un intervalo medio de ataque. Este personaje cuenta con la habilidad de doble salto, con la que podrá pulsar repetidamente la tecla de salto para realizar un segundo salto sin necesidad de tocar ninguna superficie. Esto le beneficiará en eventos de juego donde el salto entre plataformas sea prioritario (como el de suelo es lava), el salto doble tiene un ligero cooldown al realizarse, por lo que se evita que el jugador pueda sacar una ventaja injusta con esta habilidad. Este personaje cuenta con la ventaja de un ataque más rápido y un rango de salto y movimiento más variado.
+- **Gladiador espadachín:** Este gladiador posee una espada en sus manos con la que podrá atacar a corta-media distancia con un intervalo medio de ataque. Este personaje cuenta con la habilidad de doble salto, con la que podrá pulsar repetidamente la tecla de salto para realizar un segundo salto sin necesidad de tocar ninguna superficie. Esto le beneficiará en eventos de juego donde el salto entre plataformas sea prioritario (como el de suelo es lava), el salto doble tiene un ligero cooldown al realizarse, por lo que se evita que el jugador pueda sacar una ventaja injusta con esta habilidad. Este personaje cuenta con la ventaja de un ataque más rápido y un rango de salto y movimiento más variado.
 
-- Gladiador con lanza: Este gladiador cuenta con una lanza de largo alcance con la que podrá atacar a corta-media-larga distancia con un intervalo de ataque sensiblemente mayor que el espadachín. Como habilidad, este personaje podrá lanzarse (valga la redundancia) haciendo un dash con la lanza, pudiendo no solo inlingir daño al enemigo sino también llegar más lejos que con un salto corriente. El "dash" se verá afectado por un cooldown similar al del salto doble del gladiador espadachín. Este personaje cuenta con la ventaja de poder llegar más legos a la hora de saltar realizando un "dash", así como la posibilidad de atacar en un rango más amplio.
+- **Gladiador con lanza:** Este gladiador cuenta con una lanza de largo alcance con la que podrá atacar a corta-media-larga distancia con un intervalo de ataque sensiblemente mayor que el espadachín. Como habilidad, este personaje podrá lanzarse (valga la redundancia) haciendo un dash con la lanza, pudiendo no solo inlingir daño al enemigo sino también llegar más lejos que con un salto corriente. El "dash" se verá afectado por un cooldown similar al del salto doble del gladiador espadachín. Este personaje cuenta con la ventaja de poder llegar más legos a la hora de saltar realizando un "dash", así como la posibilidad de atacar en un rango más amplio.
 
 ### **Niveles:** 
 
