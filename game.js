@@ -30,18 +30,37 @@ var Escena2 = new Phaser.Class({
 
     preload() {
         this.load.image('player', 'assets/player.png');
+        this.load.image('suelo', 'assets/suelo.png'); 
+
     },
 
     create(){     
+        this.physics.world.gravity.y = 500; //Activa la gravedad del nivel
         this.cameras.main.setBackgroundColor('#3b8de5ff');
+        let ground2 = this.physics.add.staticImage(300, 550, 'suelo')
+            .setScale(0.5, 1)
+            ground2.refreshBody(); 
 
-        this.player = this.add.sprite(game.config.width / 2, game.config.height / 2, 'player');
+        let ground3 = this.physics.add.staticImage(900, 400, 'suelo')
+            .setScale(0.5, 1)
+             ground3.refreshBody(); 
+
+        let ground1 = this.physics.add.staticImage(game.config.width / 2, game.config.height - 50, 'suelo') //let es como this pero como no tenemos que llamar al suelo fuera del create pongo let
+            .setScale(8, 1)
+            .refreshBody(); //Actualiza el cuerpo estático después de escalar
+
+        this.player = this.physics.add.sprite(game.config.width / 2, game.config.height / 2, 'player');
+        
         this.player.setScale(0.5);
         this.player.setOrigin(0.5, 0.5);
 
      
         this.playerSpeed = 300;
-        this.jumpSpeed = 200; 
+        this.jumpSpeed = -500; 
+                
+        this.physics.add.collider(this.player, [ground1, ground2, ground3]);
+
+
 
         this.keys = this.input.keyboard.addKeys({
             left: Phaser.Input.Keyboard.KeyCodes.A,
@@ -52,15 +71,20 @@ var Escena2 = new Phaser.Class({
 
     update(time, delta) {
         if(this.keys.left.isDown){
-            this.player.x -= this.playerSpeed * delta / 1000;
+            this.player.setVelocityX(-this.playerSpeed);
+               this.player.flipX = true;
         } 
         else if(this.keys.right.isDown){
-            this.player.x += this.playerSpeed * delta / 1000;
-        }
-        if(this.keys.up.isDown){
-            this.player.y -= this.jumpSpeed * delta / 1000;
+            this.player.setVelocityX(this.playerSpeed);
+               this.player.flipX = false;
+        } 
+        else {
+            this.player.setVelocityX(0);
         }
 
+        if(this.keys.up.isDown && this.player.body.touching.down){
+            this.player.setVelocityY(this.jumpSpeed);
+        }
     }
 });
 
@@ -71,6 +95,12 @@ var config = {
     width: 1200,
     height: 800,
     parent: 'PVLI-grupo-15',
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: false
+        }
+    },
     scene: [Escena1, Escena2]
 };
 var game = new Phaser.Game(config);
