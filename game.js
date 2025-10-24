@@ -7,25 +7,110 @@ var Escena1 = new Phaser.Class({
       preload() {
         this.load.image('background', 'assets/background.png');
     },
-    create(){
-             this.add.image(game.config.width / 2, game.config.height / 2, 'background')
+    create() {
+        // Fondo
+        this.add.image(game.config.width / 2, game.config.height / 2, 'background')
             .setOrigin(0.5)
-            .setDisplaySize(game.config.width, game.config.height)
-        text = this.add.text(game.config.width/2, game.config.height/2, 'MENU', {
-            fontSize: '40px',
-            fill: '#ffffffff'
+            .setDisplaySize(game.config.width, game.config.height);
+
+        // Título
+        this.add.text(game.config.width / 2, 200, 'MENU PRINCIPAL', {
+            fontSize: '60px',
+            fill: '#ffffff',
         }).setOrigin(0.5);
-        this.input.on('pointerdown', (pointer)=> {
+      
+        let botonJugar = this.add.text(game.config.width / 2, game.config.height / 2, 'Escena Personaje', {
+            fontSize: '50px',
+            fill: '#ffffffff',
+            backgroundColor: '#000000',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.5);
+        
+       botonJugar.setInteractive({ useHandCursor: true });
+        botonJugar.on('pointerdown', () => {
             this.scene.start('Escena2');
-       });
+        });
+
     }
 
 });
-var Escena2 = new Phaser.Class({
+var Escena2= new Phaser.Class({
     Extends: Phaser.Scene,
     initialize: 
      function Escena2() {
         Phaser.Scene.call(this, { key: 'Escena2' });
+    },
+      preload() {
+        this.load.image('infierno', 'assets/fondoinfierno.jpg');
+    },
+    create() {
+        // Fondo
+        this.add.image(game.config.width / 2, game.config.height / 2, 'infierno')
+            .setOrigin(0.5)
+            .setDisplaySize(game.config.width, game.config.height);
+
+        // Título
+        this.add.text(game.config.width / 2, 200, 'Seleccion de Personaje', {
+            fontSize: '60px',
+            fill: '#ffffff',
+        }).setOrigin(0.5);
+      
+        let botonJugar = this.add.text(game.config.width / 2, game.config.height / 2, 'Controles', {
+            fontSize: '50px',
+            fill: '#ffffffff',
+            backgroundColor: '#000000',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.5);
+        
+       botonJugar.setInteractive({ useHandCursor: true });
+        botonJugar.on('pointerdown', () => {
+            this.scene.start('Escena3');
+        });
+
+    }
+
+});
+var Escena3= new Phaser.Class({
+    Extends: Phaser.Scene,
+    initialize: 
+     function Escena3() {
+        Phaser.Scene.call(this, { key: 'Escena3' });
+    },
+      preload() {
+        this.load.image('controles', 'assets/controles.jpg');
+    },
+    create() {
+        // Fondo
+        this.add.image(game.config.width / 2, game.config.height / 2, 'controles')
+            .setOrigin(0.5)
+            .setDisplaySize(game.config.width, game.config.height);
+
+        // Título
+        this.add.text(game.config.width / 2, 200, 'Controles', {
+            fontSize: '60px',
+            fill: '#ffffff',
+        }).setOrigin(0.5);
+      
+        let botonJugar = this.add.text(game.config.width / 2, game.config.height / 2, 'Juego', {
+            fontSize: '50px',
+            fill: '#ffffffff',
+            backgroundColor: '#000000',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.5);
+        
+       botonJugar.setInteractive({ useHandCursor: true });
+        botonJugar.on('pointerdown', () => {
+            this.scene.start('Escena4');
+        });
+
+    }
+
+});
+var Escena4 = new Phaser.Class({
+    Extends: Phaser.Scene,
+    initialize: 
+     function Escena4() {
+        Phaser.Scene.call(this, { key: 'Escena4' });
     },
 
     preload() {
@@ -101,7 +186,7 @@ var config = {
             debug: false
         }
     },
-    scene: [Escena1, Escena2]
+    scene: [Escena1, Escena2, Escena3, Escena4]
 };
 var game = new Phaser.Game(config);
 
