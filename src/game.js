@@ -34,6 +34,7 @@ var Escena1 = new Phaser.Class({
     }
 
 });
+
 var Escena2= new Phaser.Class({
     Extends: Phaser.Scene,
     initialize: 
@@ -70,6 +71,7 @@ var Escena2= new Phaser.Class({
     }
 
 });
+
 var Escena3= new Phaser.Class({
     Extends: Phaser.Scene,
     initialize: 
@@ -106,6 +108,7 @@ var Escena3= new Phaser.Class({
     }
 
 });
+
 var Escena4 = new Phaser.Class({
     Extends: Phaser.Scene,
     initialize: 
@@ -173,9 +176,8 @@ var Escena4 = new Phaser.Class({
     }
 });
 
-
-
 var config = {
+    
     type: Phaser.AUTO,
     width: 1200,
     height: 800,
@@ -186,7 +188,8 @@ var config = {
             debug: false
         }
     },
+
     scene: [Escena1, Escena2, Escena3, Escena4]
 };
-var game = new Phaser.Game(config);
 
+var game = new Phaser.Game(config);
