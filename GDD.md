@@ -102,7 +102,7 @@ Destinado a la condena eterna, Hades, deidad del inframundo, te concede una gran
     
 - #### **Floor is lava:**
 
-  Cada partida tiene un tiempo limitado de juego de 2 minutos. Al alcanzarse el minuto y medio de partida, el puente se quebrará en múltiples secciones y el agua del río se volverá lava, dando así comienzo a este evento. Durante los 30 segundos que dura este evento, las múltiples secciones del puente quebrado se sumergirán y aparecerán cada X segundos, dejando sobre el campo de juego un número Y de plataformas (distribuidas de forma aleatoria y no-uniforme sobre el nivel) que permitirán a los jugadores evitar tocar la lava mientras siguen luchando. Al finalizar los 30 segundos del evento las plataformas se sumergirán una vez más para no volver a reaparecer. Cabe mencionar que entonces, el primer jugador en tocar la lava, perderá toda su vida restante y el jugador en pie (en el aire en este caso) obtendrá la victoria. Los jugadores podrán identificar el final del evento mirando al temporizador en el centro superior de la pantalla, de igual manera, un sonido (de campanas¿?) y un sutíl gesto de Hades en el fondo del escenario indicarán a los jugadores que el tiempo ha acabado y que por tanto, cuando uno de ellos caiga en la lava se terminará definitivanmente el combate.
+  Cada partida tiene un tiempo limitado de juego de 2 minutos. Al alcanzarse el minuto y medio de partida, el puente se quebrará en 5 secciones y el agua del río se volverá lava, dando así comienzo a este evento. Durante los 30 segundos que dura este evento, las múltiples secciones del puente quebrado se sumergirán y aparecerán cada 5 segundos, dejando sobre el campo de juego 2-3 plataformas (distribuidas de forma aleatoria y no-uniforme sobre el nivel) que permitirán a los jugadores evitar tocar la lava mientras siguen luchando. Al finalizar los 30 segundos del evento las plataformas se sumergirán una vez más para no volver a reaparecer. Cabe mencionar que entonces, el primer jugador en tocar la lava, perderá toda su vida restante y el jugador en pie (en el aire en este caso) obtendrá la victoria. Los jugadores podrán identificar el final del evento mirando al temporizador en el centro superior de la pantalla, de igual manera, un sonido (de campanas¿?) y un sutíl gesto de Hades en el fondo del escenario indicarán a los jugadores que el tiempo ha acabado y que por tanto, cuando uno de ellos caiga en la lava se terminará definitivanmente el combate.
 
   Nota: Si a lo largo del evento un jugador cae en la lava, este perderá de igual manera toda su vida restante, otorgando igualmente la victoria al jugador en pie.
 
@@ -116,15 +116,15 @@ La interfaz de juego es la básica de un juego de lucha, contando con dos barras
 
 - **Gladiador espadachín:** Este gladiador posee una espada con la que podrá atacar a corta-media distancia con un intervalo corto de ataque. Este personaje cuenta con la habilidad de doble salto, con la que podrá pulsar dos veces la tecla de salto (en un intervalo muy breve de tiempo) para realizar un segundo salto sin necesidad de tocar ninguna superficie. Esto le beneficiará en eventos de juego donde el salto entre plataformas sea prioritario, el salto doble tiene un ligero cooldown al realizarse, por lo que se evita que el jugador pueda sacar una ventaja extrema con esta habilidad. Este personaje cuenta con la ventaja de un ataque más rápido y un rango de salto y movimiento más variado.
 
-(Poner dibujo de personaje y ejemplos de ataque)
+![](https://i.imgur.com/8A5Vim2.jpeg)
 
 - **Gladiador con lanza:** Este gladiador cuenta con una lanza de largo alcance con la que podrá atacar a corta-larga distancia con un intervalo de ataque sensiblemente mayor que la del espadachín. Como habilidad, este personaje podrá lanzarse (valga la redundancia) **horizontalmente** haciendo un "dash" tras realizar un salto, pudiendo no solo inlingir daño al enemigo (si se encuentra en su trayectoria) sino también llegar más lejos que con un salto corriente. El "dash" se verá afectado por un cooldown similar al del salto doble del gladiador espadachín. Este personaje cuenta con la ventaja de poder llegar más lejos a la hora de saltar realizando un "dash", así como la posibilidad de atacar en un rango más amplio.
 
-(Poner dibujo de personaje y ejemplos de ataque)
+![](https://imgur.com/YV8lzde.jpeg)
 
 ### **Niveles:** 
 
-Existe un único nivel que consiste en un escenario con N plataformas fijas elevadas a distintas alturas sobre el suelo para que los jugadores puedan no solo desplazarse por toda la superficie del puente, sino saltar entre estas plataformas del nivel. las plataformas fijas del nivel desaparecerán por completo sumergidas en la lava al dar comienzo el evento de "the floor is lava".
+Existe un único nivel que consiste en un escenario con 3 plataformas fijas elevadas a distintas alturas sobre el suelo para que los jugadores puedan no solo desplazarse por toda la superficie del puente, sino saltar entre estas plataformas del nivel. las plataformas fijas del nivel desaparecerán por completo sumergidas en la lava al dar comienzo el evento de "the floor is lava".
 
 ### **Referencias:** 
 
