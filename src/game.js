@@ -251,7 +251,8 @@ var config = {
     height: 800,
     parent: 'PVLI-grupo-15',
     physics: {
-        default: 'arcade',
+        
+        default : 'arcade',
         arcade: {
             debug: false
         }
