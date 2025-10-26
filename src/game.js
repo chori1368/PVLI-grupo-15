@@ -68,6 +68,7 @@ var Escena2= new Phaser.Class({
             this.scene.start('Escena3');
         });
 
+
     }
 
 });
@@ -104,6 +105,16 @@ var Escena3= new Phaser.Class({
         botonJugar.on('pointerdown', () => {
             this.scene.start('Escena4');
         });
+        let botonatras = this.add.text(game.config.width / 2, game.config.height / 2, 'Seleccion de personaje', {
+            fontSize: '50px',
+            fill: '#ffffffff',
+            backgroundColor: '#000000',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.85, 4);
+        
+       botonatras.setInteractive({ useHandCursor: true });
+        botonatras.on('pointerdown', () => {
+            this.scene.start('Escena2');  });
 
     }
 
@@ -155,6 +166,17 @@ var Escena4 = new Phaser.Class({
             right: Phaser.Input.Keyboard.KeyCodes.D,
             up: Phaser.Input.Keyboard.KeyCodes.W
         });
+         let botonJugar = this.add.text(game.config.width / 2, game.config.height / 2, 'Resultado', {
+            fontSize: '50px',
+            fill: '#ffffffff',
+            backgroundColor: '#000000',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.85, 4);
+        
+       botonJugar.setInteractive({ useHandCursor: true });
+        botonJugar.on('pointerdown', () => {
+            this.scene.start('Escena5');  });
+
     },
 
     update(time, delta) {
@@ -174,8 +196,54 @@ var Escena4 = new Phaser.Class({
             this.player.setVelocityY(this.jumpSpeed);
         }
     }
+    
 });
+var Escena5= new Phaser.Class({
+    Extends: Phaser.Scene,
+    initialize: 
+     function Escena5() {
+        Phaser.Scene.call(this, { key: 'Escena5' });
+    },
+      preload() {
+        this.load.image('resultado', 'assets/resultado.jpg');
+    },
+    create() {
+        // Fondo
+        this.add.image(game.config.width / 2, game.config.height / 2, 'resultado.jpg')
+            .setOrigin(0.5)
+            .setDisplaySize(game.config.width, game.config.height);
 
+        // Título
+        this.add.text(game.config.width / 2, 200, 'Resultado', {
+            fontSize: '60px',
+            fill: '#ffffff',
+        }).setOrigin(0.5);
+      
+        let botonJugar = this.add.text(game.config.width / 2, game.config.height / 2, 'Inicio', {
+            fontSize: '50px',
+            fill: '#ffffffff',
+            backgroundColor: '#000000',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.5);
+        
+       botonJugar.setInteractive({ useHandCursor: true });
+        botonJugar.on('pointerdown', () => {
+            this.scene.start('Escena1');
+        });
+        let botonatras = this.add.text(game.config.width / 2, game.config.height / 2, 'Seleccion de personaje', {
+            fontSize: '50px',
+            fill: '#ffffffff',
+            backgroundColor: '#000000',
+            padding: { x: 20, y: 10 }
+        }).setOrigin(0.80, 4);
+        
+       botonatras.setInteractive({ useHandCursor: true });
+        botonatras.on('pointerdown', () => {
+            this.scene.start('Escena2');  });
+
+    }
+
+});
 var config = {
     
     type: Phaser.AUTO,
@@ -189,7 +257,7 @@ var config = {
         }
     },
 
-    scene: [Escena1, Escena2, Escena3, Escena4]
+    scene: [Escena1, Escena2, Escena3, Escena4, Escena5]
 };
 
 var game = new Phaser.Game(config);
