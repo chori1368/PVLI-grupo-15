@@ -2,6 +2,8 @@ import PlayerSpear from '../player/player_spear.js';
 import PlayerSword from '../player/player_sword.js';
 import Ground from '../objects/platform.js';
 import HealthBar from '../ui/healthbar.js';
+import Timer from '../ui/timer.js';
+
 
 export default class LevelScene extends Phaser.Scene {
     constructor() {
@@ -15,13 +17,14 @@ export default class LevelScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.setBackgroundColor('#3b8de5ff');
-        
+        this.timeLeft = 180;
         // Suelos
         this.grounds = [
             new Ground(this, this.scale.width / 2, this.scale.height - 50, 'suelo', 8, 1),
             new Ground(this, 300, 550, 'suelo', 0.5, 1),
             new Ground(this, 900, 400, 'suelo', 0.5, 1)
         ];
+        
 
         // Jugador
          this.player1 = new PlayerSpear(this, this.scale.width / 3, this.scale.height / 2, 'player');
@@ -32,12 +35,24 @@ export default class LevelScene extends Phaser.Scene {
          this.physics.add.collider(this.player1, this.grounds);
          this.physics.add.collider(this.player2, this.grounds);
          // Crear barras de vida
-const barWidth = 300;
-const barHeight = 25;
-const padding = 20;
+         const barWidth = 300;
+         const barHeight = 25;
+         const padding = 20;
+         const portraitSize = 50;
 
-this.healthBar1 = new HealthBar(this, padding, padding, barWidth, barHeight, 0x00ff00);
-this.healthBar2 = new HealthBar(this, this.scale.width - barWidth - padding, padding, barWidth, barHeight, 0x00ff00);
+         // Jugador 1 con su barra de vida
+         this.healthBar1 = new HealthBar(this, padding + portraitSize + 10, padding, barWidth, barHeight, 0x00ff00);
+         // Imagen del jugador 1
+         this.player1Image = this.add.image(padding, padding + barHeight / 2, 'player')
+         .setOrigin(0, 0.5)  // anclar vertical al medio de la barra
+         .setDisplaySize(portraitSize, portraitSize);
+
+         // Jugador 2 con su barra de vida
+         this.healthBar2 = new HealthBar(this, this.scale.width - barWidth - padding - portraitSize - 10, padding, barWidth, barHeight, 0x00ff00);
+         // Imagen del jugador 2
+         this.player2Image = this.add.image(this.scale.width - padding, padding + barHeight / 2, 'player')
+         .setOrigin(1, 0.5)  // anclar al lado derecho
+         .setDisplaySize(portraitSize, portraitSize);
 
         // Controles
         this.keys = this.input.keyboard.addKeys({
@@ -56,6 +71,7 @@ this.healthBar2 = new HealthBar(this, this.scale.width - barWidth - padding, pad
 
         botonResultado.setInteractive({ useHandCursor: true });
         botonResultado.on('pointerdown', () => this.scene.start('ResultScene'));
+        this.timer = new Timer(this, this.scale.width / 2, padding, 3);
 
     }
 
