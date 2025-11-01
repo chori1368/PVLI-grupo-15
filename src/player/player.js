@@ -9,7 +9,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
 
         this.speed = 300;
-        this.jumpSpeed = -800;
+        this.jumpSpeed = -600;
 
         // Guardamos las teclas (pueden ser WASD o flechas)
         this.keys = keys;
@@ -40,6 +40,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         } else {
             this.setVelocityX(0);
         }
+
+         this.handleJump();
+    }
+     handleJump() {
+        const { up } = this.keys;
 
         if (up.isDown && this.body.touching.down) {
             this.setVelocityY(this.jumpSpeed);
