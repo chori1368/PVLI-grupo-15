@@ -1,4 +1,5 @@
-import Player from '../player/player.js';
+import PlayerSpear from '../player/player_spear.js';
+import PlayerSword from '../player/player_sword.js';
 import Ground from '../objects/platform.js';
 
 export default class LevelScene extends Phaser.Scene {
@@ -13,7 +14,7 @@ export default class LevelScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.setBackgroundColor('#3b8de5ff');
-
+        
         // Suelos
         this.grounds = [
             new Ground(this, this.scale.width / 2, this.scale.height - 50, 'suelo', 8, 1),
@@ -22,9 +23,13 @@ export default class LevelScene extends Phaser.Scene {
         ];
 
         // Jugador
-        this.player = new Player(this, this.scale.width / 2, this.scale.height / 2, 'player');
+         this.player1 = new PlayerSpear(this, this.scale.width / 3, this.scale.height / 2, 'player');
+         this.player2 = new PlayerSword(this, this.scale.width * 2 / 3, this.scale.height /1.35, 'player');
+         this.player1.setScale(0.25);
+         this.player2.setScale(0.25);
 
-        this.physics.add.collider(this.player, this.grounds);
+         this.physics.add.collider(this.player1, this.grounds);
+         this.physics.add.collider(this.player2, this.grounds);
 
         // Controles
         this.keys = this.input.keyboard.addKeys({
@@ -43,9 +48,11 @@ export default class LevelScene extends Phaser.Scene {
 
         botonResultado.setInteractive({ useHandCursor: true });
         botonResultado.on('pointerdown', () => this.scene.start('ResultScene'));
+
     }
 
     update() {
-        this.player.handleInput(this.keys);
+         this.player1.handleInput();
+         this.player2.handleInput();
     }
 }

@@ -1,6 +1,5 @@
 export default class Player extends Phaser.Physics.Arcade.Sprite {
-
-    constructor(scene, x, y, texture) {
+    constructor(scene, x, y, texture, keys) {
         super(scene, x, y, texture);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -12,32 +11,37 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.speed = 300;
         this.jumpSpeed = -800;
 
+        // Guardamos las teclas (pueden ser WASD o flechas)
+        this.keys = keys;
+
         // Vida inicial
         this.life = 19000;
 
         // Temporizador que reduce vida poco a poco
         this.lifeTimer = scene.time.addEvent({
-            delay: 500, // cada medio segundo
+            delay: 500,
             callback: () => this.reduceLife(2),
             callbackScope: this,
             loop: true
         });
     }
 
-    handleInput(keys) {
-        if (!this.active) return; // si el jugador está muerto, no se mueve
+    handleInput() {
+        if (!this.active) return;
 
-        if (keys.left.isDown) {
+        const { left, right, up } = this.keys;
+
+        if (left.isDown) {
             this.setVelocityX(-this.speed);
             this.flipX = true;
-        } else if (keys.right.isDown) {
+        } else if (right.isDown) {
             this.setVelocityX(this.speed);
             this.flipX = false;
         } else {
             this.setVelocityX(0);
         }
 
-        if (keys.up.isDown && this.body.touching.down) {
+        if (up.isDown && this.body.touching.down) {
             this.setVelocityY(this.jumpSpeed);
         }
     }
@@ -51,8 +55,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     die() {
-        this.lifeTimer.remove(); // Detiene el temporizador
-        this.setTint(0xff0000); // Muestra color rojo al morir
+        this.lifeTimer.remove();
+        this.setTint(0xff0000);
         this.setVelocity(0);
         this.setActive(false);
         this.setVisible(false);
