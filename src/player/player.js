@@ -15,7 +15,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.keys = keys;
 
         // Vida inicial
-        this.life = 19000;
+        this.maxLife = 100;
+        this.life = this.maxLife;
 
         // Temporizador que reduce vida poco a poco
         this.lifeTimer = scene.time.addEvent({
@@ -53,10 +54,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     reduceLife(amount) {
         this.life -= amount;
-        if (this.life <= 0) {
-            this.life = 0;
-            this.die();
-        }
+        if (this.life < 0) this.life = 0;
+        console.log(`${this.texture.key} life: ${this.life}/${this.maxLife}`); // debug
+        if (this.life <= 0) this.die();
     }
 
     die() {

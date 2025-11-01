@@ -1,6 +1,7 @@
 import PlayerSpear from '../player/player_spear.js';
 import PlayerSword from '../player/player_sword.js';
 import Ground from '../objects/platform.js';
+import HealthBar from '../ui/healthbar.js';
 
 export default class LevelScene extends Phaser.Scene {
     constructor() {
@@ -30,6 +31,13 @@ export default class LevelScene extends Phaser.Scene {
 
          this.physics.add.collider(this.player1, this.grounds);
          this.physics.add.collider(this.player2, this.grounds);
+         // Crear barras de vida
+const barWidth = 300;
+const barHeight = 25;
+const padding = 20;
+
+this.healthBar1 = new HealthBar(this, padding, padding, barWidth, barHeight, 0x00ff00);
+this.healthBar2 = new HealthBar(this, this.scale.width - barWidth - padding, padding, barWidth, barHeight, 0x00ff00);
 
         // Controles
         this.keys = this.input.keyboard.addKeys({
@@ -54,5 +62,7 @@ export default class LevelScene extends Phaser.Scene {
     update() {
          this.player1.handleInput();
          this.player2.handleInput();
+         this.healthBar1.update(this.player1.life, this.player1.maxLife);
+         this.healthBar2.update(this.player2.life, this.player2.maxLife);
     }
 }
