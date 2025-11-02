@@ -15,7 +15,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.keys = keys;
 
         // Vida inicial
-        this.maxLife = 100;
+        this.maxLife = 10000;
         this.life = this.maxLife;
 
         // Temporizador que reduce vida poco a poco
