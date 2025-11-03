@@ -9,16 +9,16 @@ export default class Menu extends Phaser.Scene {
     }
 
     preload() {
-        console.log("preload")
-    }
-
-    preload() {
 
         console.log(this.sys.settings.key + ": preload");
 
         // Texture load:
         this.load.image('background', './assets/background.png'); // Background image
-                this.load.image('suelo', '../assets/suelo.png');
+        //this.load.image('suelo', '../assets/suelo.png');
+        this.load.image('player', '../assets/characters/player.png');
+        this.load.image('suelo', '../assets/suelo.png');
+        this.load.image('bridge', '../assets/ground.png');
+        this.load.image('lava', '../assets/lava.png');
 
     }
 
