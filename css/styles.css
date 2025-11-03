@@ -27,11 +27,16 @@ body {
   display: flex;
   align-self: center;
   flex-direction: column;
-  max-width: 700px;
   border-radius: .75rem;
   border: 1px solid rgb(from var(--text) r g b / 0.2);
   background-color: var(--background);
   box-shadow: black 0px 5px 20px 10px;
+}
+
+main {
+  max-width: 700px;
+  align-self: center;
+  width: 100%;
 }
 
 header {
