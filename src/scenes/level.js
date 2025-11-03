@@ -13,7 +13,10 @@ export default class LevelScene extends Phaser.Scene {
     }
 
     preload() {
-        
+        this.load.image('player', '../assets/characters/player.png');
+        this.load.image('suelo', '../assets/suelo.png');
+        this.load.image('bridge', '../assets/ground.png');
+        this.load.image('lava', '../assets/lava.png');
     }
 
     create() {
