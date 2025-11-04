@@ -4,12 +4,18 @@ import LevelScene from './scenes/level.js';
 import ResultScene from './scenes/result.js';
 
 let config = {
-  
+
 	type: Phaser.AUTO,
-	width:  1200,
-	height: 800,
+
+	width:  "100%",
+	height: "100%",
+
 	pixelArt: true,
-	scale: { autoCenter: Phaser.Scale.CENTER_HORIZONTALLY },
+
+    scale: {
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
 
 	scene: [ MenuScene, CharacterScene, LevelScene, ResultScene ],
 
