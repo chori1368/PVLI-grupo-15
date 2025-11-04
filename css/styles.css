@@ -1,3 +1,6 @@
+/* disclaimer: no se recomienda utilizar las técnicas 
+  empleadas en este css como referencia de ningún tipo */
+
 :root {
   font-family: 'GFS Didot', serif;
   color-scheme: dark;
@@ -11,14 +14,12 @@
   box-sizing: border-box;
 }
 
-html { 
-  display: flex;
-  background-color: black;
-  height: auto !important; /* evita que el fondo se entrecorte */
-  color: var(--text);  
+html {
+  color: var(--text);
   scrollbar-gutter: stable; /* evita saltos de layout con el scrollbar */
-
-  &:has(input:checked) { overflow: hidden; }
+  overscroll-behavior: none; /* evita el efecto rebote en moviles y portátiles */
+  background-color: black;
+  scrollbar-width: none; /* crimen de guerra nº 3 */
 }
 
 body {
@@ -27,35 +28,7 @@ body {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  background-color: var(--background);
-
-  &:has(input:checked) { background-color: transparent; }
-}
-
-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 750px;
-  margin: 5rem;
-  padding: 3rem;
-  gap: 2rem;
-  border-radius: .75rem;
-  border: 1px solid var(--border); /* 20% de la opacidad de text */
-  background-color: var(--background);
-  box-shadow: black 0px 5px 20px 10px;
-
-  /* Valor por defecto de opacidad y animación */
-  opacity: 1; 
-  transition: opacity 0.4s ease-in-out;
-
-  /* Oculta y desactiva el body si el input está chequeado */
-  &:has(input:checked) { 
-    opacity: 0; 
-    pointer-events: none; 
-    overflow: hidden; 
-  }
+  /* &:has(#init:checked) { position: fixed; } */
 }
 
 header {
@@ -92,18 +65,38 @@ a {
   color: var(--text);
 }
 
-canvas {
-  position: fixed;
-  height: 100%;
-  margin: 0px !important;
-  z-index: -1;
+content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 750px;
+  margin: 5rem;
+  padding: 3rem;
+  gap: 2rem;
+  border-top-left-radius: .75rem;
+  border-top-right-radius: .75rem;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background-color: var(--background);
+  box-shadow: rgba(0, 0, 0, 0.714) 0px 5px 20px 10px;
+
+  /* transiciones para los menús */
+  transition: transform 0.4s ease-in-out, display ease-in-out 0.4s;
+  transition-behavior: allow-discrete;
 }
 
-label {
+canvas { /* canvas por defecto */
+  position: fixed;
+  margin: 0px !important;
+  z-index: -1;
+  pointer-events: all;
+}
+
+label { /* boton por defecto */
   border-radius: 20px;
   padding: 25px 100px;
   font-size: 2rem;
-  text-transform: uppercase;
   background: #33162d;
   border: 1px solid #5e3b57;
   cursor: pointer;
@@ -112,12 +105,66 @@ label {
 
   &:active { background: #1e0c1b; }
 
-  &:has(input:checked) { box-shadow: inset 0px 0px 20px 0px #89548b; }
+  &:has(#play-btn:checked) {
+    box-shadow: inset 0px 0px 20px 0px #89548b;
+  }
 }
 
-/* To allow screen reader to still access these. */
-input {
+input { /* para conservar la accessibilidad (aunque seguramente no funcione) */
   opacity: 0;
   position: absolute;
   pointer-events: none;
+}
+
+label:has(#pause-btn) { /* pause-btn por defecto */
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 22px;
+  width: 30px;
+  height: 30px;
+  padding: 0px;
+  top: 10px;
+  right: 5px;
+  box-shadow: rgb(0, 0, 0) 0px 5px 20px 10px;
+}
+
+label:has(#pause-btn) { /* pause-btn cuando está oculto */
+  opacity: 0;
+  pointer-events: none;
+}
+
+#startup-page:has(#play-btn:checked) ~ label:has(#pause-btn) { /* pause-btn cuando está visible */
+  pointer-events: all;
+  opacity: 1;
+}
+
+#startup-page:has(#play-btn:checked) { /* menú inicial cuando está oculto */
+  transform: translateY(100%);
+  display: none;
+}
+
+@starting-style { /* estado inicial del menú inicial*/
+  #startup-page:has(#play-btn:checked) {
+    transform: translateY(0);
+  }
+}
+
+#pause-page { /* menú de pausa cuando está oculto */
+  display: none;
+  transform: translateY(100%);
+  
+}
+
+#pause-page:has(+ label > #pause-btn:checked) { /* menú de pausa cuando está visible */
+  transform: translateY(0);
+  display: flex;
+}
+
+@starting-style { /* estado inicial del menú de pausa */
+  #pause-page:has(+ label > #pause-btn:checked) {
+    transform: translateY(100%);
+  }
 }
