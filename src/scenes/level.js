@@ -46,10 +46,8 @@ export default class LevelScene extends Phaser.Scene {
      
 
         // --- Jugadores ---
-        this.player1 = new PlayerSpear(this, this.scale.width / 3, this.scale.height / 2, 'player');
-        this.player2 = new PlayerSword(this, this.scale.width * 2 / 3, this.scale.height /1.35, 'player');
-        this.player1.setScale(0.25);
-        this.player2.setScale(0.25);
+        this.player1 = new PlayerSpear(this, this.scale.width *2 / 3, this.scale.height / 2, 'player'); //*2 para que este en el tercio derecho de la pantalla
+        this.player2 = new PlayerSword(this, this.scale.width / 3, this.scale.height / 2, 'player');
 
         this.physics.add.collider(this.player1, this.grounds);
         this.physics.add.collider(this.player2, this.grounds);
@@ -57,6 +55,8 @@ export default class LevelScene extends Phaser.Scene {
         this.physics.add.collider(this.player2, this.bridge.getSegments());
         this.lava.addCollision(this.player1);//Lava con jugadores
         this.lava.addCollision(this.player2);
+        this.player1.addCollision(this.player2);
+        this.player2.addCollision(this.player1);
 
 
         // --- Barras de vida ---
@@ -64,14 +64,14 @@ export default class LevelScene extends Phaser.Scene {
         const barHeight = 25;
         const portraitSize = 50;
 
-        this.healthBar1 = new HealthBar(this, padding + portraitSize + 10, padding, barWidth, barHeight, 0x00ff00);
-        this.player1Image = this.add.image(padding, padding + barHeight / 2, 'player')
-            .setOrigin(0, 0.5)
+        this.healthBar1 = new HealthBar(this, this.scale.width - barWidth - padding - portraitSize - 10, padding, barWidth, barHeight, 0x00ff00);
+        this.player1Image = this.add.image(this.scale.width - padding, padding + barHeight / 2, 'player')
+            .setOrigin(1, 0.5)
             .setDisplaySize(portraitSize, portraitSize);
 
-        this.healthBar2 = new HealthBar(this, this.scale.width - barWidth - padding - portraitSize - 10, padding, barWidth, barHeight, 0x00ff00);
-        this.player2Image = this.add.image(this.scale.width - padding, padding + barHeight / 2, 'player')
-            .setOrigin(1, 0.5)
+        this.healthBar2 = new HealthBar(this, padding + portraitSize + 10, padding, barWidth, barHeight, 0x00ff00);
+        this.player2Image = this.add.image(padding, padding + barHeight / 2, 'player')
+            .setOrigin(0, 0.5)
             .setDisplaySize(portraitSize, portraitSize);
 
         // --- Controles ---
