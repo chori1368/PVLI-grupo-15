@@ -5,25 +5,25 @@ import ResultScene from './scenes/result.js';
 
 let config = {
 
-	type: Phaser.AUTO,
+    type: Phaser.AUTO,
 
-	width:  "100%",
-	height: "100%",
+    width: "100%",
+    height: "100%",
 
-	pixelArt: true,
+    pixelArt: true,
 
     scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
 
-	scene: [ MenuScene, CharacterScene, LevelScene, ResultScene ],
+    scene: [MenuScene, CharacterScene, LevelScene, ResultScene],
 
-	physics: { 
-        default: 'arcade', 
-        arcade: { 
-            gravity: { y: 800 }, 
-            debug: true 
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 800 },
+            debug: true
         },
         checkCollision: {
             up: true,
@@ -34,4 +34,27 @@ let config = {
     },
 };
 
-new Phaser.Game(config);
+const game = new Phaser.Game(config);
+
+const play = document.getElementById('play-btn');
+const pause = document.getElementById('pause-btn');
+
+const checkState = () => {
+
+    if (pause.checked || !play.checked) {
+
+        game.pause();
+        console.log('game paused');
+    }
+
+    else {
+
+        game.resume();
+        console.log('game resumed');
+    }
+};
+
+play?.addEventListener('change', checkState);
+pause?.addEventListener('change', checkState);
+
+checkState();
