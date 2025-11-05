@@ -5,25 +5,12 @@ export default class player_sword extends Player {
         const keys = scene.input.keyboard.addKeys({
             left: Phaser.Input.Keyboard.KeyCodes.A,
             right: Phaser.Input.Keyboard.KeyCodes.D,
-            up: Phaser.Input.Keyboard.KeyCodes.W
+            up: Phaser.Input.Keyboard.KeyCodes.W,
+            attack: Phaser.Input.Keyboard.KeyCodes.E
         });
         super(scene, x, y, texture, keys);
-        this.maxJumps = 2;
-        this.jumpCount = 0;
     }
-     handleJump() {
-        const { up } = this.keys;
-
-        // Reiniciar contador si está tocando el suelo
-        if (this.body.blocked.down || this.body.touching.down) {
-            this.jumpCount = 0;
-        }
-
-        // Doble salto
-        if (Phaser.Input.Keyboard.JustDown(up) && this.jumpCount < this.maxJumps) {
+     DoubleJump() {
             this.setVelocityY(this.jumpSpeed);
-            this.jumpCount++;
-        }
     }
-    
 }

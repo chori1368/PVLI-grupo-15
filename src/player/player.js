@@ -4,12 +4,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.setScale(0.5);
-        this.setOrigin(0.5);
+        this.setScale(0.25);
+        this.setOrigin(0.25);
         this.setCollideWorldBounds(true);
 
         this.speed = 300;
         this.jumpSpeed = -600;
+        this.attacking = false;
+        this.maxJumps = 1;
+        this.jumpCount = 0;
+
+        this.weaponbox = scene.add.zone(0,0,80,30);
+        scene.physics.add.existing(this.weaponbox, false);
+        this.weaponbox.body.allowGravity = false;
+        this.weaponbox.body.enable = false;
 
         // Guardamos las teclas (pueden ser WASD o flechas)
         this.keys = keys;
@@ -18,19 +26,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.maxLife = 10000;
         this.life = this.maxLife;
 
-        // Temporizador que reduce vida poco a poco
-        this.lifeTimer = scene.time.addEvent({
-            delay: 500,
-            callback: () => this.reduceLife(2),
-            callbackScope: this,
-            loop: true
-        });
+        this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques
     }
 
+    
     handleInput() {
         if (!this.active) return;
 
-        const { left, right, up } = this.keys;
+        const { left, right, up, attack} = this.keys;
 
         if (left.isDown) {
             this.setVelocityX(-this.speed);
@@ -38,32 +41,68 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         } else if (right.isDown) {
             this.setVelocityX(this.speed);
             this.flipX = false;
-        } else {
-            this.setVelocityX(0);
-        }
-
-         this.handleJump();
-    }
-     handleJump() {
-        const { up } = this.keys;
-
-        if (up.isDown && this.body.touching.down) {
+        }else if (Phaser.Input.Keyboard.JustDown(up)) {
+            if(this.body.touching.down){
             this.setVelocityY(this.jumpSpeed);
+            }
+            else if(this.jumpCount < this.maxJumps){    // Doble salto
+            this.DoubleJump();
+            }
+            ++this.jumpCount;
+            console.log(this.jumpCount);
+        } else if (attack.isDown && !this.attacking){
+            this.Attack();
+        }else if(this.body.touching.down){
+            this.setVelocityX(0);
+        }if (this.body.blocked.down || this.body.touching.down) {// Reiniciar contador si está tocando el suelo
+            this.jumpCount = 0;
         }
+    }
+
+    Attack(){
+        this.attacking = true; 
+        this.weaponbox.body.enable = true;
+        this.weaponbox.y = this.y+30;
+        if (this.flipX){
+            this.weaponbox.x = this.x-50;
+        }
+        else{
+            this.weaponbox.x = this.x+70;
+        }
+        console.log('empieza ataque');
+        this.scene.time.delayedCall(1000, this.AttackFinish,[],this);
+    }
+
+    AttackFinish(){
+        this.attacking=false;
+        this.weaponbox.body.enable = false;
+        //console.log('acaba ataque');
+    }
+    DoubleJump(){
+        this.setVelocityY(this.jumpSpeed);
     }
 
     reduceLife(amount) {
         this.life -= amount;
         if (this.life < 0) this.life = 0;
-        console.log(`${this.texture.key} life: ${this.life}/${this.maxLife}`); // debug
+        //console.log(`${this.texture.key} life: ${this.life}/${this.maxLife}`); // debug
         if (this.life <= 0) this.die();
     }
 
     die() {
-        this.lifeTimer.remove();
         this.setTint(0xff0000);
         this.setVelocity(0);
         this.setActive(false);
         this.setVisible(false);
+    }
+
+        addCollision(player) {
+        this.scene.physics.add.overlap(player, this.weaponbox, () => {
+            if (this.attacking&&this.weaponbox.body.enable){
+                player.reduceLife(400);
+                this.weaponbox.body.enable = false;
+                //console.log('daño');
+            }
+        });
     }
 }
