@@ -83,8 +83,8 @@ content {
   margin-bottom: 0;
   padding: 3rem;
   gap: 2rem;
-  border-top-left-radius: .75rem;
-  border-top-right-radius: .75rem;
+  border-top-left-radius: 5rem;
+  border-top-right-radius: 5rem;
   border: 1px solid var(--border);
   border-bottom: none;
   background-color: var(--background);
@@ -97,30 +97,51 @@ content {
 
 canvas { /* canvas por defecto */
   position: fixed;
-  margin: 0px !important;
+  margin: 0 !important;
+  z-index: -2;
+}
+
+background { /* background por defecto */
+  position: fixed;
+  width: 100%;
+  height: 100%;
   z-index: -1;
-  pointer-events: none !important;
+  background: #000000b4;
+  backdrop-filter: blur(15px);
+  opacity: 1;
+  
+  /* transiciones */
+  transition: opacity 0.4s ease-in-out;
+}
+
+content:has(#play-btn:checked) ~ background { /* background cuando el juego no está pausado */
+  opacity: 0;
+}
+
+label:has(#pause-btn:checked) ~ background { /* background cuando el juego esta pausado */
+  opacity: 1;
 }
 
 label { /* boton por defecto */
-  border-radius: 20px;
-  padding: 20px 100px;
+  border-radius: 2.5rem;
+  margin-top: 1rem;
+  padding: 25px 100px;
   font-size: 2.5rem;
   font-weight: 600;
-  background: #33162d;
-  border: 1px solid #5e3b57;
+  color: #d497c8;
+  background: #330c2b;
+  border: 1px solid #633059;
   cursor: pointer;
 
   /* transiciones */
-  transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.4s ease-in-out, background 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
-  &:hover { background: #3f1c39; }
-
-  &:active { background: #1e0c1b; }
-
-  &:has(#play-btn:checked) {
-    box-shadow: inset 0px 0px 20px 0px #89548b;
+  &:hover { 
+    background: #3a0e34;
+    box-shadow: 0 0 30px #ff5adb4b; 
   }
+
+  &:active { background: #2e0827; box-shadow: 0 0 30px #250d204b }
 }
 
 input { /* para conservar la accessibilidad (aunque seguramente no funcione) */
@@ -134,15 +155,17 @@ label:has(#pause-btn) { /* pause-btn por defecto */
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
   font-size: 20px;
   font-weight: bold;
+  margin-top: 0;
   width: 40px;
   height: 40px;
   padding: 0px;
   top: 10px;
   right: 10px;
   border-radius: .75rem;
-  box-shadow: rgba(0, 0, 0, 0.637) 0px 5px 20px 10px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 20px 10px;
 }
 
 label:has(#pause-btn) { /* pause-btn cuando está oculto */

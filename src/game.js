@@ -3,7 +3,7 @@ import CharacterScene from './scenes/selection.js';
 import LevelScene from './scenes/level.js';
 import ResultScene from './scenes/result.js';
 
-let config = {
+const config = {
 
     type: Phaser.AUTO,
 
