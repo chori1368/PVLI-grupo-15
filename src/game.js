@@ -3,7 +3,9 @@ import CharacterScene from './scenes/selection.js';
 import LevelScene from './scenes/level.js';
 import ResultScene from './scenes/result.js';
 
-const config = {
+
+// Configuración del juego:
+let config = {
 
     type: Phaser.AUTO,
 
@@ -17,7 +19,7 @@ const config = {
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
 
-    scene: [MenuScene, CharacterScene, LevelScene, ResultScene],
+    scene: [ MenuScene, CharacterScene, LevelScene, ResultScene ],
 
     physics: {
         default: 'arcade',
@@ -34,27 +36,30 @@ const config = {
     },
 };
 
+// Creamos la instancia del juego
 const game = new Phaser.Game(config);
 
+// Botones de play y pause
 const play = document.getElementById('play-btn');
 const pause = document.getElementById('pause-btn');
 
-const checkState = () => {
+// Para gestionar el pausado y reanudado del juego:
+const toggleState = () => {
 
+    // Si pause esta checked o play no lo está:
     if (pause.checked || !play.checked) {
-
-        game.pause();
+        game.pause(); // Pausamos el juego
         console.log('game paused');
     }
 
     else {
-
-        game.resume();
+        game.resume(); // Reanudamos
         console.log('game resumed');
     }
 };
 
-play?.addEventListener('change', checkState);
-pause?.addEventListener('change', checkState);
+// Añadimos listeners en los botones que llaman a toggleState:
+play?.addEventListener('change', toggleState);
+pause?.addEventListener('change', toggleState);
 
-checkState();
+toggleState(); // Inicializamos para sincronizar correctamente el s0

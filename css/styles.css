@@ -5,9 +5,9 @@
   font-family: "Cinzel", serif;
   color-scheme: dark;
 
-  --text: #c5b8db;
-  --background: #160813;
-  --border: #392034;
+  --text: #d9a2edf2;
+  --background: #2b1027;
+  --border: #a5649be3;
 }
 
 * {
@@ -40,6 +40,13 @@ main {
   gap: 1.5rem;
 }
 
+footer {
+  text-align: center;
+
+  h3 { margin-top: 1rem;}
+  p { text-align: center; line-height: 2rem; }
+}
+
 h1 {
   margin: 0;
   font-size: 3rem;
@@ -53,6 +60,7 @@ h2 {
 
 h3 {
   margin-bottom: 1.5rem;
+  margin-top: 2.5rem;
   font-size: 1.25rem;
   font-weight: 800;
 }
@@ -62,7 +70,7 @@ p {
   line-height: 1.6rem;
   font-size: 0.9rem;
   font-weight: 500;
-  width: fit-content;
+  margin: 0 1rem;
   text-align: justify;
 }
 
@@ -123,25 +131,21 @@ label:has(#pause-btn:checked) ~ background { /* background cuando el juego esta 
 }
 
 label { /* boton por defecto */
-  border-radius: 2.5rem;
+  border-radius: 2rem;
   margin-top: 1rem;
   padding: 25px 100px;
   font-size: 2.5rem;
   font-weight: 600;
-  color: #d497c8;
-  background: #330c2b;
-  border: 1px solid #633059;
+  background: #47113c;
+  border: 1px solid var(--border);
   cursor: pointer;
 
   /* transiciones */
-  transition: opacity 0.4s ease-in-out, background 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: opacity 0.4s ease-in-out, background 0.2s ease-in-out;
 
-  &:hover { 
-    background: #3a0e34;
-    box-shadow: 0 0 30px #ff5adb4b; 
-  }
+  &:hover { background: #58174f;}
 
-  &:active { background: #2e0827; box-shadow: 0 0 30px #250d204b }
+  &:active { background: #360a2d; }
 }
 
 input { /* para conservar la accessibilidad (aunque seguramente no funcione) */
