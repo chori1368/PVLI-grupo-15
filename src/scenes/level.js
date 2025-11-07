@@ -64,12 +64,12 @@ export default class LevelScene extends Phaser.Scene {
         const barHeight = 25;
         const portraitSize = 50;
 
-        this.healthBar1 = new HealthBar(this, this.scale.width- barWidth - 210, padding, barWidth, barHeight, 0x00ff00);
+        this.healthBar1 = new HealthBar(this, this.scale.width - barWidth - 100, padding, barWidth, barHeight, 0x763a6b);
         this.player1Image = this.add.image(this.scale.width - padding, padding + barHeight / 2, 'player')
             .setOrigin(1, 0.5)
             .setDisplaySize(portraitSize, portraitSize);
 
-        this.healthBar2 = new HealthBar(this, this.scale.width/2 - this.scale.displaySize.width/2 - 140, padding, barWidth, barHeight, 0x00ff00);
+        this.healthBar2 = new HealthBar(this, 90, padding, barWidth, barHeight, 0x763a6b);
         this.player2Image = this.add.image(padding, padding + barHeight / 2, 'player')
             .setOrigin(0, 0.5)
             .setDisplaySize(portraitSize, portraitSize);
@@ -93,9 +93,7 @@ export default class LevelScene extends Phaser.Scene {
         botonResultado.on('pointerdown', () => this.scene.start('ResultScene'));
 
         // Timer
-        this.timer = new Timer(this, this.scale.width/2 - window.innerWidth/2, padding, 180);
-
-        
+        this.timer = new Timer(this, this.scale.width/2, padding, 180);
     }
 
     
@@ -115,8 +113,8 @@ export default class LevelScene extends Phaser.Scene {
 
         this.player1.handleInput();
         this.player2.handleInput();
-        this.healthBar1.update(this.player1.life, this.player1.maxLife, posX);
-        this.healthBar2.update(this.player2.life, this.player2.maxLife, posX);
+        this.healthBar1.update(this.player1.life, this.player1.maxLife); // barra de izq
+        this.healthBar2.update(this.player2.life, this.player2.maxLife); // barra de dcha
     }
 }
 

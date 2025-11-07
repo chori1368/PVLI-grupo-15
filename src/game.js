@@ -15,8 +15,8 @@ let config = {
     pixelArt: true,
 
     scale: {
-        mode: Phaser.Scale.ENVELOP,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
+        mode: Phaser.Scale.CENTER_H,
+        autoCenter: Phaser.Scale.CENTER_H,
     },
 
     scene: [MenuScene, CharacterScene, LevelScene, ResultScene],
