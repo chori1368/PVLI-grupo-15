@@ -9,17 +9,17 @@ let config = {
 
     type: Phaser.AUTO,
 
-    width: "100%",
-    height: "100%",
+    width: 1920,
+    height: 1080,
 
     pixelArt: true,
 
     scale: {
-        mode: Phaser.Scale.RESIZE,
+        mode: Phaser.Scale.ENVELOP,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
 
-    scene: [ MenuScene, CharacterScene, LevelScene, ResultScene ],
+    scene: [MenuScene, CharacterScene, LevelScene, ResultScene],
 
     physics: {
         default: 'arcade',

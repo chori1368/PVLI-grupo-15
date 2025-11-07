@@ -21,7 +21,7 @@ export default class HealthBar {
         }).setOrigin(0.5, 0.5);
     }
 
-    update(current, max) {
+    update(current, max, x) {
         const ratio = Phaser.Math.Clamp(current / max, 0, 1);
         const newWidth = this.width * ratio;
 
@@ -30,6 +30,10 @@ export default class HealthBar {
 
         // Actualizar el texto
         this.text.setText(`${Math.round(current)}/${max}`);
+
+        this.bar.x = x;
+        this.background.x = x;
+        this.text.x = x + this.width / 2;
     }
 
     destroy() {
