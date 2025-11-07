@@ -15,5 +15,5 @@ cruzando la frontera del inframundo.
 
 ### Autores:
 - Tomás Arévalo Almagro
-- Andrés bartolomé Diaz
+- Andrés Bartolomé Clap
 - Carlos Dochao Moreno
