@@ -24,6 +24,6 @@ export default class ResultScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         botonInicio.setInteractive({ useHandCursor: true });
-        botonInicio.on('pointerdown', () => this.scene.start('MenuScene'));
+        botonInicio.on('pointerdown', () => this.scene.start('menu'));
     }
 }

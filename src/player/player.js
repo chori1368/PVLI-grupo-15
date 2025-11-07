@@ -8,8 +8,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0.25);
         this.setCollideWorldBounds(true);
 
-        this.speed = 300;
-        this.jumpSpeed = -600;
+        this.speed = 500;
+        this.jumpSpeed = -700;
         this.attacking = false;
         this.maxJumps = 1;
         this.jumpCount = 0;
@@ -35,13 +35,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         const { left, right, up, attack} = this.keys;
 
-        if (left.isDown) {
+        if (left.isDown&&this.body.velocity.x>-this.speed) {
             this.setVelocityX(-this.speed);
             this.flipX = true;
-        } else if (right.isDown) {
+        } else if (right.isDown&&this.body.velocity.x<this.speed) {
             this.setVelocityX(this.speed);
             this.flipX = false;
-        }else if (Phaser.Input.Keyboard.JustDown(up)) {
+        } else if(this.body.touching.down){
+            this.setVelocityX(0);
+        }
+        if (Phaser.Input.Keyboard.JustDown(up)) {
             if(this.body.touching.down){
             this.setVelocityY(this.jumpSpeed);
             }
@@ -50,11 +53,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             }
             ++this.jumpCount;
             console.log(this.jumpCount);
-        } else if (attack.isDown && !this.attacking){
+        }
+        if (attack.isDown && !this.attacking){
             this.Attack();
-        }else if(this.body.touching.down){
-            this.setVelocityX(0);
-        }if (this.body.blocked.down || this.body.touching.down) {// Reiniciar contador si está tocando el suelo
+        }
+        if (this.body.blocked.down || this.body.touching.down) {// Reiniciar contador si está tocando el suelo
             this.jumpCount = 0;
         }
     }
@@ -94,9 +97,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setVelocity(0);
         this.setActive(false);
         this.setVisible(false);
+        this.scene.die(this);
     }
 
-        addCollision(player) {
+    addCollision(player) {
         this.scene.physics.add.overlap(player, this.weaponbox, () => {
             if (this.attacking&&this.weaponbox.body.enable){
                 player.reduceLife(400);

@@ -13,9 +13,11 @@ export default class player_spear extends Player {
     DoubleJump() {
         if (this.flipX){
             this.setVelocityX(this.jumpSpeed);
+            this.setVelocityY(0);
         }
         else{
             this.setVelocityX(-this.jumpSpeed);
+            this.setVelocityY(0);
         }
             
     }

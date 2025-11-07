@@ -29,14 +29,14 @@ export default class LevelScene extends Phaser.Scene {
         this.lava = null;
 
         // Romper puente a los 150 segundos
-        this.time.delayedCall(150 * 1000, () => {
+        this.time.delayedCall(30 * 1000, () => {
             this.bridge.collapseParts(20, true);
         });
 
         //Suelos adicionales
         this.grounds = [
-            new Ground(this, 300, 450, 'suelo', 0.25, 0.5),
-            new Ground(this, 700, 300, 'suelo', 0.25, 0.5)
+            new Ground(this, 500, 700, 'suelo', 0.25, 0.5),
+            new Ground(this, 1200, 450, 'suelo', 0.25, 0.5)
         ];
         // Lava
         const lavaY = this.scale.height - 25; // altura
@@ -93,9 +93,13 @@ export default class LevelScene extends Phaser.Scene {
         botonResultado.on('pointerdown', () => this.scene.start('ResultScene'));
 
         // Timer
-        this.timer = new Timer(this, this.scale.width/2, padding, 180);
+        this.timer = new Timer(this, this.scale.width/2, padding, 60);
     }
 
+    die(player)
+    {
+        this.scene.start('ResultScene');
+    }
     
 
     update() {
@@ -107,9 +111,9 @@ export default class LevelScene extends Phaser.Scene {
     let posX = sobranteX / 2;
 
 
-        console.log('current canvas size:', this.scale.width);
-        console.log('current display size:', window.innerWidth);
-        console.log('current origin X:', posX);
+        //console.log('current canvas size:', this.scale.width);
+        //console.log('current display size:', window.innerWidth);
+        //console.log('current origin X:', posX);
 
         this.player1.handleInput();
         this.player2.handleInput();
