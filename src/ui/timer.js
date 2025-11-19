@@ -21,7 +21,6 @@ export default class Timer {
 
                 if (this.remainingSeconds <= 0) {
                     this.timerEvent.remove();
-                    this.scene.scene.start('ResultScene');
                 }
             },
             loop: true

@@ -36,6 +36,10 @@ export default class Bridge {
             if (index > -1) this.segments.splice(index, 1);
         });
     }
+    destroy() {
+        this.segments.forEach(seg => seg.destroy());
+        this.segments = [];
+    }
 
     getSegments() {
         return this.segments;

@@ -31,8 +31,11 @@ export default class LevelScene extends Phaser.Scene {
         this.lava = null;
 
         // Romper puente a los 30 segundos
-        this.time.delayedCall(30 * 1000, () => {
+        this.time.delayedCall(30000, () => {
             this.bridge.collapseParts(10, true);
+        });
+        this.time.delayedCall(60000, () => {
+            this.bridge.destroy();
         });
 
         //Suelos adicionales
