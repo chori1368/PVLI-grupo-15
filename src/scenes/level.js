@@ -28,15 +28,15 @@ export default class LevelScene extends Phaser.Scene {
         
         this.lava = null;
 
-        // Romper puente a los 150 segundos
+        // Romper puente a los 30 segundos
         this.time.delayedCall(30 * 1000, () => {
-            this.bridge.collapseParts(20, true);
+            this.bridge.collapseParts(10, true);
         });
 
         //Suelos adicionales
         this.grounds = [
             new Ground(this, 500, 700, 'suelo', 0.25, 0.5),
-            new Ground(this, 1200, 450, 'suelo', 0.25, 0.5)
+            new Ground(this, 1200, 500, 'suelo', 0.25, 0.5)
         ];
         // Lava
         const lavaY = this.scale.height - 25; // altura
@@ -101,7 +101,6 @@ export default class LevelScene extends Phaser.Scene {
         this.scene.start('ResultScene');
     }
     
-
     update() {
 
     let d = this.scale.displaySize.width; // tamaño del canvas ya escalado (px)

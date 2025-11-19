@@ -8,10 +8,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0.25);
         this.setCollideWorldBounds(true);
 
-        this.speed = 500;
-        this.jumpSpeed = -700;
+        this.speed = 300;
+        this.jumpSpeed = -650;
         this.attacking = false;
-        this.maxJumps = 1;
+        this.maxJumps = 2;
         this.jumpCount = 0;
 
         this.weaponbox = scene.add.zone(0,0,80,30);
@@ -35,30 +35,30 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         const { left, right, up, attack} = this.keys;
 
-        if (left.isDown&&this.body.velocity.x>-this.speed) {
+        if (this.body.blocked.down || this.body.onFloor()) {// Reiniciar contador si está tocando el suelo
+            this.jumpCount = 0;
+        }
+        if (left.isDown&&this.body.velocity.x>=-this.speed) {
             this.setVelocityX(-this.speed);
             this.flipX = true;
-        } else if (right.isDown&&this.body.velocity.x<this.speed) {
+        } else if (right.isDown&&this.body.velocity.x<=this.speed) {
             this.setVelocityX(this.speed);
             this.flipX = false;
-        } else if(this.body.touching.down){
+        } else if(this.body.onFloor()){
             this.setVelocityX(0);
         }
         if (Phaser.Input.Keyboard.JustDown(up)) {
-            if(this.body.touching.down){
+            if(this.body.onFloor()&&this.jumpCount==0){
             this.setVelocityY(this.jumpSpeed);
             }
             else if(this.jumpCount < this.maxJumps){    // Doble salto
             this.DoubleJump();
             }
-            ++this.jumpCount;
+            this.jumpCount++;
             console.log(this.jumpCount);
         }
         if (attack.isDown && !this.attacking){
             this.Attack();
-        }
-        if (this.body.blocked.down || this.body.touching.down) {// Reiniciar contador si está tocando el suelo
-            this.jumpCount = 0;
         }
     }
 
@@ -72,8 +72,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         else{
             this.weaponbox.x = this.x+70;
         }
-        console.log('empieza ataque');
-        this.scene.time.delayedCall(1000, this.AttackFinish,[],this);
+        //console.log('empieza ataque');
+        this.scene.time.delayedCall(700, this.AttackFinish,[],this);
     }
 
     AttackFinish(){
