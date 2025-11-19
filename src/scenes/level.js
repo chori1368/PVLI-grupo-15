@@ -5,6 +5,7 @@ import Bridge from '../objects/bridge.js';
 import HealthBar from '../ui/healthbar.js';
 import Timer from '../ui/timer.js';
 import Lava from '../objects/lava.js';
+import Te  from '../objects/tea.js';
 
 
 export default class LevelScene extends Phaser.Scene {
@@ -17,7 +18,8 @@ export default class LevelScene extends Phaser.Scene {
         this.load.image('suelo', 'assets/suelo.png');
         this.load.image('bridge', 'assets/ground.png');
         this.load.image('lava', 'assets/lava.png');
-    }
+        this.load.image('te', 'assets/te.png');
+    }   
 
     create() {
         this.cameras.main.setBackgroundColor('#3b8de5ff');
@@ -42,21 +44,26 @@ export default class LevelScene extends Phaser.Scene {
         const lavaY = this.scale.height - 25; // altura
         const lavaX = this.scale.width / 2;   // centrado horizontal
         this.lava = new Lava(this, lavaX, lavaY, 'lava', 10, 0.5);
-
+        // Té
+        this.spawnte();
      
 
         // --- Jugadores ---
         this.player1 = new PlayerSpear(this, this.scale.width *2 / 3, this.scale.height / 2, 'player'); //*2 para que este en el tercio derecho de la pantalla
         this.player2 = new PlayerSword(this, this.scale.width / 3, this.scale.height / 2, 'player');
-
+        
+        //jugador con suelos
         this.physics.add.collider(this.player1, this.grounds);
         this.physics.add.collider(this.player2, this.grounds);
         this.physics.add.collider(this.player1, this.bridge.getSegments());
         this.physics.add.collider(this.player2, this.bridge.getSegments());
+        //te con los suelos   
+
         this.lava.addCollision(this.player1);//Lava con jugadores
         this.lava.addCollision(this.player2);
         this.player1.addCollision(this.player2);
         this.player2.addCollision(this.player1);
+        
 
 
         // --- Barras de vida ---
@@ -100,7 +107,20 @@ export default class LevelScene extends Phaser.Scene {
     {
         this.scene.start('ResultScene');
     }
-    
+   spawnte(){
+    const delay = Phaser.Math.Between(5000,10000); //tiempo aleatorio entre 20 y 40 segundos
+    this.time.delayedCall(delay, () => {
+        const x = Phaser.Math.Between(50, this.scale.width - 50);
+        const y = Phaser.Math.Between(100, this.scale.height - 200);
+        this.te = new Te(this, x, y, 'te', 5000); 
+        this.te.addCollision(this.player1);
+        this.te.addCollision(this.player2);
+        this.physics.add.collider(this.te, this.grounds);
+        this.physics.add.collider(this.te, this.bridge.getSegments());
+        this.spawnte(); //programa el siguiente spawn
+      
+    });
+   }
     update() {
 
     let d = this.scale.displaySize.width; // tamaño del canvas ya escalado (px)
