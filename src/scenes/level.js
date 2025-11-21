@@ -124,8 +124,8 @@ export default class LevelScene extends Phaser.Scene {
         const delay = Phaser.Math.Between(5000, 10000); // tiempo aleatorio entre 5 y 10 segundos
         this.time.delayedCall(delay, () => {
             const x = Phaser.Math.Between(50, this.scale.width - 50);
-            const y = Phaser.Math.Between(100, this.scale.height - 200);
-            this.te = new Te(this, x, y, 'te', 5000);
+            const y = this.scale.height -1200;
+            this.te = new Te(this, x, y, 'te', 7500);
             this.te.addCollision(this.player1);
             this.te.addCollision(this.player2);
             this.physics.add.collider(this.te, this.grounds);
