@@ -108,34 +108,38 @@ export default class LevelScene extends Phaser.Scene {
 
     die(player)
     {
-        this.scene.start('ResultScene');
+        let ganador = '';
+
+        if (player === this.player1) {
+        ganador = 'PLAYER 2 GANA';
+    } else if (player === this.player2) {
+        ganador = 'PLAYER 1 GANA';
     }
-   spawnte(){
-    const delay = Phaser.Math.Between(5000,10000); //tiempo aleatorio entre 20 y 40 segundos
-    this.time.delayedCall(delay, () => {
-        const x = Phaser.Math.Between(50, this.scale.width - 50);
-        const y = Phaser.Math.Between(100, this.scale.height - 200);
-        this.te = new Te(this, x, y, 'te', 5000); 
-        this.te.addCollision(this.player1);
-        this.te.addCollision(this.player2);
-        this.physics.add.collider(this.te, this.grounds);
-        this.physics.add.collider(this.te, this.bridge.getSegments());
-        this.spawnte(); //programa el siguiente spawn
-      
-    });
-   }
+
+    // Guardamos el resultado y cambiamos de escena
+    this.scene.start('ResultScene', { winner: ganador });
+}
+
+    spawnte() {
+        const delay = Phaser.Math.Between(5000, 10000); // tiempo aleatorio entre 5 y 10 segundos
+        this.time.delayedCall(delay, () => {
+            const x = Phaser.Math.Between(50, this.scale.width - 50);
+            const y = Phaser.Math.Between(100, this.scale.height - 200);
+            this.te = new Te(this, x, y, 'te', 5000);
+            this.te.addCollision(this.player1);
+            this.te.addCollision(this.player2);
+            this.physics.add.collider(this.te, this.grounds);
+            this.physics.add.collider(this.te, this.bridge.getSegments());
+            this.spawnte(); // programa el siguiente spawn
+        });
+    }
+
     update() {
+        let d = this.scale.displaySize.width; // tamaño del canvas ya escalado (px)
+        let p = this.scale.parentSize.width;  // tamaño visible (px)
 
-    let d = this.scale.displaySize.width; // tamaño del canvas ya escalado (px)
-    let p = this.scale.parentSize.width;  // tamaño visible (px)
-
-    let sobranteX = Math.max(0, d - p);
-    let posX = sobranteX / 2;
-
-
-        //console.log('current canvas size:', this.scale.width);
-        //console.log('current display size:', window.innerWidth);
-        //console.log('current origin X:', posX);
+        let sobranteX = Math.max(0, d - p);
+        let posX = sobranteX / 2;
 
         this.player1.handleInput();
         this.player2.handleInput();
