@@ -12,14 +12,14 @@ let config = {
     width: 1920,
     height: 1080,
 
-    pixelArt: true,
+    //pixelArt: true,
 
     scale: {
         mode: Phaser.Scale.CENTER_H,
         autoCenter: Phaser.Scale.CENTER_H,
     },
 
-    scene: [ SelectionScene, LevelScene, ResultScene ],
+    scene: [ IntroScene, SelectionScene, LevelScene, ResultScene ],
 
     physics: {
         default: 'arcade',

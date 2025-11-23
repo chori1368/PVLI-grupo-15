@@ -60,6 +60,6 @@ export default class SelectionScene extends Phaser.Scene {
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
         // Pasaremos 0 o 1 en funcion del frame seleccionado de cada jugador
-        button.on('pointerdown', () => this.scene.start('level', { player_left: left.frame.name, player_right: right.frame.name }));
+        button.on('pointerdown', () => this.scene.start('level', { playerLeft: left.frame.name, playerRight: right.frame.name }));
     }
 }
