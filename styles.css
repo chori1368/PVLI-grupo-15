@@ -79,6 +79,11 @@ a {
   font-weight: 800;
 }
 
+object {
+  width: 85%;
+  max-width: 750px;
+}
+
 content {
   display: flex;
   flex-direction: column;
@@ -101,6 +106,10 @@ content {
   /* transiciones */
   transition: transform 0.4s ease-in-out, display ease-in-out 0.4s;
   transition-behavior: allow-discrete;
+}
+
+#pause-page { /* menos gap en pausa para ver mejor los controles */
+  gap: 0;
 }
 
 canvas { /* canvas por defecto */
