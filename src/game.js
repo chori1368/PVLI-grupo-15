@@ -1,5 +1,5 @@
-import MenuScene from './scenes/menu.js';
-import CharacterScene from './scenes/selection.js';
+import IntroScene from './scenes/intro.js';
+import SelectionScene from './scenes/selection.js';
 import LevelScene from './scenes/level.js';
 import ResultScene from './scenes/result.js';
 
@@ -19,7 +19,7 @@ let config = {
         autoCenter: Phaser.Scale.CENTER_H,
     },
 
-    scene: [MenuScene, CharacterScene, LevelScene, ResultScene],
+    scene: [ SelectionScene, LevelScene, ResultScene ],
 
     physics: {
         default: 'arcade',
@@ -36,14 +36,14 @@ let config = {
     },
 };
 
-// Creamos la instancia del juego
+// Instancia del juego:
 const game = new Phaser.Game(config);
 
 // Botones de play y pause
 const play = document.getElementById('play-btn');
 const pause = document.getElementById('pause-btn');
 
-// Para gestionar el pausado y reanudado del juego:
+// Pausado y reanudado del juego:
 const toggleState = () => {
 
     // Si pause esta checked o play no lo está:
@@ -58,7 +58,7 @@ const toggleState = () => {
     }
 };
 
-// Añadimos listeners en los botones que llaman a toggleState:
+// Listeners en los botones que llaman a toggleState:
 play?.addEventListener('change', toggleState);
 pause?.addEventListener('change', toggleState);
 

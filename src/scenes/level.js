@@ -9,19 +9,18 @@ import Te  from '../objects/tea.js';
 
 
 export default class LevelScene extends Phaser.Scene {
-    constructor() {
-        super('LevelScene');
-    }
+    constructor() { super('level'); }
 
     preload() {
-        this.load.image('player', 'assets/characters/player.png');
+        this.load.image('player1', 'assets/characters/player1.png');
+        this.load.image('player2', 'assets/characters/player2.png');
         this.load.image('suelo', 'assets/suelo.png');
         this.load.image('bridge', 'assets/ground.png');
         this.load.image('lava', 'assets/lava.png');
         this.load.image('te', 'assets/te.png');
     }   
 
-    create() {
+    create(player) {
         this.cameras.main.setBackgroundColor('#3b8de5ff');
         const padding = 20;
 
@@ -52,8 +51,8 @@ export default class LevelScene extends Phaser.Scene {
      
 
         // --- Jugadores ---
-        this.player1 = new PlayerSpear(this, this.scale.width *2 / 3, this.scale.height / 2, 'player'); //*2 para que este en el tercio derecho de la pantalla
-        this.player2 = new PlayerSword(this, this.scale.width / 3, this.scale.height / 2, 'player');
+        this.player1 = new PlayerSpear(this, this.scale.width *2 / 3, this.scale.height / 2, 'player1'); //*2 para que este en el tercio derecho de la pantalla
+        this.player2 = new PlayerSword(this, this.scale.width / 3, this.scale.height / 2, 'player2');
         
         //jugador con suelos
         this.physics.add.collider(this.player1, this.grounds);
@@ -75,12 +74,12 @@ export default class LevelScene extends Phaser.Scene {
         const portraitSize = 50;
 
         this.healthBar1 = new HealthBar(this, this.scale.width - barWidth - 100, padding, barWidth, barHeight, 0x763a6b);
-        this.player1Image = this.add.image(this.scale.width - padding, padding + barHeight / 2, 'player')
+        this.player1Image = this.add.image(this.scale.width - padding, padding + barHeight / 2, 'player1')
             .setOrigin(1, 0.5)
             .setDisplaySize(portraitSize, portraitSize);
 
         this.healthBar2 = new HealthBar(this, 90, padding, barWidth, barHeight, 0x763a6b);
-        this.player2Image = this.add.image(padding, padding + barHeight / 2, 'player')
+        this.player2Image = this.add.image(padding, padding + barHeight / 2, 'player2')
             .setOrigin(0, 0.5)
             .setDisplaySize(portraitSize, portraitSize);
 
@@ -100,7 +99,7 @@ export default class LevelScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         botonResultado.setInteractive({ useHandCursor: true });
-        botonResultado.on('pointerdown', () => this.scene.start('ResultScene'));
+        botonResultado.on('pointerdown', () => this.scene.start('result'));
 
         // Timer
         this.timer = new Timer(this, this.scale.width/2, padding, 60);
@@ -117,7 +116,7 @@ export default class LevelScene extends Phaser.Scene {
     }
 
     // Guardamos el resultado y cambiamos de escena
-    this.scene.start('ResultScene', { winner: ganador });
+    this.scene.start('result', { winner: ganador });
 }
 
     spawnte() {
