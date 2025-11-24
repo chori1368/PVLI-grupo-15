@@ -49,12 +49,12 @@ const toggleState = () => {
     // Si pause esta checked o play no lo está:
     if (pause.checked || !play.checked) {
         game.pause(); // Pausamos el juego
-        console.log('game paused');
+        console.log('game: paused');
     }
 
     else {
         game.resume(); // Reanudamos
-        console.log('game resumed');
+        console.log('game: resumed');
     }
 };
 

@@ -1,17 +1,13 @@
 import Player from './player.js';
 
-export default class player_spear extends Player {
-    constructor(scene, x, y, texture) {
-        const keys = scene.input.keyboard.addKeys({
-            left: Phaser.Input.Keyboard.KeyCodes.LEFT,
-            right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-            up: Phaser.Input.Keyboard.KeyCodes.UP,
-            attack: Phaser.Input.Keyboard.KeyCodes.SHIFT
-        });
-        super(scene, x, y, texture, keys);
+export default class PlayerSpear extends Player {
+    constructor(scene, side) {
+        super(scene, side, 'spear');
         this.jumpSpeed = -750;
-        this.dashing=false;
+        this.dashing = false;
+        this.type = 1; //spear type
     }
+
     DoubleJump() {
         this.dashing = true;
         if (this.flipX){
@@ -22,10 +18,12 @@ export default class player_spear extends Player {
         }
         this.scene.time.delayedCall(300, this.DashFinish,[],this);
     }
-    DashFinish(){
+
+    DashFinish() {
         this.dashing=false;
         //console.log('acaba ataque');
     }
+
     addCollision(player) {
         this.scene.physics.add.overlap(player, this.weaponbox, () => {
             if (this.attacking&&this.weaponbox.body.enable){

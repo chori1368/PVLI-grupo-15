@@ -29,10 +29,10 @@ export default class SelectionScene extends Phaser.Scene {
         this.add.image(500, this.scale.height - 200, 'left').setOrigin(0.5);
         this.add.image(this.scale.width - 500, this.scale.height - 200, 'right').setOrigin(0.5);
 
-        // Selector Izq
+        // "Selector" Izq
         const left = this.add.sprite(600, this.scale.height - 530, 'characters').setOrigin(0.5);
 
-        // Selector Dcha (en el frame 1 y flipeado)
+        // "Selector" Dcha (en el frame 1 y flipeado)
         const right = this.add.sprite(this.scale.width - 600, this.scale.height - 530, 'characters', 1).setOrigin(0.5).setFlipX(true);
 
         // Controles de seleccion Izq
@@ -44,22 +44,22 @@ export default class SelectionScene extends Phaser.Scene {
         const RIGHT = this.input.keyboard.addKey('RIGHT');
 
         // Eventos de seleccion Izq
-        A.on('down', () => { left.setFrame((left.frame.name + 1)); });
-        D.on('down', () => { left.setFrame((left.frame.name + 1)); });
+        A.on('down', () => left.setFrame((left.frame.name + 1)% 2));
+        D.on('down', () => left.setFrame((left.frame.name + 1)% 2));
 
         // Eventos de seleccion Dcha
-        LEFT.on('down', () => { right.setFrame((right.frame.name + 1)); });
-        RIGHT.on('down', () => { right.setFrame((right.frame.name + 1)); });
+        LEFT.on('down', () => right.setFrame((right.frame.name + 1)% 2));
+        RIGHT.on('down', () => right.setFrame((right.frame.name + 1)% 2));
 
-         // Boton de continuar, TODO: reemplazar por una clase button
+        // Boton de continuar, TODO: reemplazar por una clase button
         const button = this.add.text(this.scale.width / 2, this.scale.height - 70, 'CONTINUAR', {
             fontSize: '30px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
             fill: '#d9a2edf2'
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        }).setOrigin(0.5).setInteractive();
 
         // Pasaremos 0 o 1 en funcion del frame seleccionado de cada jugador
-        button.on('pointerdown', () => this.scene.start('level', { playerLeft: left.frame.name, playerRight: right.frame.name }));
+        button.on('pointerdown', () => this.scene.start('level', { left: left.frame.name, right: right.frame.name }) );
     }
 }

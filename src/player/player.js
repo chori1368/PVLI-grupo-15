@@ -1,5 +1,20 @@
 export default class Player extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, keys) {
+    constructor(scene, side, texture) {
+
+        let x, y;
+
+        if (side === 'left') {
+            x = scene.scale.width / 3;
+            y = scene.scale.height / 2;
+        } else if (side === 'right') {
+            x = scene.scale.width * 2 / 3;
+            y = scene.scale.height / 2;
+        } else {
+            // Por si acaso, posición por defecto
+            x = scene.scale.width / 2;
+            y = scene.scale.height / 2;
+        }
+
         super(scene, x, y, texture);
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -20,7 +35,23 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.weaponbox.body.enable = false;
 
         // Guardamos las teclas (pueden ser WASD o flechas)
-        this.keys = keys;
+        if (side === 'left') {
+            // Teclas WASD Izq
+            this.keys = scene.input.keyboard.addKeys({
+            left: Phaser.Input.Keyboard.KeyCodes.A,
+            right: Phaser.Input.Keyboard.KeyCodes.D,
+            up: Phaser.Input.Keyboard.KeyCodes.W,
+            attack: Phaser.Input.Keyboard.KeyCodes.E });
+        } 
+        
+        else if (side === 'right') {
+            // Teclas flechas Dcha
+            this.keys = scene.input.keyboard.addKeys({
+            left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+            right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+            up: Phaser.Input.Keyboard.KeyCodes.UP,
+            attack: Phaser.Input.Keyboard.KeyCodes.SHIFT_R }); // poner bien
+        }
 
         // Vida inicial
         this.maxLife = 10000;
@@ -33,7 +64,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     handleInput() {
         if (!this.active) return;
 
-        const { left, right, up, attack} = this.keys;
+        const { left, right, up, attack } = this.keys;
 
         if (this.body.blocked.down || this.body.onFloor()) {// Reiniciar contador si está tocando el suelo
             this.jumpCount = 0;
@@ -55,7 +86,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.DoubleJump();
             }
             this.jumpCount++;
-            console.log(this.jumpCount);
+            //console.log(this.jumpCount);
         }
         if (attack.isDown && !this.attacking){
             this.Attack();
@@ -97,7 +128,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setVelocity(0);
         this.setActive(false);
         this.setVisible(false);
-        this.scene.die(this);
+        this.life = 0;
+    }
+
+    isAlive() {
+        return this.life > 0;
     }
 
     addCollision(player) {
