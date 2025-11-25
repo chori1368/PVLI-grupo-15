@@ -11,7 +11,6 @@ export default class Timer {
             backgroundColor: '#000000',
             padding: { x: 10, y: 5 }
         }).setOrigin(0.5, 0);
-        
         // Evento para decrementar el tiempo cada segundo
         this.timerEvent = scene.time.addEvent({
             delay: 1000,
@@ -26,6 +25,7 @@ export default class Timer {
             loop: true
         });
     }
+    
 
     formatTime(seconds) {
         const minutes = Math.floor(seconds / 60);

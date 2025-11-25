@@ -4,6 +4,7 @@ import Ground from '../objects/platform.js';
 import Bridge from '../objects/bridge.js';
 import HealthBar from '../ui/healthbar.js';
 import Timer from '../ui/timer.js';
+import Camera from '../ui/camera.js';
 import Lava from '../objects/lava.js';
 import Te from '../objects/tea.js';
 
@@ -23,77 +24,114 @@ export default class LevelScene extends Phaser.Scene {
     }
 
     create(data) {
-        console.log(this.sys.settings.key + ": create");
+    const LEVEL_WIDTH = 2400;
+    const LEVEL_HEIGHT = 800;
+    const padding = 20;
 
-        const padding = 20;
+    console.log(this.sys.settings.key + ": create");
 
-        //Puente
-        this.bridge = new Bridge(this, 0, this.scale.height - 50, 'bridge', 0.1, 0.1);
+    // Puente
+    this.bridge = new Bridge(this, 0, this.scale.height - 50, 'bridge', 0.1, 0.1, LEVEL_WIDTH);
+    // Camera shake 5 segundos antes de destruir el puente
+     this.time.delayedCall(30000 - 2000, () => {
+    // duración 500 ms, intensidad 0.01 
+    this.cameras.main.shake(2000, 0.01);
+});
+    this.time.delayedCall(30000, () => this.bridge.collapseParts(13, true));
+    this.time.delayedCall(60000, () => this.bridge.destroy());
 
-        // Romper puente a los 30 segundos
-        this.time.delayedCall(30000, () => {
-            this.bridge.collapseParts(10, true);
-        });
-        this.time.delayedCall(60000, () => {
-            this.bridge.destroy();
-        });
+    // Suelos
+    this.grounds = [
+        new Ground(this, 500, 700, 'suelo', 0.25, 0.5),
+        new Ground(this, 1200, 500, 'suelo', 0.25, 0.5)
+    ];
+    
 
-        //Suelos adicionales
-        this.grounds = [
-            new Ground(this, 500, 700, 'suelo', 0.25, 0.5),
-            new Ground(this, 1200, 500, 'suelo', 0.25, 0.5)
-        ];
+    // Lava
+    const lavaY = this.scale.height+150;
+    const lavaX = this.scale.width / 2;
+    this.lava = new Lava(this, lavaX, lavaY, 'lava', 20, 3);
 
-        // Lava
-        const lavaY = this.scale.height - 25; // altura
-        const lavaX = this.scale.width / 2;   // centrado horizontal
-        this.lava = new Lava(this, lavaX, lavaY, 'lava', 10, 0.5);
+    // --- Crear jugadores (antes de spawnTea) ---
+    this.playerLeft = (data.left === 0) ? new PlayerSword(this, 'left') : new PlayerSpear(this, 'left');
+    this.playerRight = (data.right === 0) ? new PlayerSword(this, 'right') : new PlayerSpear(this, 'right');
 
-        // Té
-        this.spawnTea();
+    // Colliders jugadores con mundo
+    this.physics.add.collider(this.playerLeft, this.grounds);
+    this.physics.add.collider(this.playerRight, this.grounds);
+    this.physics.add.collider(this.playerLeft, this.bridge.getSegments());
+    this.physics.add.collider(this.playerRight, this.bridge.getSegments());
 
-        // Crear jugador izq
-        if (data.left === 0) this.playerLeft = new PlayerSword(this, 'left');
-        else this.playerLeft = new PlayerSpear(this, 'left');
+    this.lava.addCollision(this.playerLeft);
+    this.lava.addCollision(this.playerRight);
+    this.playerLeft.addCollision(this.playerRight);
+    this.playerRight.addCollision(this.playerLeft);
+     //Paredes invisibles
+    this.physics.world.setBounds(0, 1000, LEVEL_WIDTH, LEVEL_HEIGHT);
+    this.physics.world.setBoundsCollision(true, true, false, true); // ejemplo: permitir salir por arriba (false) pero bloquear left/right/down
+    this.playerLeft.setCollideWorldBounds(true);
+    this.playerRight.setCollideWorldBounds(true);
+    this.cameras.main.setBounds(0, 0, LEVEL_WIDTH, LEVEL_HEIGHT);
 
-        // Crear jugador dcha
-        if (data.right === 0) this.playerRight = new PlayerSword(this, 'right');
-        else this.playerRight = new PlayerSpear(this, 'right');
+    // --- Cámara dinámica (SMASH) ---
+    // crea la cámara con los jugadores ya existentes
+    this.camera = new Camera(this, this.playerLeft, this.playerRight, {
+        levelWidth: LEVEL_WIDTH,
+        levelHeight: LEVEL_HEIGHT,
+        minDistance: 200,
+        maxDistance: 1000,
+        maxZoom: 1.2
+    });
 
-        // Jugador con suelos
-        this.physics.add.collider(this.playerLeft, this.grounds);
-        this.physics.add.collider(this.playerRight, this.grounds);
-        this.physics.add.collider(this.playerLeft, this.bridge.getSegments());
-        this.physics.add.collider(this.playerRight, this.bridge.getSegments());
+    // --- UI (Healthbars, Timer, Button) ---
+    const barWidth = 300;
+    const barHeight = 25;
+    this.healthBar1 = new HealthBar(this, this.scale.width - barWidth - 100, padding, barWidth, barHeight, 0x763a6b);
+    this.healthBar2 = new HealthBar(this, 90, padding, barWidth, barHeight, 0x763a6b);
 
-        this.lava.addCollision(this.playerLeft);//Lava con jugadores
-        this.lava.addCollision(this.playerRight);
-        this.playerLeft.addCollision(this.playerRight);
-        this.playerRight.addCollision(this.playerLeft);
+    const botonResultado = this.add.text(this.scale.width - 150, 100, 'Resultado', {
+        fontSize: '40px',
+        fill: '#ffffff',
+        backgroundColor: '#000000',
+        padding: { x: 20, y: 10 }
+    }).setOrigin(0.5);
 
+    botonResultado.setInteractive({ useHandCursor: true });
+    botonResultado.on('pointerdown', () => this.scene.start('result'));
 
-        // --- Barras de vida ---
-        const barWidth = 300;
-        const barHeight = 25;
+    this.timer = new Timer(this, this.scale.width / 2, padding, 60);
 
-        this.healthBar1 = new HealthBar(this, this.scale.width - barWidth - 100, padding, barWidth, barHeight, 0x763a6b);
-        this.healthBar2 = new HealthBar(this, 90, padding, barWidth, barHeight, 0x763a6b);
+    // UI camera
+    this.uiCamera = this.cameras.add(0, 0, this.scale.width, this.scale.height);
+    this.uiCamera.setScroll(0, 0);
+    this.uiCamera.setZoom(1);
 
+    // UI container con elementos que NO forman parte del sistema de physics
+    this.uiContainer = this.add.container(0, 0, [
+        this.healthBar1.background, this.healthBar1.bar, this.healthBar1.text,
+        this.healthBar2.background, this.healthBar2.bar, this.healthBar2.text,
+        this.timer.text,
+        botonResultado
+    ]);
 
-        // --- Botón Resultado ---
-        const botonResultado = this.add.text(this.scale.width - 150, 100, 'Resultado', {
-            fontSize: '40px',
-            fill: '#ffffff',
-            backgroundColor: '#000000',
-            padding: { x: 20, y: 10 }
-        }).setOrigin(0.5);
+    // Principal no dibuja la UI; UI camera no dibuja objetos del mundo
+    this.cameras.main.ignore(this.uiContainer);
 
-        botonResultado.setInteractive({ useHandCursor: true });
-        botonResultado.on('pointerdown', () => this.scene.start('result'));
+    // Evitar que la uiCamera renderice el mundo (si algunos objetos son undefined, ignorarlos)
+    const ignoreList = [
+        this.playerLeft,
+        this.playerRight,
+        ...this.grounds,
+        ...this.bridge.getSegments(),
+         this.lava.sprite ?? this.lava,
+         this.te?.sprite ?? this.te
+    ].filter(Boolean);
+    this.uiCamera.ignore(ignoreList);
 
-        // Timer
-        this.timer = new Timer(this, this.scale.width / 2, padding, 60);
-    }
+    // --- Finalmente arranca el spawn del té (ahora los players ya existen) ---
+    this.spawnTea();
+}
+
 
     isGameOver() {
         if (!this.playerLeft.isAlive())
@@ -114,6 +152,8 @@ export default class LevelScene extends Phaser.Scene {
             this.physics.add.collider(this.te, this.grounds);
             this.physics.add.collider(this.te, this.bridge.getSegments());
             this.spawnTea(); // programa el siguiente spawn
+           this.uiCamera.ignore(this.te);
+
         });
     }
 
@@ -121,7 +161,11 @@ export default class LevelScene extends Phaser.Scene {
         this.playerLeft.handleInput();
         this.playerRight.handleInput();
         this.healthBar1.update(this.playerLeft.life, this.playerLeft.maxLife); // barra de izq
-        this.healthBar2.update(this.playerRight.life, this.playerRight.maxLife); // barra de dcha
+        this.healthBar2.update(this.playerRight.life, this.playerRight.maxLife); // barra de dcha 
+            if (this.camera && typeof this.camera.update === 'function') {
+        this.camera.update();
+    }
         this.isGameOver();
+       
     }
 }
