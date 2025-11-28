@@ -29,10 +29,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.maxJumps = 2;
         this.jumpCount = 0;
 
-        this.weaponbox = scene.add.zone(0,0,80,30);
-        scene.physics.add.existing(this.weaponbox, false);
-        this.weaponbox.body.allowGravity = false;
-        this.weaponbox.body.enable = false;
+        this.hattackbox = scene.add.zone(0,0,80,30);
+        scene.physics.add.existing(this.hattackbox, false);
+        this.hattackbox.body.allowGravity = false;
+        this.hattackbox.body.enable = false;
+
+        this.vattackbox = scene.add.zone(0,0,40,80);
+        scene.physics.add.existing(this.vattackbox, false);
+        this.vattackbox.body.allowGravity = false;
+        this.vattackbox.body.enable = false;
 
         // Guardamos las teclas (pueden ser WASD o flechas)
         if (side === 'left') {
@@ -41,7 +46,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             left: Phaser.Input.Keyboard.KeyCodes.A,
             right: Phaser.Input.Keyboard.KeyCodes.D,
             up: Phaser.Input.Keyboard.KeyCodes.W,
-            attack: Phaser.Input.Keyboard.KeyCodes.E });
+            hattack: Phaser.Input.Keyboard.KeyCodes.E,
+            vattack: Phaser.Input.Keyboard.KeyCodes.Q });
         } 
         
         else if (side === 'right') {
@@ -50,7 +56,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             left: Phaser.Input.Keyboard.KeyCodes.LEFT,
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
             up: Phaser.Input.Keyboard.KeyCodes.UP,
-            attack: Phaser.Input.Keyboard.KeyCodes.SHIFT_R }); // poner bien
+            hattack: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+            vattack: Phaser.Input.Keyboard.KeyCodes.MINUS }); // poner bien
         }
 
         // Vida inicial
@@ -64,7 +71,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     handleInput() {
         if (!this.active) return;
 
-        const { left, right, up, attack } = this.keys;
+        const { left, right, up, hattack, vattack } = this.keys;
 
         if (this.body.blocked.down || this.body.onFloor()) {// Reiniciar contador si está tocando el suelo
             this.jumpCount = 0;
@@ -88,20 +95,35 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.jumpCount++;
             //console.log(this.jumpCount);
         }
-        if (attack.isDown && !this.attacking){
-            this.Attack();
+        if (hattack.isDown && !this.attacking){
+            this.hAttack();
+        }else if (vattack.isDown && !this.attacking){
+            this.vAttack();
         }
     }
 
-    Attack(){
+    hAttack(){
         this.attacking = true; 
-        this.weaponbox.body.enable = true;
-        this.weaponbox.y = this.y+30;
+        this.hattackbox.body.enable = true;
+        this.hattackbox.y = this.y+30;
         if (this.flipX){
-            this.weaponbox.x = this.x-50;
+            this.hattackbox.x = this.x-50;
         }
         else{
-            this.weaponbox.x = this.x+70;
+            this.hattackbox.x = this.x+75;
+        }
+        //console.log('empieza ataque');
+        this.scene.time.delayedCall(700, this.AttackFinish,[],this);
+    }
+    vAttack(){
+        this.attacking = true; 
+        this.vattackbox.body.enable = true;
+        this.vattackbox.y = this.y+20;
+        if (this.flipX){
+            this.vattackbox.x = this.x-30;
+        }
+        else{
+            this.vattackbox.x = this.x+55;
         }
         //console.log('empieza ataque');
         this.scene.time.delayedCall(700, this.AttackFinish,[],this);
@@ -109,7 +131,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     AttackFinish(){
         this.attacking=false;
-        this.weaponbox.body.enable = false;
+        this.hattackbox.body.enable = false;
+        this.vattackbox.body.enable = false;
         //console.log('acaba ataque');
     }
     DoubleJump(){
@@ -136,10 +159,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     addCollision(player) {
-        this.scene.physics.add.overlap(player, this.weaponbox, () => {
-            if (this.attacking&&this.weaponbox.body.enable){
+        this.scene.physics.add.overlap(player, this.hattackbox, () => {
+            if (this.attacking&&this.hattackbox.body.enable){
                 player.reduceLife(400);
-                this.weaponbox.body.enable = false;
+                this.hattackbox.body.enable = false;
+                //console.log('daño');
+            }
+        });
+        this.scene.physics.add.overlap(player, this.vattackbox, () => {
+            if (this.attacking&&this.vattackbox.body.enable){
+                player.reduceLife(400);
+                this.vattackbox.body.enable = false;
                 //console.log('daño');
             }
         });

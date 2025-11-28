@@ -113,8 +113,8 @@ export default class LevelScene extends Phaser.Scene {
     // --- UI (Healthbars, Timer, Button) ---
     const barWidth = 300;
     const barHeight = 25;
-    this.healthBar1 = new HealthBar(this, this.scale.width - barWidth - 100, padding, barWidth, barHeight, 0x763a6b);
-    this.healthBar2 = new HealthBar(this, 90, padding, barWidth, barHeight, 0x763a6b);
+    this.healthBar1 = new HealthBar(this, 90, padding, barWidth, barHeight, 0x763a6b);
+    this.healthBar2 = new HealthBar(this, this.scale.width - barWidth - 100, padding, barWidth, barHeight, 0x763a6b);
 
     const botonResultado = this.add.text(this.scale.width - 150, 100, 'Resultado', {
         fontSize: '40px',

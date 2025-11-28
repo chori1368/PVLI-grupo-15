@@ -25,10 +25,17 @@ export default class PlayerSpear extends Player {
     }
 
     addCollision(player) {
-        this.scene.physics.add.overlap(player, this.weaponbox, () => {
-            if (this.attacking&&this.weaponbox.body.enable){
+        this.scene.physics.add.overlap(player, this.hattackbox, () => {
+            if (this.attacking&&this.hattackbox.body.enable){
                 player.reduceLife(400);
-                this.weaponbox.body.enable = false;
+                this.hattackbox.body.enable = false;
+                //console.log('daño');
+            }
+        });
+        this.scene.physics.add.overlap(player, this.vattackbox, () => {
+            if (this.attacking&&this.vattackbox.body.enable){
+                player.reduceLife(400);
+                this.vattackbox.body.enable = false;
                 //console.log('daño');
             }
         });
