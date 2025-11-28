@@ -7,6 +7,7 @@ import Timer from '../ui/timer.js';
 import Camera from '../ui/camera.js';
 import Lava from '../objects/lava.js';
 import Te from '../objects/tea.js';
+import BreakableGround from '../objects/breakableGround.js';
 
 export default class LevelScene extends Phaser.Scene {
     constructor() { super('level'); }
@@ -45,7 +46,9 @@ export default class LevelScene extends Phaser.Scene {
         new Ground(this, 500, 700, 'suelo', 0.25, 0.5),
         new Ground(this, 1200, 500, 'suelo', 0.25, 0.5)
     ];
-    
+    this.breakables = [];
+
+
 
     // Lava
     const lavaY = this.scale.height+150;
@@ -57,8 +60,13 @@ export default class LevelScene extends Phaser.Scene {
     this.playerRight = (data.right === 0) ? new PlayerSword(this, 'right') : new PlayerSpear(this, 'right');
 
     // Colliders jugadores con mundo
-    this.physics.add.collider(this.playerLeft, this.grounds);
-    this.physics.add.collider(this.playerRight, this.grounds);
+    this.physics.add.collider(this.playerLeft, this.grounds, (player, ground) => {
+    console.log('playerLeft tocó el suelo');
+    }, null, this);
+
+    this.physics.add.collider(this.playerRight, this.grounds, (player, ground) => {
+    console.log('playerRight tocó el suelo');
+     }, null, this);
     this.physics.add.collider(this.playerLeft, this.bridge.getSegments());
     this.physics.add.collider(this.playerRight, this.bridge.getSegments());
 
@@ -72,8 +80,27 @@ export default class LevelScene extends Phaser.Scene {
     this.playerLeft.setCollideWorldBounds(true);
     this.playerRight.setCollideWorldBounds(true);
     this.cameras.main.setBounds(0, 0, LEVEL_WIDTH, LEVEL_HEIGHT);
+    const breakable = new BreakableGround(this, 400, 300, 'suelo') ;
+    breakable.setScale(0.3);
+     breakable.body.setSize(breakable.displayWidth, breakable.displayHeight);
+     breakable.body.setOffset((breakable.width - breakable.displayWidth) / 2, (breakable.height - breakable.displayHeight) / 2);
+    this.breakables.push(breakable);
+    
 
-    // --- Cámara dinámica (SMASH) ---
+    // usa el sprite (o gameobject real) para la colisión, pero llama al wrapper
+     this.physics.add.collider(this.playerLeft, breakable.sprite ?? breakable, (player, sprite) => {
+    breakable.touch(player);
+    }, null, this);
+
+    this.physics.add.collider(this.playerRight, breakable.sprite ?? breakable, (player, sprite) => {
+    breakable.touch(player);
+    }, null, this);
+
+
+
+    
+
+    // Cámara dinámica
     // crea la cámara con los jugadores ya existentes
     this.camera = new Camera(this, this.playerLeft, this.playerRight, {
         levelWidth: LEVEL_WIDTH,
@@ -123,8 +150,10 @@ export default class LevelScene extends Phaser.Scene {
         this.playerRight,
         ...this.grounds,
         ...this.bridge.getSegments(),
+         ...this.breakables.map(b => b.sprite ?? b),
          this.lava.sprite ?? this.lava,
          this.te?.sprite ?? this.te
+        
     ].filter(Boolean);
     this.uiCamera.ignore(ignoreList);
 
@@ -158,6 +187,8 @@ export default class LevelScene extends Phaser.Scene {
     }
 
     update() {
+        this.breakables.forEach(b => b.update([this.playerLeft, this.playerRight]));
+  
         this.playerLeft.handleInput();
         this.playerRight.handleInput();
         this.healthBar1.update(this.playerLeft.life, this.playerLeft.maxLife); // barra de izq

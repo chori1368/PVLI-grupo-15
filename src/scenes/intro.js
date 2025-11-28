@@ -13,6 +13,9 @@ export default class IntroScene extends Phaser.Scene {
 
         // Saltar la intro al hacer clic en cualquier parte, Todo: no funciona y no se porque
         this.input.on('pointerdown', () => this.scene.start('selection'));
+        this.input.keyboard.on('keydown-ENTER', () => {
+            this.scene.start('selection');
+        });
 
         // Logo con alpha 0
         const logo = this.add.image(this.scale.width / 2, this.scale.height / 2, 'logo').setScale(0.5).setAlpha(0);
