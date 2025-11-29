@@ -1,8 +1,13 @@
+import SoundManager from '../manager/soundManager.js';
 export default class ResultScene extends Phaser.Scene {
     constructor() { super('result'); }
 
     preload() {
         console.log(this.sys.settings.key + ": preload");
+        SoundManager.init(this);
+        SoundManager.preload([
+        { key: 'click', path: 'assets/sounds/click.mp3' }
+        ]);
     }
 
     create(data) {
@@ -58,6 +63,6 @@ export default class ResultScene extends Phaser.Scene {
             fill: '#d9a2edf2'
         }).setOrigin(0.5).setInteractive();
 
-        button.on('pointerdown', () => this.scene.start('selection'));
+        button.on('pointerdown', () => {this.scene.start('selection'); SoundManager.play('click') });
     }
 }

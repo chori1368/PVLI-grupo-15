@@ -1,5 +1,11 @@
+import SoundManager from '../manager/soundManager.js';
 export default class Player extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, side, texture) {
+    constructor(scene, side, texture, opts = {}) {
+        const defaultOpts = {
+            attackSounds: null,
+            weapon: null,
+        };
+        opts = { ...defaultOpts, ...opts };
 
         let x, y;
 
@@ -29,12 +35,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.maxJumps = 2;
         this.jumpCount = 0;
 
-        this.hattackbox = scene.add.zone(0,0,80,30);
+        this.hattackbox = scene.add.zone(0, 0, 80, 30);
         scene.physics.add.existing(this.hattackbox, false);
         this.hattackbox.body.allowGravity = false;
         this.hattackbox.body.enable = false;
 
-        this.vattackbox = scene.add.zone(0,0,40,80);
+        this.vattackbox = scene.add.zone(0, 0, 40, 80);
         scene.physics.add.existing(this.vattackbox, false);
         this.vattackbox.body.allowGravity = false;
         this.vattackbox.body.enable = false;
@@ -43,31 +49,56 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (side === 'left') {
             // Teclas WASD Izq
             this.keys = scene.input.keyboard.addKeys({
-            left: Phaser.Input.Keyboard.KeyCodes.A,
-            right: Phaser.Input.Keyboard.KeyCodes.D,
-            up: Phaser.Input.Keyboard.KeyCodes.W,
-            hattack: Phaser.Input.Keyboard.KeyCodes.E,
-            vattack: Phaser.Input.Keyboard.KeyCodes.Q });
-        } 
-        
-        else if (side === 'right') {
+                left: Phaser.Input.Keyboard.KeyCodes.A,
+                right: Phaser.Input.Keyboard.KeyCodes.D,
+                up: Phaser.Input.Keyboard.KeyCodes.W,
+                hattack: Phaser.Input.Keyboard.KeyCodes.E,
+                vattack: Phaser.Input.Keyboard.KeyCodes.Q,
+            });
+        } else if (side === 'right') {
             // Teclas flechas Dcha
             this.keys = scene.input.keyboard.addKeys({
-            left: Phaser.Input.Keyboard.KeyCodes.LEFT,
-            right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-            up: Phaser.Input.Keyboard.KeyCodes.UP,
-            hattack: Phaser.Input.Keyboard.KeyCodes.SHIFT,
-            vattack: Phaser.Input.Keyboard.KeyCodes.MINUS }); // poner bien
+                left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+                right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+                up: Phaser.Input.Keyboard.KeyCodes.UP,
+                hattack: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+                vattack: Phaser.Input.Keyboard.KeyCodes.MINUS, // poner bien
+            });
         }
 
         // Vida inicial
         this.maxLife = 10000;
         this.life = this.maxLife;
+        if (opts.attackSounds) {
+            this.attackSounds = opts.attackSounds;
+        } else {
+            const weapon = opts.weapon || this._inferWeaponFromTexture(texture);
+            if (weapon === 'spear') {
+                this.attackSounds = {
+                    h: 'spear',
+                    v: 'spinningSpear',
+                    dash: 'speardash' // opcional para dash
+                };
+            } else {
+                // sword por defecto
+                this.attackSounds = {
+                    h: 'sword',
+                    v: 'spinningSword',
+                };
+            }
+        }
 
         this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques
     }
 
-    
+    _inferWeaponFromTexture(textureKey) {
+        if (!textureKey) return 'sword';
+        const tk = String(textureKey).toLowerCase();
+        if (tk.includes('spear') || tk.includes('lanza')) return 'spear';
+        if (tk.includes('sword') || tk.includes('espada')) return 'sword';
+        return 'sword';
+    }
+
     handleInput() {
         if (!this.active) return;
 
@@ -112,6 +143,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         else{
             this.hattackbox.x = this.x+75;
         }
+          try {
+            if (this.attackSounds && this.attackSounds.h) {
+                SoundManager.play(this.attackSounds.h);
+            }
+        } catch (e) { }
+
         //console.log('empieza ataque');
         this.scene.time.delayedCall(700, this.AttackFinish,[],this);
     }
@@ -125,6 +162,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         else{
             this.vattackbox.x = this.x+55;
         }
+         try {
+            if (this.attackSounds && this.attackSounds.h) {
+                SoundManager.play(this.attackSounds.v);
+            }
+        } catch (e) { }
+
         //console.log('empieza ataque');
         this.scene.time.delayedCall(700, this.AttackFinish,[],this);
     }
@@ -137,6 +180,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
     DoubleJump(){
         this.setVelocityY(this.jumpSpeed);
+       
     }
 
     reduceLife(amount) {

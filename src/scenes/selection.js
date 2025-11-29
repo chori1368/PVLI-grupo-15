@@ -1,8 +1,15 @@
+import SoundManager from '../manager/soundManager.js';
 export default class SelectionScene extends Phaser.Scene {
     constructor() { super('selection'); }
 
     preload() {
         console.log(this.sys.settings.key + ": preload");
+        SoundManager.init(this);
+        SoundManager.preload([
+        { key: 'seleccionar', path: 'assets/sounds/seleccionar.mp3' },
+        { key: 'click', path: 'assets/sounds/click.mp3' }
+        ]);
+
 
         // Preload assets
         this.load.image('background', 'assets/selection/background.png');
@@ -44,12 +51,12 @@ export default class SelectionScene extends Phaser.Scene {
         const RIGHT = this.input.keyboard.addKey('RIGHT');
 
         // Eventos de seleccion Izq
-        A.on('down', () => left.setFrame((left.frame.name + 1)% 2));
-        D.on('down', () => left.setFrame((left.frame.name + 1)% 2));
+        A.on('down', () => { left.setFrame((left.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
+        D.on('down', () => { left.setFrame((left.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
 
         // Eventos de seleccion Dcha
-        LEFT.on('down', () => right.setFrame((right.frame.name + 1)% 2));
-        RIGHT.on('down', () => right.setFrame((right.frame.name + 1)% 2));
+        LEFT.on('down', () => { right.setFrame((right.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
+        RIGHT.on('down', () => { right.setFrame((right.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
 
         // Boton de continuar, TODO: reemplazar por una clase button
         const button = this.add.text(this.scale.width / 2, this.scale.height - 70, 'CONTINUAR', {
@@ -60,6 +67,6 @@ export default class SelectionScene extends Phaser.Scene {
         }).setOrigin(0.5).setInteractive();
 
         // Pasaremos 0 o 1 en funcion del frame seleccionado de cada jugador
-        button.on('pointerdown', () => this.scene.start('level', { left: left.frame.name, right: right.frame.name }) );
+        button.on('pointerdown', () => {SoundManager.play('click'); this.scene.start('level', { left: left.frame.name, right: right.frame.name });});
     }
 }

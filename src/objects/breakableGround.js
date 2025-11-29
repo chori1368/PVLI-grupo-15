@@ -1,4 +1,5 @@
 import Ground from './platform.js';
+import SoundManager from '../manager/soundManager.js';
 
 export default class BreakableGround extends Ground {
     constructor(scene, x, y, texture) {
@@ -37,7 +38,7 @@ export default class BreakableGround extends Ground {
     }
 
     // Devuelve el GameObject que tiene el body físico para usar en overlap
-    _getPhysicsObject(obj) {
+        _getPhysicsObject(obj) {
         if (!obj) return null;
         if (obj.sprite) return obj.sprite;                        // si es wrapper con sprite
         if (obj.body && obj.body.gameObject) return obj.body.gameObject; // si body referencia al gameObject
@@ -219,6 +220,7 @@ export default class BreakableGround extends Ground {
 
     // Limpieza final al destruir el objeto
     destroy(fromScene) {
+        SoundManager.play('break');
         this._clearTimers();
         if (this._debugInterval) {
             try { clearInterval(this._debugInterval); } catch(e) {}

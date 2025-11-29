@@ -8,12 +8,26 @@ import Camera from '../ui/camera.js';
 import Lava from '../objects/lava.js';
 import Te from '../objects/tea.js';
 import BreakableGround from '../objects/breakableGround.js';
+import SoundManager from '../manager/soundManager.js';
 
 export default class LevelScene extends Phaser.Scene {
     constructor() { super('level'); }
 
     preload() {
         console.log(this.sys.settings.key + ": preload");
+        SoundManager.init(this);
+        SoundManager.preload([
+        { key: 'BattleMusic', path: 'assets/sounds/MusicaBatalla.mp3' },
+        { key: 'tea', path: 'assets/sounds/tea.mp3' },
+        { key: 'terremoto', path: 'assets/sounds/terremoto.mp3' },
+        { key: 'spear', path: 'assets/sounds/lanza.mp3' },
+        { key: 'sword', path: 'assets/sounds/sword.mp3' },
+        { key: 'break', path: 'assets/sounds/LadrilloRoto.mp3' },
+        { key: 'swallow', path: 'assets/sounds/swallow.mp3' },
+        { key: 'spinningSword', path: 'assets/sounds/spinningSword.mp3' },
+        { key: 'spinningSpear', path: 'assets/sounds/spinningSpear.mp3' },
+        { key: 'speardash', path: 'assets/sounds/spearDash.mp3' }
+        ]);
 
         // Preload assets        
         this.load.image('sword', 'assets/characters/sword.png');
@@ -31,15 +45,20 @@ export default class LevelScene extends Phaser.Scene {
 
     console.log(this.sys.settings.key + ": create");
 
+    SoundManager.playMusic('BattleMusic', { loop: true, fade: 0, volume: 0.05});
+    SoundManager.setSfx(0.1);
+
     // Puente
     this.bridge = new Bridge(this, 0, this.scale.height - 50, 'bridge', 0.1, 0.1, LEVEL_WIDTH);
     // Camera shake 5 segundos antes de destruir el puente
      this.time.delayedCall(30000 - 2000, () => {
     // duración 500 ms, intensidad 0.01 
+    SoundManager.play('terremoto'); 
     this.cameras.main.shake(2000, 0.01);
 });
     this.time.delayedCall(30000, () => this.bridge.collapseParts(13, true));
-    this.time.delayedCall(60000, () => this.bridge.destroy());
+
+    this.time.delayedCall(60000, () => {this.bridge.destroy(), SoundManager.play('break');});
 
     // Suelos
     this.grounds = [
@@ -163,15 +182,21 @@ export default class LevelScene extends Phaser.Scene {
 
 
     isGameOver() {
-        if (!this.playerLeft.isAlive())
+        if (!this.playerLeft.isAlive()) {
+            SoundManager.stopMusic(0);
             this.scene.start('result', { winner: 'right', type: this.playerRight.type });
-
-        else if(!this.playerRight.isAlive())
+        } else if (!this.playerRight.isAlive()) {
+            SoundManager.stopMusic(0);
             this.scene.start('result', { winner: 'left', type: this.playerLeft.type });
+        }
     }
 
     spawnTea() {
         const delay = Phaser.Math.Between(5000, 10000); // tiempo aleatorio entre 5 y 10 segundos
+        const soundTime = delay - 1300; // sonar 1.3 segundos antes de que aparezca el té
+        this.time.delayedCall(soundTime, () => {
+            SoundManager.play('tea');
+        });
         this.time.delayedCall(delay, () => {
             const x = Phaser.Math.Between(50, this.scale.width - 50);
             const y = this.scale.height - 1200;
@@ -180,6 +205,7 @@ export default class LevelScene extends Phaser.Scene {
             this.te.addCollision(this.playerRight);
             this.physics.add.collider(this.te, this.grounds);
             this.physics.add.collider(this.te, this.bridge.getSegments());
+          
             this.spawnTea(); // programa el siguiente spawn
            this.uiCamera.ignore(this.te);
 

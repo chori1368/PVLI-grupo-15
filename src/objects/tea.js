@@ -1,3 +1,4 @@
+import SoundManager from '../manager/soundManager.js';
 export default class Te extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture, lifetime = 5000) {
         super(scene, x, y, texture);
@@ -25,6 +26,7 @@ export default class Te extends Phaser.Physics.Arcade.Sprite {
     addCollision(player) {
         this.scene.physics.add.overlap(player, this, () => {
             // Curar al jugador
+            SoundManager.play('swallow');
             player.life = Math.min(player.maxLife, player.life + this.healAmount);
             // Destruir el objeto te después de recogerlo
             this.destroy();
