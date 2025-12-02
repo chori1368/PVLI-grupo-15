@@ -183,10 +183,10 @@ export default class LevelScene extends Phaser.Scene {
 
     isGameOver() {
         if (!this.playerLeft.isAlive()) {
-            SoundManager.stopMusic(0);
+            SoundManager.stopMusic();
             this.scene.start('result', { winner: 'right', type: this.playerRight.type });
         } else if (!this.playerRight.isAlive()) {
-            SoundManager.stopMusic(0);
+            SoundManager.stopMusic();
             this.scene.start('result', { winner: 'left', type: this.playerLeft.type });
         }
     }

@@ -39,7 +39,9 @@ export default {
     inst.play();
     return inst;
   },
-
+stopMusic(){
+  this.scene.sound.stopAll();
+},
   setMaster(v){ this.volumes.master = Phaser.Math.Clamp(v,0,1); this._save(); },
   setSfx(v){ this.volumes.sfx = Phaser.Math.Clamp(v,0,1); this._save(); },
 

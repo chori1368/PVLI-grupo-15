@@ -11,7 +11,8 @@ export default class Lava {
     addCollision(player) {
         this.scene.physics.add.overlap(player, this.sprite, () => {
             if (player.active) {
-                player.die();
+                player.reduceLife(2000);
+                player.setVelocityY(-700);
             }
         });
     }
