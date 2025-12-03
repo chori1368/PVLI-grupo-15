@@ -16,9 +16,11 @@
 
 html {
   color: var(--text);
-  overscroll-behavior: none; /* evita el efecto rebote en moviles y portátiles */
+  overscroll-behavior: none;
+  /* evita el efecto rebote en moviles y portátiles */
   background-color: black;
-  scrollbar-width: none; /* crimen de guerra nº 3 */
+  scrollbar-width: none;
+  /* crimen de guerra nº 3 */
 }
 
 body {
@@ -43,8 +45,14 @@ main {
 footer {
   text-align: center;
 
-  h3 { margin-top: 1rem;}
-  p { text-align: center; line-height: 2rem; }
+  h3 {
+    margin-top: 1rem;
+  }
+
+  p {
+    text-align: center;
+    line-height: 2rem;
+  }
 }
 
 h1 {
@@ -79,8 +87,8 @@ a {
   font-weight: 800;
 }
 
-object {
-  width: 85%;
+img {
+  width: 100%;
   max-width: 750px;
 }
 
@@ -109,18 +117,22 @@ content {
   transition-behavior: allow-discrete;
 }
 
-#pause-page { /* menos gap en pausa para ver mejor los controles */
+#pause-page {
+  /* menos gap en pausa para ver mejor los controles */
   gap: 0;
 }
 
-canvas { /* canvas por defecto */
+canvas {
+  /* canvas por defecto */
   position: fixed;
   margin: 0 !important;
   z-index: -2;
-  position: fixed; bottom: 0;
+  position: fixed;
+  bottom: 0;
 }
 
-background { /* background por defecto */
+background {
+  /* background por defecto */
   position: fixed;
   width: 100%;
   height: 100%;
@@ -128,20 +140,28 @@ background { /* background por defecto */
   background: #000000b4;
   backdrop-filter: blur(15px);
   opacity: 1;
-  
+
   /* transiciones */
   transition: opacity 0.4s ease-in-out;
 }
 
-content:has(#play-btn:checked) ~ background { /* background cuando el juego no está pausado */
+content:has(#play-btn:not(:checked)) ~ background { /* background cuando el juego está en el menú inicial */
+  opacity: 1;
+  background: url("assets/background.png");
+}
+
+content:has(#play-btn:checked)~background {
+  /* background cuando el juego no está pausado */
   opacity: 0;
 }
 
-label:has(#pause-btn:checked) ~ background { /* background cuando el juego esta pausado */
+label:has(#pause-btn:checked)~background {
+  /* background cuando el juego esta pausado */
   opacity: 1;
 }
 
-label { /* boton por defecto */
+label {
+  /* boton por defecto */
   border-radius: 2rem;
   margin-top: 1rem;
   padding: 25px 100px;
@@ -154,18 +174,24 @@ label { /* boton por defecto */
   /* transiciones */
   transition: opacity 0.4s ease-in-out, background 0.2s ease-in-out;
 
-  &:hover { background: #58174f;}
+  &:hover {
+    background: #58174f;
+  }
 
-  &:active { background: #360a2d; }
+  &:active {
+    background: #360a2d;
+  }
 }
 
-input { /* para conservar la accessibilidad (aunque seguramente no funcione) */
+input {
+  /* para conservar la accessibilidad (aunque seguramente no funcione) */
   opacity: 0;
   position: absolute;
   pointer-events: none;
 }
 
-label:has(#pause-btn) { /* pause-btn por defecto */
+label:has(#pause-btn) {
+  /* pause-btn por defecto */
   position: fixed;
   display: flex;
   align-items: center;
@@ -183,12 +209,14 @@ label:has(#pause-btn) { /* pause-btn por defecto */
   box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 20px 10px;
 }
 
-label:has(#pause-btn) { /* pause-btn cuando está oculto */
+label:has(#pause-btn) {
+  /* pause-btn cuando está oculto */
   opacity: 0;
   pointer-events: none;
 }
 
-label:has(#pause-btn:checked) { /* pause-btn cuando está oculto */
+label:has(#pause-btn:checked) {
+  /* pause-btn cuando está oculto */
   font-size: 0;
 
   &:after {
@@ -197,34 +225,42 @@ label:has(#pause-btn:checked) { /* pause-btn cuando está oculto */
   }
 }
 
-#startup-page:has(#play-btn:checked) ~ label:has(#pause-btn) { /* pause-btn cuando está visible */
+#startup-page:has(#play-btn:checked)~label:has(#pause-btn) {
+  /* pause-btn cuando está visible */
   pointer-events: all;
   opacity: 1;
 }
 
-#startup-page:has(#play-btn:checked) { /* menú inicial cuando está oculto */
+#startup-page:has(#play-btn:checked) {
+  /* menú inicial cuando está oculto */
   transform: translateY(100%);
   display: none;
 }
 
-@starting-style { /* estado inicial del menú inicial*/
+@starting-style {
+
+  /* estado inicial del menú inicial*/
   #startup-page:has(#play-btn:checked) {
     transform: translateY(0);
   }
 }
 
-#pause-page { /* menú de pausa cuando está oculto */
+#pause-page {
+  /* menú de pausa cuando está oculto */
   display: none;
   transform: translateY(100%);
-  
+
 }
 
-#pause-page:has(+ label > #pause-btn:checked) { /* menú de pausa cuando está visible */
+#pause-page:has(+ label > #pause-btn:checked) {
+  /* menú de pausa cuando está visible */
   transform: translateY(0);
   display: flex;
 }
 
-@starting-style { /* estado inicial del menú de pausa */
+@starting-style {
+
+  /* estado inicial del menú de pausa */
   #pause-page:has(+ label > #pause-btn:checked) {
     transform: translateY(100%);
   }
