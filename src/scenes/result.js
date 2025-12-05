@@ -19,7 +19,7 @@ export default class ResultScene extends Phaser.Scene {
         if (data.winner === 'left') { 
             text = 'Gana el jugador izquierdo!';
             // Plataforma
-            this.add.image(500, this.scale.height - 200, 'left').setOrigin(0.5);
+            this.add.image(500, this.scale.height - 160, 'left').setOrigin(0.5);
             // Personaje
             this.add.sprite(600, this.scale.height - 530, 'characters', data.type).setOrigin(0.5);
         }
@@ -28,19 +28,19 @@ export default class ResultScene extends Phaser.Scene {
         else if (data.winner === 'right') {
             text = 'Gana el jugador derecho!';
             // Plataforma
-            this.add.image(this.scale.width - 500, this.scale.height - 200, 'right').setOrigin(0.5);
+            this.add.image(this.scale.width - 500, this.scale.height - 160, 'right').setOrigin(0.5);
             // Personaje
-            this.add.sprite(this.scale.width - 600, this.scale.height - 530, 'characters', data.type).setOrigin(0.5).setFlipX(true);
+            this.add.sprite(this.scale.width - 600, this.scale.height - 500, 'characters', data.type).setOrigin(0.5).setFlipX(true);
         } 
     
         // Caso de empate (sin implementar aún)
         else if (data.winner === 'tie') {
             text = 'Empate!';
             // Plataformas
-            this.add.image(500, this.scale.height - 200, 'left').setOrigin(0.5);
-            this.add.image(this.scale.width - 500, this.scale.height - 200, 'right').setOrigin(0.5);
+            this.add.image(500, this.scale.height - 160, 'left').setOrigin(0.5);
+            this.add.image(this.scale.width - 500, this.scale.height - 160, 'right').setOrigin(0.5);
             // Personajes
-            this.add.sprite(600, this.scale.height - 530, 'characters', data.type).setOrigin(0.5);
+            this.add.sprite(600, this.scale.height - 500, 'characters', data.type).setOrigin(0.5);
             this.add.sprite(this.scale.width - 600, this.scale.height - 530, 'characters', data.type).setOrigin(0.5).setFlipX(true);
         }
 
@@ -49,7 +49,7 @@ export default class ResultScene extends Phaser.Scene {
             fontSize: '80px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
-            fill: '#d9a2edf2'
+            fill: '#a7a2edf2'
         }).setOrigin(0.5);
 
         // Boton de continuar, TODO: reemplazar por una clase button
@@ -57,7 +57,7 @@ export default class ResultScene extends Phaser.Scene {
             fontSize: '30px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
-            fill: '#d9a2edf2'
+            fill: '#a7a2edf2'
         }).setOrigin(0.5).setInteractive();
 
         button.on('pointerup', () => {this.scene.start('selection'); SoundManager.play('click') });

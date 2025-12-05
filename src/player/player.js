@@ -10,8 +10,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         };
         opts = { ...defaultOpts, ...opts };
 
-        // Mostramos el contenedor de vida de jugador (del html)
-        document.querySelector(`healthbar.${side}`).style.display = 'flex';
         // Asignamos la barra de progreso de vida (hijo de healthbar."side")
         this.healthBar = document.querySelector(`healthbar.${side} > div`);
 

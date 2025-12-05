@@ -14,6 +14,12 @@ export default class LevelScene extends Phaser.Scene {
         super('level');
         // Asignamos el reloj del html (UI)
         this.clock = document.querySelector('clock');
+        // Barras de vida del html (UI)
+        this.healthbarLeft = document.querySelector('healthbar.left');
+        this.healthbarRight = document.querySelector('healthbar.right');
+        // Duración de la partida en milisegundos (1 minuto)
+        this.matchDurationMs = 60000;
+        this.matchEndTime = null;
     }
 
     preload() {
@@ -42,8 +48,22 @@ export default class LevelScene extends Phaser.Scene {
 
     create(data) {
 
+        // Al iniciar el nivel mostramos el reloj
+        if (this.clock) {
+            this.clock.style.display = 'block';
+        }
+        // Y las barras de vida
+        if (this.healthbarLeft) {
+            this.healthbarLeft.style.display = 'flex';
+        }
+        if (this.healthbarRight) {
+            this.healthbarRight.style.display = 'flex';
+        }
+
         // Tiempo de partida (1 minuto en ms), se invoca la destruccion del puente
-        this.time.delayedCall(60000, null, null, this);
+        this.time.delayedCall(this.matchDurationMs, null, null, this);
+        // Momento (en ms del reloj de Phaser) en el que termina la partida
+        this.matchEndTime = this.time.now + this.matchDurationMs;
 
         const LEVEL_WIDTH = 2400;
         const LEVEL_HEIGHT = 800;
@@ -135,9 +155,15 @@ export default class LevelScene extends Phaser.Scene {
     isGameOver() {
         if (!this.playerLeft.isAlive()) {
             SoundManager.stopMusic();
+            if (this.clock) this.clock.style.display = 'none';
+            if (this.healthbarLeft) this.healthbarLeft.style.display = 'none';
+            if (this.healthbarRight) this.healthbarRight.style.display = 'none';
             this.scene.start('result', { winner: 'right', type: this.playerRight.type });
         } else if (!this.playerRight.isAlive()) {
             SoundManager.stopMusic();
+            if (this.clock) this.clock.style.display = 'none';
+            if (this.healthbarLeft) this.healthbarLeft.style.display = 'none';
+            if (this.healthbarRight) this.healthbarRight.style.display = 'none';
             this.scene.start('result', { winner: 'left', type: this.playerLeft.type });
         }
     }
@@ -178,6 +204,16 @@ export default class LevelScene extends Phaser.Scene {
 
     // Actualiza el timer del html (clock)
     updateClock() {
-        this.clock.text = `${minutes.toString()}:${seconds.toString()}`;
+        if (!this.clock || this.matchEndTime === null) return;
+
+        const remainingMs = Math.max(this.matchEndTime - this.time.now, 0);
+        const totalSeconds = Math.ceil(remainingMs / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        const minutesStr = minutes.toString().padStart(2, '0');
+        const secondsStr = seconds.toString().padStart(2, '0');
+
+        this.clock.textContent = `${minutesStr}:${secondsStr}`;
     }
 }
