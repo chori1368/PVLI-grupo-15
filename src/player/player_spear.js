@@ -9,13 +9,13 @@ export default class PlayerSpear extends Player {
         this.type = 1; //spear type
 
         // Ajustar collider del arma
-        if (this.horizontalbox && this.horizontalbox.body) {
-            this.horizontalbox.setSize(140, 30);
-            this.horizontalbox.body.setSize(140, 30);
+        if (this.hattackbox && this.hattackbox.body) {
+            this.hattackbox.setSize(140, 30);
+            this.hattackbox.body.setSize(140, 30);
         }
-        if (this.verticalbox && this.verticalbox.body) {
-            this.verticalbox.setSize(40, 120);
-            this.verticalbox.body.setSize(40, 120);
+        if (this.vattackbox && this.vattackbox.body) {
+            this.vattackbox.setSize(40, 120);
+            this.vattackbox.body.setSize(40, 120);
         }
     }
 
@@ -39,18 +39,17 @@ export default class PlayerSpear extends Player {
     }
 
     addCollision(player) {
-        this.scene.physics.add.overlap(player, this.horizontalbox, () => {
-            if (this.attacking && this.horizontalbox.body.enable) {
-
+        this.scene.physics.add.overlap(player, this.hattackbox, () => {
+            if (this.attacking && this.hattackbox.body.enable) {
                 player.reduceLife(400);
-                this.horizontalbox.body.enable = false;
+                this.hattackbox.body.enable = false;
 
             }
         });
-        this.scene.physics.add.overlap(player, this.verticalbox, () => {
-            if (this.attacking && this.verticalbox.body.enable) {
+        this.scene.physics.add.overlap(player, this.vattackbox, () => {
+            if (this.attacking && this.vattackbox.body.enable) {
                 player.reduceLife(400);
-                this.verticalbox.body.enable = false;
+                this.vattackbox.body.enable = false;
             }
         });
         this.scene.physics.add.overlap(player, this, () => {

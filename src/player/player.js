@@ -7,6 +7,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         };
         opts = { ...defaultOpts, ...opts };
 
+
         let x, y;
 
         if (side === 'left') {
@@ -92,6 +93,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             }
         }
 
+                        // Asignamos la barra de progreso de vida (hijo de healthbar."side")
+        this.healthBar = document.querySelector(`healthbar.${side} > div`);
+        this.updateHealthBar();
+
         this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques
     }
 
@@ -114,9 +119,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (left.isDown&&this.body.velocity.x>=-this.speed) {
             this.setVelocityX(-this.speed);
             this.flipX = true;
+            this.body.setOffset(this.width * 0.4, 0);
         } else if (right.isDown&&this.body.velocity.x<=this.speed) {
             this.setVelocityX(this.speed);
             this.flipX = false;
+            this.body.setOffset(this.width * 0.2, 0);
         } else if(this.body.onFloor()){
             this.setVelocityX(0);
         }
@@ -189,8 +196,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     reduceLife(amount) {
         this.life -= amount;
+        this.updateHealthBar();
         if (this.life < 0) this.life = 0;
-        //console.log(`${this.texture.key} life: ${this.life}/${this.maxLife}`); // debug
         if (this.life <= 0) this.die();
     }
 
@@ -221,5 +228,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                 //console.log('daño');
             }
         });
+    }
+        // Actualiza la barra de vida situada en el html
+    updateHealthBar() {
+        // Asignamos el ancho según el porcentaje de vida restante
+        this.healthBar.style.width = `${(this.life / this.maxLife) * 100}%`;
     }
 }
