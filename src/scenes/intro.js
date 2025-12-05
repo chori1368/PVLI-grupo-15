@@ -2,18 +2,14 @@ export default class IntroScene extends Phaser.Scene {
     constructor() { super('intro'); }
 
     preload() {
-        console.log(this.sys.settings.key + ": preload");
-
         // Preload assets
         this.load.image('logo', 'assets/logo.png');
     }
 
     create() {
-        console.log(this.sys.settings.key + ": create");
-
         // Saltar la intro al hacer clic en cualquier parte, Todo: no funciona y no se porque
         this.input.on('pointerdown', () => this.scene.start('selection'));
-        this.input.keyboard.on('keydown-ENTER', () => {
+        this.input.keyboard.on('keydown-SPACE', () => {
             this.scene.start('selection');
         });
 

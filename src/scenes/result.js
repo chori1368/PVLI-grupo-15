@@ -3,7 +3,6 @@ export default class ResultScene extends Phaser.Scene {
     constructor() { super('result'); }
 
     preload() {
-        console.log(this.sys.settings.key + ": preload");
         SoundManager.init(this);
         SoundManager.preload([
         { key: 'click', path: 'assets/sounds/click.mp3' }
@@ -11,8 +10,6 @@ export default class ResultScene extends Phaser.Scene {
     }
 
     create(data) {
-        console.log(this.sys.settings.key + ": create");
-
         // Background
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
 
@@ -63,6 +60,6 @@ export default class ResultScene extends Phaser.Scene {
             fill: '#d9a2edf2'
         }).setOrigin(0.5).setInteractive();
 
-        button.on('pointerdown', () => {this.scene.start('selection'); SoundManager.play('click') });
+        button.on('pointerup', () => {this.scene.start('selection'); SoundManager.play('click') });
     }
 }

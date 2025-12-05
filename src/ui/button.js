@@ -12,7 +12,7 @@ export default class Button extends Phaser.GameObjects.Image {
         this.setInteractive();
 
         // Configura el evento de clic
-        this.on('pointerdown', callback);
+        this.on('pointerup', callback);
 
         // Añade el botón a la escena*/
         scene.add.existing(this);

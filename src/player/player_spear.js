@@ -8,10 +8,10 @@ export default class PlayerSpear extends Player {
         this.dashing = false;
         this.type = 1; //spear type
     }
-  
+
     DoubleJump() {
         this.dashing = true;
-         try {
+        try {
             if (this.attackSounds && this.attackSounds.dash) {
                 SoundManager.play(this.attackSounds.dash);
             }
@@ -26,31 +26,28 @@ export default class PlayerSpear extends Player {
 
     DashFinish() {
         this.dashing = false;
-        //console.log('acaba ataque');
     }
 
     addCollision(player) {
-        this.scene.physics.add.overlap(player, this.hattackbox, () => {
-            if (this.attacking && this.hattackbox.body.enable) {
+        this.scene.physics.add.overlap(player, this.horizontalbox, () => {
+            if (this.attacking && this.horizontalbox.body.enable) {
 
                 player.reduceLife(400);
-                this.hattackbox.body.enable = false;
-                //console.log('daño');
+                this.horizontalbox.body.enable = false;
+
             }
         });
-        this.scene.physics.add.overlap(player, this.vattackbox, () => {
-            if (this.attacking && this.vattackbox.body.enable) {
+        this.scene.physics.add.overlap(player, this.verticalbox, () => {
+            if (this.attacking && this.verticalbox.body.enable) {
                 player.reduceLife(400);
-                this.vattackbox.body.enable = false;
-                //console.log('daño');
+                this.verticalbox.body.enable = false;
             }
         });
         this.scene.physics.add.overlap(player, this, () => {
             if (this.dashing) {
-                
+
                 player.reduceLife(400);
                 this.dashing = false;
-                //console.log('daño');
             }
         });
     };

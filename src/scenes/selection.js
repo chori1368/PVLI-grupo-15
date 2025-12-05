@@ -3,7 +3,6 @@ export default class SelectionScene extends Phaser.Scene {
     constructor() { super('selection'); }
 
     preload() {
-        console.log(this.sys.settings.key + ": preload");
         SoundManager.init(this);
         SoundManager.preload([
         { key: 'seleccionar', path: 'assets/sounds/seleccionar.mp3' },
@@ -19,8 +18,6 @@ export default class SelectionScene extends Phaser.Scene {
     }
 
     create() {
-        console.log(this.sys.settings.key + ": create");
-
         // Background
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
 
