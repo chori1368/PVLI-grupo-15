@@ -5,9 +5,9 @@ adaptabilidad de la web en torno al menú de pausa y los botónes de acción */
   font-family: "Cinzel", serif;
   color-scheme: dark;
 
-  --text: #d9a2edf2;
-  --background: #2b1027;
-  --border: #a5649be3;
+  --text: #aaa2edf2;
+  --background: #18102b;
+  --border: #7264a5e3;
 }
 
 * {
@@ -147,7 +147,7 @@ clock {
   border-radius: 1.5rem;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  background: #47113c;
+  background: #111947;
   overflow: hidden;
   user-select: none;
   width: 100px;
@@ -195,7 +195,7 @@ healthbar > div {
   width: 100%;
   height: 100%;
   border-radius: inherit;
-  background-color: #a13092;
+  background-color: #4530a1;
   transition: width 0.3s ease-out;
 }
 
@@ -223,13 +223,13 @@ label {
   padding: 25px 100px;
   font-size: 2.5rem;
   font-weight: 600;
-  background: #47113c;
+  background: #1b1147;
   border: 1px solid var(--border);
   cursor: pointer;
   /* transiciones */
   transition: opacity 0.4s ease-in-out, background 0.2s ease-in-out;
-  &:hover { background: #58174f; }
-  &:active { background: #360a2d; }
+  &:hover { background: #2a1758; }
+  &:active { background: #1b0a36; }
 }
 
 input {

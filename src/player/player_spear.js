@@ -7,6 +7,16 @@ export default class PlayerSpear extends Player {
         this.jumpSpeed = -750;
         this.dashing = false;
         this.type = 1; //spear type
+
+        // Ajustar collider del arma
+        if (this.horizontalbox && this.horizontalbox.body) {
+            this.horizontalbox.setSize(140, 30);
+            this.horizontalbox.body.setSize(140, 30);
+        }
+        if (this.verticalbox && this.verticalbox.body) {
+            this.verticalbox.setSize(40, 120);
+            this.verticalbox.body.setSize(40, 120);
+        }
     }
 
     DoubleJump() {

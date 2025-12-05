@@ -51,6 +51,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setOrigin(0.25);
         this.setCollideWorldBounds(true);
 
+        // Custom player hitbox
+        this.body.setSize(this.width * 0.4, this.height); // ancho, alto
+        this.body.setOffset(this.width * 0.2, 0); // desplazar el hitbox
+
         this.speed = 300;
         this.jumpSpeed = -650;
         this.attacking = false;
