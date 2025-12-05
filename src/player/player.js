@@ -62,7 +62,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.horizontalbox.body.allowGravity = false;
         this.horizontalbox.body.enable = false;
 
-        this.verticalbox = scene.add.zone(0, 0, 40, 80);
+        this.verticalbox = scene.add.zone(0, 0, 55, 80);
         scene.physics.add.existing(this.verticalbox, false);
         this.verticalbox.body.allowGravity = false;
         this.verticalbox.body.enable = false;

@@ -7,6 +7,9 @@ export default class PlayerSpear extends Player {
         this.jumpSpeed = -750;
         this.dashing = false;
         this.type = 1; //spear type
+        this.horizontalbox = scene.add.zone(0, 0, 110, 30);
+        this.verticalbox = scene.add.zone(0, 0, 55, 80);
+
     }
 
     DoubleJump() {
