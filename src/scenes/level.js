@@ -2,7 +2,6 @@ import PlayerSpear from '../player/player_spear.js';
 import PlayerSword from '../player/player_sword.js';
 import Ground from '../objects/platform.js';
 import Bridge from '../objects/bridge.js';
-import Camera from '../ui/camera.js';
 import Lava from '../objects/lava.js';
 import Te from '../objects/tea.js';
 import BreakableGround from '../objects/breakableGround.js';
@@ -10,16 +9,7 @@ import SoundManager from '../manager/soundManager.js';
 
 export default class LevelScene extends Phaser.Scene {
     constructor() {
-        // Llamamos al constructor de Phaser.Scene
         super('level');
-        // Asignamos el reloj del html (UI)
-        this.clock = document.querySelector('clock');
-        // Barras de vida del html (UI)
-        this.healthbarLeft = document.querySelector('healthbar.left');
-        this.healthbarRight = document.querySelector('healthbar.right');
-        // Duración de la partida en milisegundos (1 minuto)
-        this.matchDurationMs = 60000;
-        this.matchEndTime = null;
     }
 
     preload() {
@@ -47,6 +37,15 @@ export default class LevelScene extends Phaser.Scene {
     }
 
     create(data) {
+
+        // Asignamos el reloj del html (UI)
+        this.clock = document.querySelector('clock');
+        // Barras de vida del html (UI)
+        this.healthbarLeft = document.querySelector('healthbar.left');
+        this.healthbarRight = document.querySelector('healthbar.right');
+        // Duración de la partida en milisegundos (1 minuto)
+        this.matchDurationMs = 60000;
+        this.matchEndTime = null;
 
         // Al iniciar el nivel mostramos el reloj
         if (this.clock) {
@@ -138,16 +137,6 @@ export default class LevelScene extends Phaser.Scene {
             breakable.touch(player);
         }, null, this);
 
-        // Cámara dinámica
-        // crea la cámara con los jugadores ya existentes
-        this.camera = new Camera(this, this.playerLeft, this.playerRight, {
-            levelWidth: LEVEL_WIDTH,
-            levelHeight: LEVEL_HEIGHT,
-            minDistance: 200,
-            maxDistance: 1000,
-            maxZoom: 1.2
-        });
-
         // --- Finalmente arranca el spawn del té (ahora los players ya existen) ---
         this.spawnTea();
     }
@@ -195,11 +184,9 @@ export default class LevelScene extends Phaser.Scene {
         this.playerLeft.handleInput();
         this.playerRight.handleInput();
 
-        if (this.camera && typeof this.camera.update === 'function') {
-            this.camera.update();
-        }
-        this.isGameOver();
+        this.updateCameraFollow();
 
+        this.isGameOver();
     }
 
     // Actualiza el timer del html (clock)
@@ -215,5 +202,17 @@ export default class LevelScene extends Phaser.Scene {
         const secondsStr = seconds.toString().padStart(2, '0');
 
         this.clock.textContent = `${minutesStr}:${secondsStr}`;
+    }
+
+    // Cámara sigue al punto medio entre ambos jugadores
+    updateCameraFollow() {
+        const p1 = this.playerLeft;
+        const p2 = this.playerRight;
+        if (!p1 || !p2) return;
+
+        const centerX = (p1.x + p2.x) / 2;
+        const centerY = (p1.y + p2.y) / 2;
+
+        this.cameras.main.centerOn(centerX, centerY);
     }
 }
