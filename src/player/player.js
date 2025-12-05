@@ -1,49 +1,27 @@
 import SoundManager from '../manager/soundManager.js';
 export default class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, side, texture, opts = {}) {
-        // Llamamos al constructor con nulls (luego los asignamos bien)
-        super(scene, null, null, texture);
-
         const defaultOpts = {
             attackSounds: null,
             weapon: null,
         };
         opts = { ...defaultOpts, ...opts };
 
-        // Asignamos la barra de progreso de vida (hijo de healthbar."side")
-        this.healthBar = document.querySelector(`healthbar.${side} > div`);
+        let x, y;
 
-        // Asignamos valores necesarios según el side:
         if (side === 'left') {
-            // Posición inicial jugador izquierdo
-            this.setPosition(scene.scale.width / 3, scene.scale.height / 2);
-            // Teclas
-            this.keys = scene.input.keyboard.addKeys({
-                //Movimiento
-                up: Phaser.Input.Keyboard.KeyCodes.W,
-                left: Phaser.Input.Keyboard.KeyCodes.A,
-                right: Phaser.Input.Keyboard.KeyCodes.D,
-                // Ataques
-                horizontal: Phaser.Input.Keyboard.KeyCodes.E,
-                vertical: Phaser.Input.Keyboard.KeyCodes.Q,
-            });
+            x = scene.scale.width / 3;
+            y = scene.scale.height / 2;
+        } else if (side === 'right') {
+            x = scene.scale.width * 2 / 3;
+            y = scene.scale.height / 2;
+        } else {
+            // Por si acaso, posición por defecto
+            x = scene.scale.width / 2;
+            y = scene.scale.height / 2;
         }
 
-        else if (side === 'right') {
-            // Posición inicial
-            this.setPosition(scene.scale.width * 2 / 3, scene.scale.height / 2);
-            // Teclas
-            this.keys = scene.input.keyboard.addKeys({
-                //Movimiento
-                up: Phaser.Input.Keyboard.KeyCodes.UP,
-                left: Phaser.Input.Keyboard.KeyCodes.LEFT,
-                right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-                // Ataques
-                horizontal: Phaser.Input.Keyboard.KeyCodes.SHIFT,
-                vertical: Phaser.Input.Keyboard.KeyCodes.MINUS, // poner CTRL tambien
-            });
-        }
-
+        super(scene, x, y, texture);
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
@@ -61,15 +39,36 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.maxJumps = 2;
         this.jumpCount = 0;
 
-        this.horizontalbox = scene.add.zone(0, 0, 80, 30);
-        scene.physics.add.existing(this.horizontalbox, false);
-        this.horizontalbox.body.allowGravity = false;
-        this.horizontalbox.body.enable = false;
+        this.hattackbox = scene.add.zone(0, 0, 80, 30);
+        scene.physics.add.existing(this.hattackbox, false);
+        this.hattackbox.body.allowGravity = false;
+        this.hattackbox.body.enable = false;
 
-        this.verticalbox = scene.add.zone(0, 0, 40, 80);
-        scene.physics.add.existing(this.verticalbox, false);
-        this.verticalbox.body.allowGravity = false;
-        this.verticalbox.body.enable = false;
+        this.vattackbox = scene.add.zone(0, 0, 40, 80);
+        scene.physics.add.existing(this.vattackbox, false);
+        this.vattackbox.body.allowGravity = false;
+        this.vattackbox.body.enable = false;
+
+        // Guardamos las teclas (pueden ser WASD o flechas)
+        if (side === 'left') {
+            // Teclas WASD Izq
+            this.keys = scene.input.keyboard.addKeys({
+                left: Phaser.Input.Keyboard.KeyCodes.A,
+                right: Phaser.Input.Keyboard.KeyCodes.D,
+                up: Phaser.Input.Keyboard.KeyCodes.W,
+                hattack: Phaser.Input.Keyboard.KeyCodes.E,
+                vattack: Phaser.Input.Keyboard.KeyCodes.Q,
+            });
+        } else if (side === 'right') {
+            // Teclas flechas Dcha
+            this.keys = scene.input.keyboard.addKeys({
+                left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+                right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+                up: Phaser.Input.Keyboard.KeyCodes.UP,
+                hattack: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+                vattack: Phaser.Input.Keyboard.KeyCodes.MINUS, // poner bien
+            });
+        }
 
         // Vida inicial
         this.maxLife = 10000;
@@ -93,8 +92,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             }
         }
 
-        this.updateHealthBar();
-
         this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques
     }
 
@@ -109,88 +106,91 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     handleInput() {
         if (!this.active) return;
 
-        const { left, right, up, horizontal, vertical } = this.keys;
+        const { left, right, up, hattack, vattack } = this.keys;
 
         if (this.body.blocked.down || this.body.onFloor()) {// Reiniciar contador si está tocando el suelo
             this.jumpCount = 0;
         }
-        if (left.isDown && this.body.velocity.x >= -this.speed) {
+        if (left.isDown&&this.body.velocity.x>=-this.speed) {
             this.setVelocityX(-this.speed);
             this.flipX = true;
-        } else if (right.isDown && this.body.velocity.x <= this.speed) {
+        } else if (right.isDown&&this.body.velocity.x<=this.speed) {
             this.setVelocityX(this.speed);
             this.flipX = false;
-        } else if (this.body.onFloor()) {
+        } else if(this.body.onFloor()){
             this.setVelocityX(0);
         }
         if (Phaser.Input.Keyboard.JustDown(up)) {
-            if (this.body.onFloor() && this.jumpCount == 0) {
-                this.setVelocityY(this.jumpSpeed);
+            if(this.body.onFloor()&&this.jumpCount==0){
+            this.setVelocityY(this.jumpSpeed);
             }
-            else if (this.jumpCount < this.maxJumps) {    // Doble salto
-                this.DoubleJump();
+            else if(this.jumpCount < this.maxJumps){    // Doble salto
+            this.DoubleJump();
             }
             this.jumpCount++;
+            //console.log(this.jumpCount);
         }
-        if (horizontal.isDown && !this.attacking) {
-            this.attackHorizontal();
-        } else if (vertical.isDown && !this.attacking) {
-            this.attackVertical();
+        if (hattack.isDown && !this.attacking){
+            this.hAttack();
+        }else if (vattack.isDown && !this.attacking){
+            this.vAttack();
         }
     }
 
-    attackHorizontal() {
-        this.attacking = true;
-        this.horizontalbox.body.enable = true;
-        this.horizontalbox.y = this.y + 30;
-        if (this.flipX) {
-            this.horizontalbox.x = this.x - 50;
+    hAttack(){
+        this.attacking = true; 
+        this.hattackbox.body.enable = true;
+        this.hattackbox.y = this.y+30;
+        if (this.flipX){
+            this.hattackbox.x = this.x-50;
         }
-        else {
-            this.horizontalbox.x = this.x + 75;
+        else{
+            this.hattackbox.x = this.x+75;
         }
-        try {
+          try {
             if (this.attackSounds && this.attackSounds.h) {
                 SoundManager.play(this.attackSounds.h);
             }
         } catch (e) { }
 
-        this.scene.time.delayedCall(700, this.AttackFinish, [], this);
+        //console.log('empieza ataque');
+        this.scene.time.delayedCall(700, this.AttackFinish,[],this);
     }
-
-    attackVertical() {
-        this.attacking = true;
-        this.verticalbox.body.enable = true;
-        this.verticalbox.y = this.y + 20;
-        if (this.flipX) {
-            this.verticalbox.x = this.x - 30;
+    vAttack(){
+        this.attacking = true; 
+        this.vattackbox.body.enable = true;
+        this.vattackbox.y = this.y+20;
+        if (this.flipX){
+            this.vattackbox.x = this.x-30;
         }
-        else {
-            this.verticalbox.x = this.x + 55;
+        else{
+            this.vattackbox.x = this.x+55;
         }
-        try {
+         try {
             if (this.attackSounds && this.attackSounds.h) {
                 SoundManager.play(this.attackSounds.v);
             }
         } catch (e) { }
 
-        this.scene.time.delayedCall(700, this.AttackFinish, [], this);
+        //console.log('empieza ataque');
+        this.scene.time.delayedCall(700, this.AttackFinish,[],this);
     }
 
-    AttackFinish() {
-        this.attacking = false;
-        this.horizontalbox.body.enable = false;
-        this.verticalbox.body.enable = false;
+    AttackFinish(){
+        this.attacking=false;
+        this.hattackbox.body.enable = false;
+        this.vattackbox.body.enable = false;
+        //console.log('acaba ataque');
     }
-    DoubleJump() {
+    DoubleJump(){
         this.setVelocityY(this.jumpSpeed);
-
+       
     }
 
     reduceLife(amount) {
         this.life -= amount;
-        this.updateHealthBar();
         if (this.life < 0) this.life = 0;
+        //console.log(`${this.texture.key} life: ${this.life}/${this.maxLife}`); // debug
         if (this.life <= 0) this.die();
     }
 
@@ -207,23 +207,19 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     addCollision(player) {
-        this.scene.physics.add.overlap(player, this.horizontalbox, () => {
-            if (this.attacking && this.horizontalbox.body.enable) {
+        this.scene.physics.add.overlap(player, this.hattackbox, () => {
+            if (this.attacking&&this.hattackbox.body.enable){
                 player.reduceLife(400);
-                this.horizontalbox.body.enable = false;
+                this.hattackbox.body.enable = false;
+                //console.log('daño');
             }
         });
-        this.scene.physics.add.overlap(player, this.verticalbox, () => {
-            if (this.attacking && this.verticalbox.body.enable) {
+        this.scene.physics.add.overlap(player, this.vattackbox, () => {
+            if (this.attacking&&this.vattackbox.body.enable){
                 player.reduceLife(400);
-                this.verticalbox.body.enable = false;
+                this.vattackbox.body.enable = false;
+                //console.log('daño');
             }
         });
-    }
-
-    // Actualiza la barra de vida situada en el html
-    updateHealthBar() {
-        // Asignamos el ancho según el porcentaje de vida restante
-        this.healthBar.style.width = `${(this.life / this.maxLife) * 100}%`;
     }
 }

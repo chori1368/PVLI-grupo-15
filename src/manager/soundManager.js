@@ -45,11 +45,32 @@ stopMusic(){
   setMaster(v){ this.volumes.master = Phaser.Math.Clamp(v,0,1); this._save(); },
   setSfx(v){ this.volumes.sfx = Phaser.Math.Clamp(v,0,1); this._save(); },
 
-  mute(){ this.muted = true; this.scene.sound.pauseAll?.(); this._save(); },
-  unmute(){ this.muted = false; this.scene.sound.resumeAll?.(); this._save(); },
+  mute() {
+    this.muted = true;
+    if (this.scene && this.scene.sound && typeof this.scene.sound.pauseAll === 'function') {
+      this.scene.sound.pauseAll();
+    }
+    this._save();
+  },
+  unmute() {
+    this.muted = false;
+    if (this.scene && this.scene.sound && typeof this.scene.sound.resumeAll === 'function') {
+      this.scene.sound.resumeAll();
+    }
+    this._save();
+  },
   toggleMute(){ if(this.muted) this.unmute(); else this.mute(); },
 
-  _eff(channel){ return this.muted ? 0 : this.volumes.master * (channel === 'music' ? this.volumes.music : this.volumes.sfx); },
+  _eff(channel) {
+    if (this.muted) {
+      return 0;
+    }
+    if (channel === 'music') {
+      return this.volumes.master * this.volumes.music;
+    } else {
+      return this.volumes.master * this.volumes.sfx;
+    }
+  },
 
   _save(){
     try { localStorage.setItem('sound_settings', JSON.stringify({ volumes: this.volumes, muted: this.muted })); } catch(e){}

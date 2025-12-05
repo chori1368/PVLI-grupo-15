@@ -93,7 +93,7 @@ export default class LevelScene extends Phaser.Scene {
         this.breakables = [];
 
         // Lava
-        const lavaY = this.scale.height + 150;
+        const lavaY = this.scale.height + 100;
         const lavaX = this.scale.width / 2;
         this.lava = new Lava(this, lavaX, lavaY, 'lava', 20, 3);
 
