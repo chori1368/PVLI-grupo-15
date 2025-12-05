@@ -34,9 +34,12 @@ export default class LevelScene extends Phaser.Scene {
         this.load.image('bridge', 'assets/ground.png');
         this.load.image('lava', 'assets/lava.png');
         this.load.image('te', 'assets/te.png');
+        this.load.image('level-background', 'assets/level/background.png');
     }
 
     create(data) {
+
+        this.add.image(this.scale.width / 2, this.scale.height / 2, 'level-background').setScrollFactor(0.5);
 
         // Asignamos el reloj del html (UI)
         this.clock = document.querySelector('clock');
