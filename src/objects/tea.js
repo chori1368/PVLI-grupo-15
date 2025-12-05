@@ -6,7 +6,7 @@ export default class Te extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.setScale(0.05);
+        this.setScale(0.5);
         this.body.allowGravity = true;  // si no quieres que caiga
         this.healAmount = 2000;
 

@@ -203,6 +203,7 @@ healthbar > div {
 content:has(#play-btn:not(:checked)) ~ background { 
   opacity: 1;
   background: url("assets/background.png");
+  background-size: cover;
 }
 
 /* background cuando el juego no está pausado */
