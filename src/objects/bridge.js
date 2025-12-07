@@ -1,4 +1,4 @@
-import Ground from './platform.js';
+import Ground from './ground.js';
 
 export default class Bridge {
     constructor(scene, x, y, textureKey, scaleX = 0.1, scaleY = 0.1, totalWidth = null) {
@@ -14,7 +14,7 @@ export default class Bridge {
         const left = x;
 
         // cuantos segmentos necesitamos (añadimos 1 por seguridad contra huecos)
-        const numSegments = Math.ceil(widthToCover / segmentWidth) + 1;
+        const numSegments = Math.ceil(widthToCover / segmentWidth) + 1 ;
 
         for (let i = 0; i < numSegments; i++) {
             // centramos cada segmento en su "celda"
@@ -31,28 +31,12 @@ export default class Bridge {
         }
     }
 
-    collapseParts(count, random = true) {
-        let targets = [];
-        if (random) {
-            // Elegir aleatorios
-            const shuffled = this.segments.slice().sort(() => Math.random() - 0.5);
-            targets = shuffled.slice(0, count);
-        } else {
-            // Tomar los del centro
-            const mid = Math.floor(this.segments.length / 2);
-            const start = Math.max(0, mid - Math.floor(count / 2));
-            targets = this.segments.slice(start, start + count);
-        }
-
-        targets.forEach(seg => {
-            seg.destroy(); // elimina el segmento
-            const index = this.segments.indexOf(seg);
-            if (index > -1) this.segments.splice(index, 1);
-        });
+    collapseParts() {
+        this.segments.forEach(seg => seg.move() );
     }
 
     destroy() {
-        this.segments.forEach(seg => seg.destroy());
+        this.segments.forEach(seg => seg.setActive(false));
         this.segments = [];
     }
 

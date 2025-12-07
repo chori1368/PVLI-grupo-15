@@ -81,7 +81,7 @@ export default class LevelScene extends Phaser.Scene {
             SoundManager.play('terremoto');
             this.cameras.main.shake(2000, 0.01);
         });
-        this.time.delayedCall(30000, () => this.bridge.collapseParts(13, true));
+        this.time.delayedCall(30000, () => this.bridge.collapseParts());
 
         this.time.delayedCall(60000, () => { this.bridge.destroy(), SoundManager.play('break'); });
 
