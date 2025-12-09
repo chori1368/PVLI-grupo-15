@@ -7,7 +7,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         };
         opts = { ...defaultOpts, ...opts };
 
-
         let x, y;
 
         if (side === 'left') {
@@ -23,6 +22,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         super(scene, x, y, texture);
+
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
@@ -229,7 +229,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
     }
-        // Actualiza la barra de vida situada en el html
+
+    // Actualiza la barra de vida situada en el html
     updateHealthBar() {
         // Asignamos el ancho según el porcentaje de vida restante
         this.healthBar.style.width = `${(this.life / this.maxLife) * 100}%`;

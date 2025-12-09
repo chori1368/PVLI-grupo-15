@@ -18,11 +18,14 @@ export default class SelectionScene extends Phaser.Scene {
     }
 
     create() {
-        // Background
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
+        // Background (ajustado al alto de pantalla)
+        this.add.image(this.scale.width/2, this.scale.height/2, 'background').displayHeight = this.scale.height;
+
+        // Color de fondo de cámara
+        this.cameras.main.setBackgroundColor('#161338');
 
         // Titulo
-        this.add.text(this.scale.width / 2, 80, 'SELECCION DE PERSONAJE', {
+        this.add.text(this.scale.width/2, 80, 'SELECCION DE PERSONAJE', {
             fontSize: '50px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
@@ -30,14 +33,14 @@ export default class SelectionScene extends Phaser.Scene {
         }).setOrigin(0.5);
 
         // "Selector" Izq
-        const left = this.add.sprite(600, this.scale.height - 500, 'characters').setOrigin(0.5);
+        const left = this.add.sprite(this.scale.width/2 - 500, this.scale.height - 500, 'characters').setOrigin(0.5);
 
         // "Selector" Dcha (en el frame 1 y flipeado)
-        const right = this.add.sprite(this.scale.width - 600, this.scale.height - 500, 'characters', 1).setOrigin(0.5).setFlipX(true);
+        const right = this.add.sprite(this.scale.width/2 + 500, this.scale.height - 500, 'characters', 1).setOrigin(0.5).setFlipX(true);
 
         // Plataformas
-        this.add.image(500, this.scale.height - 160, 'left').setOrigin(0.5);
-        this.add.image(this.scale.width - 500, this.scale.height - 160, 'right').setOrigin(0.5);
+        this.add.image(this.scale.width/2 + 610, this.scale.height - 160, 'left').setOrigin(0.5);
+        this.add.image(this.scale.width/2 - 640, this.scale.height - 160, 'right').setOrigin(0.5);
 
         // Controles de seleccion Izq
         const A = this.input.keyboard.addKey('A');

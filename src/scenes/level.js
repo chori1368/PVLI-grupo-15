@@ -27,19 +27,25 @@ export default class LevelScene extends Phaser.Scene {
             { key: 'speardash', path: 'assets/sounds/spearDash.mp3' }
         ]);
 
-        // Preload assets        
-        this.load.image('sword', 'assets/characters/sword.png');
-        this.load.image('spear', 'assets/characters/spear.png');
+        // Preload assets
         this.load.image('suelo', 'assets/suelo.png');
         this.load.image('bridge', 'assets/ground.png');
         this.load.image('lava', 'assets/lava.png');
         this.load.image('te', 'assets/te.png');
-        this.load.image('level-background', 'assets/level/background.png');
+        this.load.image('coliseum', 'assets/level/coliseum.png');
+
+        //Preload spritesheets
+        this.load.spritesheet('sword', 'assets/characters/sword.png', { frameWidth: 668, frameHeight: 656 });
+        this.load.spritesheet('spear', 'assets/characters/spear.png', { frameWidth: 668, frameHeight: 656 });
     }
 
     create(data) {
 
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'level-background').setScrollFactor(0.5);
+        // Fondo
+        this.add.image(this.scale.width / 2, this.scale.height / 2, 'coliseum').setScrollFactor(0.5).displayHeight = this.scale.height;
+        
+        // Color de fondo de cámara
+        this.cameras.main.setBackgroundColor('#161338');
 
         // Asignamos el reloj del html (UI)
         this.clock = document.querySelector('clock');

@@ -12,7 +12,7 @@ const config = {
     height: 1080,
 
     scale: {
-        mode: Phaser.Scale.ENVELOP,
+        mode: Phaser.Scale.EXPAND,
         autoCenter: Phaser.Scale.CENTER_HORIZONTALLY,
     },
 

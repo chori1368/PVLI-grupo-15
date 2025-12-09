@@ -11,7 +11,7 @@ export default class ResultScene extends Phaser.Scene {
 
     create(data) {
         // Background
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'background');
+        this.add.image(this.scale.width/2, this.scale.height/2, 'background').displayHeight = this.scale.height;
 
         let text = 'NO DATA'; // default text
 
@@ -19,33 +19,22 @@ export default class ResultScene extends Phaser.Scene {
         if (data.winner === 'left') { 
             text = 'Gana el jugador izquierdo!';
             // Personaje
-            this.add.sprite(600, this.scale.height - 500, 'characters', data.type).setOrigin(0.5);
+            this.add.sprite(this.scale.width/2 + 100, this.scale.height - 500, 'characters').setOrigin(0.5);
             // Plataforma
-            this.add.image(500, this.scale.height - 160, 'left').setOrigin(0.5);
+            this.add.image(this.scale.width/2, this.scale.height - 160, 'left').setOrigin(0.5);
         }
 
         // Ha muerto el izquierdo por lo tanto gana el derecho
         else if (data.winner === 'right') {
             text = 'Gana el jugador derecho!';
             // Personaje
-            this.add.sprite(this.scale.width - 600, this.scale.height - 500, 'characters', data.type).setOrigin(0.5).setFlipX(true);
+            this.add.sprite(this.scale.width/2 - 100, this.scale.height - 500, 'characters', 1).setOrigin(0.5).setFlipX(true);
             // Plataforma
-            this.add.image(this.scale.width - 500, this.scale.height - 160, 'right').setOrigin(0.5);
-        } 
-    
-        // Caso de empate (sin implementar aún)
-        else if (data.winner === 'tie') {
-            text = 'Empate!';
-            // Personajes
-            this.add.sprite(600, this.scale.height - 500, 'characters', data.type).setOrigin(0.5);
-            this.add.sprite(this.scale.width - 600, this.scale.height - 500, 'characters', data.type).setOrigin(0.5).setFlipX(true);
-            // Plataformas
-            this.add.image(500, this.scale.height - 160, 'left').setOrigin(0.5);
-            this.add.image(this.scale.width - 500, this.scale.height - 160, 'right').setOrigin(0.5);
+            this.add.image(this.scale.width/2, this.scale.height - 160, 'right').setOrigin(0.5);
         }
 
         // Texto del ganador
-        this.add.text(this.scale.width / 2, 90, text, {
+        this.add.text(this.scale.width/2, 90, text, {
             fontSize: '80px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
