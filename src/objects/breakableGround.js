@@ -30,13 +30,6 @@ export default class BreakableGround extends Ground {
         if (this.body) this.body.allowGravity = false;
     }
 
-    // Devuelve un "now" fiable: se intenta usar Phaser, si no Date.now()
-    _getNow() {
-        if (this.scene && this.scene.time && typeof this.scene.time.now === 'number') return this.scene.time.now;
-        if (this.scene && this.scene.sys && this.scene.sys.game && this.scene.sys.game.loop && typeof this.scene.sys.game.loop.time === 'number') return this.scene.sys.game.loop.time;
-        return Date.now();
-    }
-
     // Devuelve el GameObject que tiene el body físico para usar en overlap
         _getPhysicsObject(obj) {
         if (!obj) return null;

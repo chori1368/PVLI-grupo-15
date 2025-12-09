@@ -45,21 +45,6 @@ stopMusic(){
   setMaster(v){ this.volumes.master = Phaser.Math.Clamp(v,0,1); this._save(); },
   setSfx(v){ this.volumes.sfx = Phaser.Math.Clamp(v,0,1); this._save(); },
 
-  mute() {
-    this.muted = true;
-    if (this.scene && this.scene.sound && typeof this.scene.sound.pauseAll === 'function') {
-      this.scene.sound.pauseAll();
-    }
-    this._save();
-  },
-  unmute() {
-    this.muted = false;
-    if (this.scene && this.scene.sound && typeof this.scene.sound.resumeAll === 'function') {
-      this.scene.sound.resumeAll();
-    }
-    this._save();
-  },
-  toggleMute(){ if(this.muted) this.unmute(); else this.mute(); },
 
   _eff(channel) {
     if (this.muted) {
