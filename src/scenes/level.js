@@ -43,33 +43,31 @@ export default class LevelScene extends Phaser.Scene {
 
         // Fondo
         this.add.image(this.scale.width / 2, this.scale.height / 2, 'coliseum').setScrollFactor(0.5).displayHeight = this.scale.height;
-        
+
         // Color de fondo de cámara
         this.cameras.main.setBackgroundColor('#161338');
 
         // Asignamos el reloj del html (UI)
         this.clock = document.querySelector('clock');
+
         // Barras de vida del html (UI)
         this.healthbarLeft = document.querySelector('healthbar.left');
         this.healthbarRight = document.querySelector('healthbar.right');
+
         // Duración de la partida en milisegundos (1 minuto)
         this.matchDurationMs = 60000;
         this.matchEndTime = null;
 
         // Al iniciar el nivel mostramos el reloj
-        if (this.clock) {
-            this.clock.style.display = 'block';
-        }
+        this.clock.style.display = 'block';
+
         // Y las barras de vida
-        if (this.healthbarLeft) {
-            this.healthbarLeft.style.display = 'flex';
-        }
-        if (this.healthbarRight) {
-            this.healthbarRight.style.display = 'flex';
-        }
+        this.healthbarLeft.style.display = 'flex';
+        this.healthbarRight.style.display = 'flex';
 
         // Tiempo de partida (1 minuto en ms), se invoca la destruccion del puente
         this.time.delayedCall(this.matchDurationMs, null, null, this);
+
         // Momento (en ms del reloj de Phaser) en el que termina la partida
         this.matchEndTime = this.time.now + this.matchDurationMs;
 
@@ -81,14 +79,18 @@ export default class LevelScene extends Phaser.Scene {
 
         // Puente
         this.bridge = new Bridge(this, 0, this.scale.height - 50, 'bridge', 0.1, 0.1, LEVEL_WIDTH);
+
         // Camera shake 5 segundos antes de destruir el puente
         this.time.delayedCall(30000 - 2000, () => {
             // duración 500 ms, intensidad 0.01 
             SoundManager.play('terremoto');
             this.cameras.main.shake(2000, 0.01);
         });
+
+        // Puente hundiéndose a los 30 segundos
         this.time.delayedCall(30000, () => this.bridge.collapseParts());
 
+        // Destruir puente al finalizar la partida
         this.time.delayedCall(60000, () => { this.bridge.destroy(), SoundManager.play('break'); });
 
         // Suelos
@@ -200,28 +202,22 @@ export default class LevelScene extends Phaser.Scene {
 
     // Actualiza el timer del html (clock)
     updateClock() {
-        if (!this.clock || this.matchEndTime === null) return;
+        // Calculamos el tiempo restante en segundos
+        const time = Math.floor((this.matchEndTime - this.time.now) / 1000);
 
-        const remainingMs = Math.max(this.matchEndTime - this.time.now, 0);
-        const totalSeconds = Math.ceil(remainingMs / 1000);
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-
-        const minutesStr = minutes.toString().padStart(2, '0');
-        const secondsStr = seconds.toString().padStart(2, '0');
-
-        this.clock.textContent = `${minutesStr}:${secondsStr}`;
+        // Actualizamos el DOM cada segundo (y no cada frame)
+        if (this.lastT !== time) {
+            this.lastT = time;
+            // Formateammos el tiempo en MM:SS (minutos:segundos cada uno con dos dígitos)
+            this.clock.textContent = `${Math.floor(time / 60).toString().padStart(2, '0')}:${(time % 60).toString().padStart(2, '0')}`;
+        }
     }
 
     // Cámara sigue al punto medio entre ambos jugadores
     updateCameraFollow() {
-        const p1 = this.playerLeft;
-        const p2 = this.playerRight;
-        if (!p1 || !p2) return;
+        const x = (this.playerLeft.x + this.playerRight.x) / 2;
+        const y = (this.playerLeft.y + this.playerRight.y) / 2;
 
-        const centerX = (p1.x + p2.x) / 2;
-        const centerY = (p1.y + p2.y) / 2;
-
-        this.cameras.main.centerOn(centerX, centerY);
+        this.cameras.main.centerOn(x, y);
     }
 }

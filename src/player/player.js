@@ -5,29 +5,22 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             attackSounds: null,
             weapon: null,
         };
+        
         opts = { ...defaultOpts, ...opts };
 
-        let x, y;
+        // Posicionar jugador según el lado
+        let x;
+        if (side == 'left') x = scene.scale.width / 3;
+        else x = scene.scale.width * 2 / 3;
 
-        if (side === 'left') {
-            x = scene.scale.width / 3;
-            y = scene.scale.height / 2;
-        } else if (side === 'right') {
-            x = scene.scale.width * 2 / 3;
-            y = scene.scale.height / 2;
-        } else {
-            // Por si acaso, posición por defecto
-            x = scene.scale.width / 2;
-            y = scene.scale.height / 2;
-        }
-
-        super(scene, x, y, texture);
+        // Llamada al constructor padre con posición inicial (según lado)
+        super(scene, x, scene.scale.height / 2, texture);
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.setScale(0.25);
-        this.setOrigin(0.25);
+        this.setScale(0.5);
+        this.setOrigin(0.5);
         this.setCollideWorldBounds(true);
 
         // Custom player hitbox
@@ -50,9 +43,47 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.vattackbox.body.allowGravity = false;
         this.vattackbox.body.enable = false;
 
-        // Guardamos las teclas (pueden ser WASD o flechas)
-        if (side === 'left') {
-            // Teclas WASD Izq
+        // Animación de idle
+        this.anims.create({
+            key: 'idle',
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 4, end: 5 }),
+            frameRate: 2,
+            repeat: 0
+        });
+
+        // Animación de salto
+        this.anims.create({
+            key: 'jump',
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 6, end: 8 }),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        // Animación de movimiento
+        this.anims.create({
+            key: 'run',
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 11, end: 21 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        // Animación de ataque horizontal
+        this.anims.create({
+            key: 'horizontal',
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        // Animación de ataque vertical
+        this.anims.create({
+            key: 'vertical',
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 22, end: 25 }),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        if (side === 'left') { // Teclas WASD Izq
             this.keys = scene.input.keyboard.addKeys({
                 left: Phaser.Input.Keyboard.KeyCodes.A,
                 right: Phaser.Input.Keyboard.KeyCodes.D,
@@ -60,14 +91,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                 hattack: Phaser.Input.Keyboard.KeyCodes.E,
                 vattack: Phaser.Input.Keyboard.KeyCodes.Q,
             });
-        } else if (side === 'right') {
-            // Teclas flechas Dcha
+        }
+
+        else { // Teclas flechas Dcha
             this.keys = scene.input.keyboard.addKeys({
                 left: Phaser.Input.Keyboard.KeyCodes.LEFT,
                 right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
                 up: Phaser.Input.Keyboard.KeyCodes.UP,
                 hattack: Phaser.Input.Keyboard.KeyCodes.SHIFT,
-                vattack: Phaser.Input.Keyboard.KeyCodes.MINUS, // poner bien
+                vattack: Phaser.Input.Keyboard.KeyCodes.MINUS, // poner ctrl también
             });
         }
 
@@ -93,11 +125,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             }
         }
 
-                        // Asignamos la barra de progreso de vida (hijo de healthbar."side")
+        // Asignamos la barra de progreso de vida (hijo de healthbar."side")
         this.healthBar = document.querySelector(`healthbar.${side} > div`);
         this.updateHealthBar();
 
-        this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques
+        this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques???
     }
 
     _inferWeaponFromTexture(textureKey) {
@@ -116,82 +148,82 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.body.blocked.down || this.body.onFloor()) {// Reiniciar contador si está tocando el suelo
             this.jumpCount = 0;
         }
-        if (left.isDown&&this.body.velocity.x>=-this.speed) {
+        if (left.isDown && this.body.velocity.x >= -this.speed) {
             this.setVelocityX(-this.speed);
             this.flipX = true;
             this.body.setOffset(this.width * 0.4, 0);
-        } else if (right.isDown&&this.body.velocity.x<=this.speed) {
+        } else if (right.isDown && this.body.velocity.x <= this.speed) {
             this.setVelocityX(this.speed);
             this.flipX = false;
             this.body.setOffset(this.width * 0.2, 0);
-        } else if(this.body.onFloor()){
+        } else if (this.body.onFloor()) {
             this.setVelocityX(0);
         }
         if (Phaser.Input.Keyboard.JustDown(up)) {
-            if(this.body.onFloor()&&this.jumpCount==0){
-            this.setVelocityY(this.jumpSpeed);
+            if (this.body.onFloor() && this.jumpCount == 0) {
+                this.setVelocityY(this.jumpSpeed);
             }
-            else if(this.jumpCount < this.maxJumps){    // Doble salto
-            this.DoubleJump();
+            else if (this.jumpCount < this.maxJumps) {    // Doble salto
+                this.DoubleJump();
             }
             this.jumpCount++;
             //console.log(this.jumpCount);
         }
-        if (hattack.isDown && !this.attacking){
+        if (hattack.isDown && !this.attacking) {
             this.hAttack();
-        }else if (vattack.isDown && !this.attacking){
+        } else if (vattack.isDown && !this.attacking) {
             this.vAttack();
         }
     }
 
-    hAttack(){
-        this.attacking = true; 
+    hAttack() {
+        this.attacking = true;
         this.hattackbox.body.enable = true;
-        this.hattackbox.y = this.y+30;
-        if (this.flipX){
-            this.hattackbox.x = this.x-50;
+        this.hattackbox.y = this.y + 30;
+        if (this.flipX) {
+            this.hattackbox.x = this.x - 50;
         }
-        else{
-            this.hattackbox.x = this.x+75;
+        else {
+            this.hattackbox.x = this.x + 75;
         }
-          try {
+        try {
             if (this.attackSounds && this.attackSounds.h) {
                 SoundManager.play(this.attackSounds.h);
             }
         } catch (e) { }
 
         //console.log('empieza ataque');
-        this.scene.time.delayedCall(700, this.AttackFinish,[],this);
+        this.scene.time.delayedCall(700, this.AttackFinish, [], this);
     }
-    vAttack(){
-        this.attacking = true; 
+    vAttack() {
+        this.attacking = true;
         this.vattackbox.body.enable = true;
-        this.vattackbox.y = this.y+20;
-        if (this.flipX){
-            this.vattackbox.x = this.x-30;
+        this.vattackbox.y = this.y + 20;
+        if (this.flipX) {
+            this.vattackbox.x = this.x - 30;
         }
-        else{
-            this.vattackbox.x = this.x+55;
+        else {
+            this.vattackbox.x = this.x + 55;
         }
-         try {
+        try {
             if (this.attackSounds && this.attackSounds.h) {
                 SoundManager.play(this.attackSounds.v);
             }
         } catch (e) { }
 
         //console.log('empieza ataque');
-        this.scene.time.delayedCall(700, this.AttackFinish,[],this);
+        this.scene.time.delayedCall(700, this.AttackFinish, [], this);
     }
 
-    AttackFinish(){
-        this.attacking=false;
+    AttackFinish() {
+        this.attacking = false;
         this.hattackbox.body.enable = false;
         this.vattackbox.body.enable = false;
         //console.log('acaba ataque');
     }
-    DoubleJump(){
+    DoubleJump() {
         this.setVelocityY(this.jumpSpeed);
-       
+
     }
 
     reduceLife(amount) {
@@ -215,14 +247,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     addCollision(player) {
         this.scene.physics.add.overlap(player, this.hattackbox, () => {
-            if (this.attacking&&this.hattackbox.body.enable){
+            if (this.attacking && this.hattackbox.body.enable) {
                 player.reduceLife(400);
                 this.hattackbox.body.enable = false;
                 //console.log('daño');
             }
         });
         this.scene.physics.add.overlap(player, this.vattackbox, () => {
-            if (this.attacking&&this.vattackbox.body.enable){
+            if (this.attacking && this.vattackbox.body.enable) {
                 player.reduceLife(400);
                 this.vattackbox.body.enable = false;
                 //console.log('daño');
