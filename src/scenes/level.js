@@ -28,21 +28,23 @@ export default class LevelScene extends Phaser.Scene {
         ]);
 
         // Preload assets
-        this.load.image('suelo', 'assets/suelo.png');
-        this.load.image('bridge', 'assets/ground.png');
-        this.load.image('lava', 'assets/lava.png');
-        this.load.image('te', 'assets/te.png');
+        this.load.image('pilar', 'assets/level/pilar.png');
+        this.load.image('platform', 'assets/level/platform.png');
+        this.load.image('bridge', 'assets/level/bridge.png');
+        this.load.image('lava', 'assets/level/lava.png');
+        this.load.image('tea', 'assets/level/tea.png');
+        this.load.image('squirrel', 'assets/characters/squirrel.png');
         this.load.image('coliseum', 'assets/level/coliseum.png');
 
-        //Preload spritesheets
-        this.load.spritesheet('sword', 'assets/characters/sword.png', { frameWidth: 668, frameHeight: 656 });
-        this.load.spritesheet('spear', 'assets/characters/spear.png', { frameWidth: 668, frameHeight: 656 });
+        // Preload spritesheets
+        this.load.spritesheet('sword', 'assets/characters/sword.png', { frameWidth: 593, frameHeight: 593 });
+        this.load.spritesheet('spear', 'assets/characters/spear.png', { frameWidth: 593, frameHeight: 593 });
     }
 
     create(data) {
 
         // Fondo
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'coliseum').setScrollFactor(0.5).displayHeight = this.scale.height;
+        this.add.image(this.scale.width / 2, this.scale.height / 2, 'coliseum').setScrollFactor(0.5).setOrigin(0.5);
 
         // Color de fondo de cámara
         this.cameras.main.setBackgroundColor('#161338');
@@ -78,7 +80,7 @@ export default class LevelScene extends Phaser.Scene {
         SoundManager.setSfx(0.1);
 
         // Puente
-        this.bridge = new Bridge(this, 0, this.scale.height - 50, 'bridge', 0.1, 0.1, LEVEL_WIDTH);
+        this.bridge = new Bridge(this, 0, this.scale.height - 190, 'bridge', 0.45, 0.45, LEVEL_WIDTH);
 
         // Camera shake 5 segundos antes de destruir el puente
         this.time.delayedCall(30000 - 2000, () => {
@@ -93,17 +95,15 @@ export default class LevelScene extends Phaser.Scene {
         // Destruir puente al finalizar la partida
         this.time.delayedCall(60000, () => { this.bridge.destroy(), SoundManager.play('break'); });
 
-        // Suelos
+        // Plataformas del nivel (con columnas)
         this.grounds = [
-            new Ground(this, 500, 700, 'suelo', 0.25, 0.5),
-            new Ground(this, 1200, 500, 'suelo', 0.25, 0.5)
+            new Ground(this, 500, this.scale.height - 450, 'pilar', 0.35, 0.35),
+            //new Ground(this, 1200, 500, 'suelo', 0.25, 0.3)
         ];
         this.breakables = [];
 
         // Lava
-        const lavaY = this.scale.height + 100;
-        const lavaX = this.scale.width / 2;
-        this.lava = new Lava(this, lavaX, lavaY, 'lava', 20, 3);
+        this.lava = new Lava(this, this.scale.width / 2, this.scale.height, 'lava', 20, 1);
 
         // Crear jugador izquierdo (según tipo)
         if (data.left == 0) this.playerLeft = new PlayerSword(this, 'left');
@@ -132,23 +132,22 @@ export default class LevelScene extends Phaser.Scene {
         this.playerLeft.setCollideWorldBounds(true);
         this.playerRight.setCollideWorldBounds(true);
         this.cameras.main.setBounds(0, 0, LEVEL_WIDTH, LEVEL_HEIGHT);
-        const breakable = new BreakableGround(this, 400, 300, 'suelo');
-        breakable.setScale(0.3);
-        breakable.body.setSize(breakable.displayWidth, breakable.displayHeight);
-        breakable.body.setOffset((breakable.width - breakable.displayWidth) / 2, (breakable.height - breakable.displayHeight) / 2);
-        this.breakables.push(breakable);
+        // const breakable = new BreakableGround(this, 400, 300, 'suelo');
+        // breakable.setScale(0.3);
+        // breakable.body.setSize(breakable.displayWidth, breakable.displayHeight);
+        // breakable.body.setOffset((breakable.width - breakable.displayWidth) / 2, (breakable.height - breakable.displayHeight) / 2);
+        // this.breakables.push(breakable);
 
 
         // usa el sprite (o gameobject real) para la colisión, pero llama al wrapper
-        this.physics.add.collider(this.playerLeft, breakable.sprite ?? breakable, (player, sprite) => {
-            breakable.touch(player);
-        }, null, this);
+        // this.physics.add.collider(this.playerLeft, breakable.sprite ?? breakable, (player, sprite) => {
+        //     breakable.touch(player);
+        // }, null, this);
 
-        this.physics.add.collider(this.playerRight, breakable.sprite ?? breakable, (player, sprite) => {
-            breakable.touch(player);
-        }, null, this);
+        // this.physics.add.collider(this.playerRight, breakable.sprite ?? breakable, (player, sprite) => {
+        //     breakable.touch(player);
+        // }, null, this);
 
-        // --- Finalmente arranca el spawn del té (ahora los players ya existen) ---
         this.spawnTea();
     }
 
@@ -177,7 +176,7 @@ export default class LevelScene extends Phaser.Scene {
         this.time.delayedCall(delay, () => {
             const x = Phaser.Math.Between(50, this.scale.width - 50);
             const y = this.scale.height - 1200;
-            this.te = new Te(this, x, y, 'te', 7500);
+            this.te = new Te(this, x, y, 'tea', 7500);
             this.te.addCollision(this.playerLeft);
             this.te.addCollision(this.playerRight);
             this.physics.add.collider(this.te, this.grounds);

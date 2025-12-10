@@ -31,6 +31,7 @@ export default class PlayerSpear extends Player {
         } else {
             this.setVelocityX(-this.jumpSpeed);
         }
+        this.anims.play('jump', true);
         this.scene.time.delayedCall(300, this.DashFinish, [], this);
     }
 

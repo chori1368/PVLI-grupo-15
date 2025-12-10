@@ -43,7 +43,9 @@ main {
 footer {
   text-align: center;
 
-  h3 { margin-top: 1rem; }
+  h3 {
+    margin-top: 1rem;
+  }
 
   p {
     text-align: center;
@@ -114,11 +116,11 @@ content {
 
 /* menos gap en pausa para ver mejor los controles */
 #pause-page {
-  gap: 0; 
+  gap: 0;
 }
 
 /* canvas por defecto */
-canvas { 
+canvas {
   position: fixed;
   margin: 0 !important;
   bottom: 0;
@@ -191,7 +193,7 @@ healthbar.right {
 }
 
 /* barra de vida (como tal) */
-healthbar > div {
+healthbar>div {
   width: 100%;
   height: 100%;
   border-radius: inherit;
@@ -200,19 +202,20 @@ healthbar > div {
 }
 
 /* background cuando el juego está en el menú inicial */
-content:has(#play-btn:not(:checked)) ~ background { 
+content:has(#play-btn:not(:checked))~background {
   opacity: 1;
-  background: url("assets/background.png");
+  background: url("assets/web/background.png");
+  background-position: center;
   background-size: cover;
 }
 
 /* background cuando el juego no está pausado */
-content:has(#play-btn:checked) ~ background {
+content:has(#play-btn:checked)~background {
   opacity: 0;
 }
 
 /* background cuando el juego esta pausado */
-label:has(#pause-btn:checked) ~ background { 
+label:has(#pause-btn:checked)~background {
   opacity: 1;
 }
 
@@ -228,8 +231,14 @@ label {
   cursor: pointer;
   /* transiciones */
   transition: opacity 0.4s ease-in-out, background 0.2s ease-in-out;
-  &:hover { background: #2a1758; }
-  &:active { background: #1b0a36; }
+
+  &:hover {
+    background: #2a1758;
+  }
+
+  &:active {
+    background: #1b0a36;
+  }
 }
 
 input {
@@ -238,7 +247,7 @@ input {
   pointer-events: none;
 }
 
-label:has(#pause-btn) { 
+label:has(#pause-btn) {
   position: fixed;
   display: flex;
   align-items: center;
@@ -265,6 +274,7 @@ label:has(#pause-btn) {
 /* pause-btn cuando está oculto */
 label:has(#pause-btn:checked) {
   font-size: 0;
+
   &:after {
     content: 'X';
     font-size: 20px;
@@ -284,7 +294,7 @@ label:has(#pause-btn:checked) {
 }
 
 /* estado inicial del menú inicial*/
-@starting-style {  
+@starting-style {
   #startup-page:has(#play-btn:checked) {
     transform: translateY(0);
   }

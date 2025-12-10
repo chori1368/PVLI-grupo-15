@@ -14,7 +14,7 @@ export default class Button extends Phaser.GameObjects.Image {
         // Configura el evento de clic
         this.on('pointerup', callback);
 
-        // Añade el botón a la escena*/
+        // Añade el botón a la escena
         scene.add.existing(this);
     }
 }

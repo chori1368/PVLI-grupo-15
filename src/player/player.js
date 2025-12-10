@@ -1,15 +1,15 @@
 import SoundManager from '../manager/soundManager.js';
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, side, texture, opts = {}) {
         const defaultOpts = {
             attackSounds: null,
             weapon: null,
         };
-        
+
         opts = { ...defaultOpts, ...opts };
 
-        // Posicionar jugador según el lado
-        let x;
+        let x; // Posicionar jugador según el lado
         if (side == 'left') x = scene.scale.width / 3;
         else x = scene.scale.width * 2 / 3;
 
@@ -46,40 +46,40 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         // Animación de idle
         this.anims.create({
             key: 'idle',
-            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 4, end: 5 }),
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 0, end: 1 }),
             frameRate: 2,
-            repeat: 0
+            repeat: -1
         });
 
         // Animación de salto
         this.anims.create({
             key: 'jump',
-            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 6, end: 8 }),
-            frameRate: 10,
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 6, end: 7 }),
+            frameRate: 15,
             repeat: 0
         });
 
         // Animación de movimiento
         this.anims.create({
             key: 'run',
-            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 11, end: 21 }),
-            frameRate: 10,
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 12, end: 22 }),
+            frameRate: 15,
             repeat: -1
         });
 
         // Animación de ataque horizontal
         this.anims.create({
             key: 'horizontal',
-            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 0, end: 3 }),
-            frameRate: 10,
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 8, end: 11 }),
+            frameRate: 20,
             repeat: 0
         });
 
         // Animación de ataque vertical
         this.anims.create({
             key: 'vertical',
-            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 22, end: 25 }),
-            frameRate: 10,
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 2, end: 5 }),
+            frameRate: 20,
             repeat: 0
         });
 
@@ -130,6 +130,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.updateHealthBar();
 
         this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques???
+
+        // Empezar con animación idle
+        this.anims.play('idle');
     }
 
     _inferWeaponFromTexture(textureKey) {
@@ -141,38 +144,57 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     handleInput() {
-        if (!this.active) return;
-
+        // Asignación de teclas
         const { left, right, up, hattack, vattack } = this.keys;
 
-        if (this.body.blocked.down || this.body.onFloor()) {// Reiniciar contador si está tocando el suelo
+        // Reiniciar contador si está tocando el suelo
+        if (this.body.blocked.down || this.body.onFloor()) {
             this.jumpCount = 0;
         }
+
         if (left.isDown && this.body.velocity.x >= -this.speed) {
             this.setVelocityX(-this.speed);
             this.flipX = true;
             this.body.setOffset(this.width * 0.4, 0);
-        } else if (right.isDown && this.body.velocity.x <= this.speed) {
+        } 
+        
+        else if (right.isDown && this.body.velocity.x <= this.speed) {
             this.setVelocityX(this.speed);
             this.flipX = false;
             this.body.setOffset(this.width * 0.2, 0);
-        } else if (this.body.onFloor()) {
+        } 
+        
+        else if (this.body.onFloor()) {
             this.setVelocityX(0);
         }
+
         if (Phaser.Input.Keyboard.JustDown(up)) {
             if (this.body.onFloor() && this.jumpCount == 0) {
                 this.setVelocityY(this.jumpSpeed);
             }
+            
             else if (this.jumpCount < this.maxJumps) {    // Doble salto
                 this.DoubleJump();
             }
             this.jumpCount++;
-            //console.log(this.jumpCount);
         }
+
         if (hattack.isDown && !this.attacking) {
             this.hAttack();
-        } else if (vattack.isDown && !this.attacking) {
+        } 
+        
+        else if (vattack.isDown && !this.attacking) {
             this.vAttack();
+        }
+
+        if (this.attacking) return;
+
+        if (!this.body.onFloor()) {
+            this.anims.play('jump', true);
+        } else if (this.body.velocity.x !== 0) {
+            this.anims.play('run', true);
+        } else {
+            this.anims.play('idle', true);
         }
     }
 
@@ -186,15 +208,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         else {
             this.hattackbox.x = this.x + 75;
         }
-        try {
-            if (this.attackSounds && this.attackSounds.h) {
-                SoundManager.play(this.attackSounds.h);
-            }
-        } catch (e) { }
 
-        //console.log('empieza ataque');
-        this.scene.time.delayedCall(700, this.AttackFinish, [], this);
+        SoundManager.play(this.attackSounds.h);
+
+        // Reproducir animación de ataque vertical
+        this.anims.play('horizontal', true);
+
+        // Cuando acabe la animación:
+        this.once('animationcomplete-horizontal', () => { this.AttackFinish(); });
     }
+
     vAttack() {
         this.attacking = true;
         this.vattackbox.body.enable = true;
@@ -205,25 +228,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         else {
             this.vattackbox.x = this.x + 55;
         }
-        try {
-            if (this.attackSounds && this.attackSounds.h) {
-                SoundManager.play(this.attackSounds.v);
-            }
-        } catch (e) { }
 
-        //console.log('empieza ataque');
-        this.scene.time.delayedCall(700, this.AttackFinish, [], this);
+        SoundManager.play(this.attackSounds.v);
+
+        // Reproducir animación de ataque vertical
+        this.anims.play('vertical', true);
+
+        // Cuando acabe la animación:
+        this.once('animationcomplete-vertical', () => { this.AttackFinish(); });
     }
 
     AttackFinish() {
         this.attacking = false;
         this.hattackbox.body.enable = false;
         this.vattackbox.body.enable = false;
-        //console.log('acaba ataque');
     }
+
     DoubleJump() {
         this.setVelocityY(this.jumpSpeed);
-
+        this.anims.play('jump', true);
     }
 
     reduceLife(amount) {
@@ -236,6 +259,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     die() {
         this.setTint(0xff0000);
         this.setVelocity(0);
+        this.stop();
         this.setActive(false);
         this.setVisible(false);
         this.life = 0;
