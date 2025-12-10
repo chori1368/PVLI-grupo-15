@@ -97,9 +97,10 @@ export default class LevelScene extends Phaser.Scene {
 
         // Plataformas del nivel (con columnas)
         this.grounds = [
-            new Ground(this, 500, this.scale.height - 450, 'pilar', 0.35, 0.35),
-            //new Ground(this, 1200, 500, 'suelo', 0.25, 0.3)
+            new Ground(this, this.scale.width - 1800, this.scale.height - 450, 'pilar', 0.35, 0.35),
+            new Ground(this, this.scale.width - 800, this.scale.height - 550, 'pilar', 0.5, 0.6)
         ];
+
         this.breakables = [];
 
         // Lava
@@ -114,11 +115,8 @@ export default class LevelScene extends Phaser.Scene {
         else this.playerRight = new PlayerSpear(this, 'right');
 
         // Colliders jugadores con mundo
-        this.physics.add.collider(this.playerLeft, this.grounds, (player, ground) => {
-        }, null, this);
-
-        this.physics.add.collider(this.playerRight, this.grounds, (player, ground) => {
-        }, null, this);
+        this.physics.add.collider(this.playerLeft, this.grounds);
+        this.physics.add.collider(this.playerRight, this.grounds);
         this.physics.add.collider(this.playerLeft, this.bridge.getSegments());
         this.physics.add.collider(this.playerRight, this.bridge.getSegments());
 

@@ -14,31 +14,34 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         else x = scene.scale.width * 2 / 3;
 
         // Llamada al constructor padre con posición inicial (según lado)
-        super(scene, x, scene.scale.height / 2, texture);
+        super(scene, x, scene.scale.height / 2.5, texture);
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
         this.setScale(0.5);
-        this.setOrigin(0.5);
+        this.setOrigin(0);
         this.setCollideWorldBounds(true);
 
         // Custom player hitbox
-        this.body.setSize(this.width * 0.4, this.height); // ancho, alto
-        this.body.setOffset(this.width * 0.2, 0); // desplazar el hitbox
+        this.body.setSize(this.width * 0.4, this.height/2); // ancho, alto
+        this.body.setOffset(this.width *0.32, this.height*0.5 ); // desplazar el hitbox
 
         this.speed = 300;
         this.jumpSpeed = -650;
+        /** boleano para comprobar si ha terminado el cooldown del ataque */
         this.attacking = false;
         this.maxJumps = 2;
         this.jumpCount = 0;
 
+        /** zona invisible que sirve para la hitbox del ataque horizontal*/
         this.hattackbox = scene.add.zone(0, 0, 80, 30);
         scene.physics.add.existing(this.hattackbox, false);
         this.hattackbox.body.allowGravity = false;
         this.hattackbox.body.enable = false;
 
-        this.vattackbox = scene.add.zone(0, 0, 40, 80);
+        /** zona invisible que sirve para la hitbox del ataque vertical*/
+        this.vattackbox = scene.add.zone(0, 0, 40, 90);
         scene.physics.add.existing(this.vattackbox, false);
         this.vattackbox.body.allowGravity = false;
         this.vattackbox.body.enable = false;
@@ -55,7 +58,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.create({
             key: 'jump',
             frames: this.anims.generateFrameNumbers(this.texture.key, { start: 6, end: 7 }),
-            frameRate: 15,
+            frameRate: 10,
             repeat: 0
         });
 
@@ -83,7 +86,23 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             repeat: 0
         });
 
-        if (side === 'left') { // Teclas WASD Izq
+
+        /** offset por la derecha del ataque horizontal */
+        this.hxoffsetplus = 160;
+        /** offset por la izquierda del ataque horizontal */
+        this.hxoffsetminus = 40;
+        /** offset vertical del ataque vertical */
+        this.hyoffset = 30+this.height*0.3;
+        /** offset por la derecha del ataque vertical */
+        this.vxoffsetplus = 140;
+        /** offset por la izquierda del ataque vertical */
+        this.vxoffsetminus = 20;
+        /** offset vertical del ataque vertical */
+        this.vyoffset = 20+this.height*0.3;
+
+        // Guardamos las teclas (pueden ser WASD o flechas)
+        if (side === 'left') {
+            // Teclas WASD Izq
             this.keys = scene.input.keyboard.addKeys({
                 left: Phaser.Input.Keyboard.KeyCodes.A,
                 right: Phaser.Input.Keyboard.KeyCodes.D,
@@ -99,7 +118,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                 right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
                 up: Phaser.Input.Keyboard.KeyCodes.UP,
                 hattack: Phaser.Input.Keyboard.KeyCodes.SHIFT,
-                vattack: Phaser.Input.Keyboard.KeyCodes.MINUS, // poner ctrl también
+                vattack: Phaser.Input.Keyboard.KeyCodes.MINUS,
+                vattack2: Phaser.Input.Keyboard.KeyCodes.CTRL,
             });
         }
 
@@ -129,7 +149,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.healthBar = document.querySelector(`healthbar.${side} > div`);
         this.updateHealthBar();
 
-        this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques???
+        this.side = side;
+        this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques
 
         // Empezar con animación idle
         this.anims.play('idle');
@@ -144,8 +165,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     handleInput() {
-        // Asignación de teclas
-        const { left, right, up, hattack, vattack } = this.keys;
+        if (!this.active) return;
+
+        const { left, right, up, hattack, vattack,vattack2 } = this.keys;
 
         // Reiniciar contador si está tocando el suelo
         if (this.body.blocked.down || this.body.onFloor()) {
@@ -155,13 +177,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (left.isDown && this.body.velocity.x >= -this.speed) {
             this.setVelocityX(-this.speed);
             this.flipX = true;
-            this.body.setOffset(this.width * 0.4, 0);
+            //this.body.setOffset(this.width * 0.4, 0);
         } 
         
         else if (right.isDown && this.body.velocity.x <= this.speed) {
             this.setVelocityX(this.speed);
             this.flipX = false;
-            this.body.setOffset(this.width * 0.2, 0);
+            //this.body.setOffset(this.width * 0.2, 0);
         } 
         
         else if (this.body.onFloor()) {
@@ -181,15 +203,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (hattack.isDown && !this.attacking) {
             this.hAttack();
-        } 
-        
-        else if (vattack.isDown && !this.attacking) {
+        }if (this.side === 'right'){
+            if((vattack.isDown||vattack2.isDown) && !this.attacking)
+                this.vAttack();
+        }else {
+            if (vattack.isDown && !this.attacking)
             this.vAttack();
         }
 
         if (this.attacking) return;
 
-        if (!this.body.onFloor()) {
+        if (this.body.velocity.y > 40 || this.body.velocity.y < -40) {
             this.anims.play('jump', true);
         } else if (this.body.velocity.x !== 0) {
             this.anims.play('run', true);
@@ -197,16 +221,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.play('idle', true);
         }
     }
-
-    hAttack() {
-        this.attacking = true;
+    /** lógica del ataque horizontal */
+    hAttack(){
+        this.attacking = true; 
         this.hattackbox.body.enable = true;
-        this.hattackbox.y = this.y + 30;
-        if (this.flipX) {
-            this.hattackbox.x = this.x - 50;
+        this.hattackbox.y = this.y+this.hyoffset;
+        if (this.flipX){
+            this.hattackbox.x = this.x-this.hxoffsetminus;
         }
-        else {
-            this.hattackbox.x = this.x + 75;
+        else{
+            this.hattackbox.x = this.x+this.hxoffsetplus;
         }
 
         SoundManager.play(this.attackSounds.h);
@@ -217,16 +241,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         // Cuando acabe la animación:
         this.once('animationcomplete-horizontal', () => { this.AttackFinish(); });
     }
-
-    vAttack() {
-        this.attacking = true;
+    /** lógica del ataque vertical */
+    vAttack(){
+        this.attacking = true; 
         this.vattackbox.body.enable = true;
-        this.vattackbox.y = this.y + 20;
-        if (this.flipX) {
-            this.vattackbox.x = this.x - 30;
+        this.vattackbox.y = this.y+this.vyoffset;
+        if (this.flipX){
+            this.vattackbox.x = this.x-this.vxoffsetminus;
         }
-        else {
-            this.vattackbox.x = this.x + 55;
+        else{
+            this.vattackbox.x = this.x+this.vxoffsetplus;
         }
 
         SoundManager.play(this.attackSounds.v);
@@ -285,8 +309,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
     }
-
-    // Actualiza la barra de vida situada en el html
+        /** Actualiza la barra de vida situada en el html*/
     updateHealthBar() {
         // Asignamos el ancho según el porcentaje de vida restante
         this.healthBar.style.width = `${(this.life / this.maxLife) * 100}%`;

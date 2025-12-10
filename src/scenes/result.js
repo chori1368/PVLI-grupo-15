@@ -41,7 +41,7 @@ export default class ResultScene extends Phaser.Scene {
             fill: '#a7a2edf2'
         }).setOrigin(0.5);
 
-        // Boton de continuar, TODO: reemplazar por una clase button
+        // Boton de continuar
         const button = this.add.text(this.scale.width / 2, this.scale.height - 70, 'VOLVER', {
             fontSize: '30px',
             fontFamily: 'Cinzel',

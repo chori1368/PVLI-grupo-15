@@ -11,7 +11,7 @@ export default class Te extends Phaser.Physics.Arcade.Sprite {
         this.healAmount = 2000;
 
         this.scene = scene;
-        // Tiempo de vida en ms; por defecto 5000 (5 segundos)
+        /**Tiempo de vida en ms; por defecto 5000 (5 segundos)*/
         this.lifetime = lifetime;
 
         // Programar autodestrucción si nadie lo recoge en el tiempo indicado
@@ -28,6 +28,7 @@ export default class Te extends Phaser.Physics.Arcade.Sprite {
             // Curar al jugador
             SoundManager.play('swallow');
             player.life = Math.min(player.maxLife, player.life + this.healAmount);
+            player.updateHealthBar();
             // Destruir el objeto te después de recogerlo
             this.destroy();
         });
