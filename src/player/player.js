@@ -298,14 +298,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             if (this.attacking && this.hattackbox.body.enable) {
                 player.reduceLife(400);
                 this.hattackbox.body.enable = false;
-                //console.log('daño');
             }
         });
         this.scene.physics.add.overlap(player, this.vattackbox, () => {
             if (this.attacking && this.vattackbox.body.enable) {
                 player.reduceLife(400);
                 this.vattackbox.body.enable = false;
-                //console.log('daño');
             }
         });
     }

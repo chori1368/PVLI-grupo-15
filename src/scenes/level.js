@@ -215,7 +215,7 @@ export default class LevelScene extends Phaser.Scene {
         // Elegir posición x aleatoria dentro del ancho del nivel
         const x = Phaser.Math.Between(0, Math.max(1, Math.floor(this.scale.width)));
         // Crear ardilla con los colliders del nivel (para el té)
-        new Squirrel(this, x, this.colliders);
+        new Squirrel(this, x);
         // Actualizar el timer para la próxima ardilla
         this.nextTea = this.time.now + Phaser.Math.Between(5000, 10000);
     }

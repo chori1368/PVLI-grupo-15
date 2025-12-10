@@ -1,7 +1,7 @@
 import SoundManager from '../manager/soundManager.js';
 
 export default class Tea extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, target) {
+    constructor(scene, x, y, target, opts = {}) {
         super(scene, x, y, 'tea');
 
         // Añadimos el objeto a escena
@@ -9,8 +9,9 @@ export default class Tea extends Phaser.GameObjects.Sprite {
 
         // Algunas variables del té
         this.target = target; // Posición objetivo a la que volar
-        this.heal = 2000; // Cantidad de vida que cura
-        this.expire = 7500; // Tiempo antes de desaparecer (ms)
+        this.colliders = scene.colliders ?? [];
+        this.healAmount = opts.healAmount ?? 2000; // Cantidad de vida que cura
+        this.lifetime = opts.lifetime ?? 7500; // Tiempo antes de desaparecer (ms)
 
         // Algunas propiedades visuales
         this.setScale(0.5);
@@ -20,7 +21,7 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         this.flyToTarget();
     }
 
-    // Animación de vuelo hacia la posición objetivo
+    /** Animación de vuelo hacia la posición objetivo */
     flyToTarget() {
         this.scene.tweens.add({
             targets: this,
@@ -42,11 +43,6 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         this.body.setDamping(true);
         this.body.setDrag(1200, 0);
         this.body.setFriction(1, 0);
-
-        // Comprobar colisión con colliders
-        for (let i = 0; i < this.colliders.length; i++) {
-            this.scene.physics.add.collider(this, this.colliders[i]);
-        }
 
         // Destrucción tras lifetime ms
         this.scene.time.delayedCall(this.lifetime, () => { this.destroy(); });
