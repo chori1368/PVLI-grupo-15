@@ -61,4 +61,4 @@ export default class PlayerSpear extends Player {
             }
         });
     };
-} // Cierre de la clase PlayerSpear
+}

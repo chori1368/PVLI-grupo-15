@@ -3,7 +3,8 @@ import PlayerSword from '../player/player_sword.js';
 import Ground from '../objects/platform.js';
 import Bridge from '../objects/bridge.js';
 import Lava from '../objects/lava.js';
-import Te from '../objects/tea.js';
+import Squirrel from '../objects/squirrel.js';
+import Box from '../objects/box.js';
 import BreakableGround from '../objects/breakableGround.js';
 import SoundManager from '../manager/soundManager.js';
 
@@ -34,6 +35,7 @@ export default class LevelScene extends Phaser.Scene {
         this.load.image('lava', 'assets/level/lava.png');
         this.load.image('tea', 'assets/level/tea.png');
         this.load.image('squirrel', 'assets/characters/squirrel.png');
+        this.load.image('box', 'assets/level/box.png');
         this.load.image('coliseum', 'assets/level/coliseum.png');
 
         // Preload spritesheets
@@ -95,15 +97,23 @@ export default class LevelScene extends Phaser.Scene {
         // Destruir puente al finalizar la partida
         this.time.delayedCall(60000, () => { this.bridge.destroy(), SoundManager.play('break'); });
 
-        // Plataformas del nivel (con columnas)
-        this.grounds = [
+        // Pilares (columnas con plataformas)
+        this.pilars = [
             new Ground(this, 500, this.scale.height - 450, 'pilar', 0.35, 0.35),
             //new Ground(this, 1200, 500, 'suelo', 0.25, 0.3)
         ];
-        this.breakables = [];
+
+        this.platforms = [];
 
         // Lava
         this.lava = new Lava(this, this.scale.width / 2, this.scale.height, 'lava', 20, 1);
+
+        // Cajas
+        this.boxes = [
+            new Box(this, 700, this.scale.height - 500),
+            new Box(this, 1200, this.scale.height - 520),
+            new Box(this, 1700, this.scale.height - 500)
+        ];
 
         // Crear jugador izquierdo (según tipo)
         if (data.left == 0) this.playerLeft = new PlayerSword(this, 'left');
@@ -114,13 +124,17 @@ export default class LevelScene extends Phaser.Scene {
         else this.playerRight = new PlayerSpear(this, 'right');
 
         // Colliders jugadores con mundo
-        this.physics.add.collider(this.playerLeft, this.grounds, (player, ground) => {
+        this.physics.add.collider(this.playerLeft, this.pilars, (player, pilar) => {
         }, null, this);
 
-        this.physics.add.collider(this.playerRight, this.grounds, (player, ground) => {
+        this.physics.add.collider(this.playerRight, this.pilars, (player, pilar) => {
         }, null, this);
         this.physics.add.collider(this.playerLeft, this.bridge.getSegments());
         this.physics.add.collider(this.playerRight, this.bridge.getSegments());
+        this.physics.add.collider([this.playerLeft, this.playerRight], this.boxes);
+        this.physics.add.collider(this.boxes, this.pilars);
+        this.physics.add.collider(this.boxes, this.bridge.getSegments());
+        this.physics.add.collider(this.boxes, this.boxes);
 
         this.lava.addCollision(this.playerLeft);
         this.lava.addCollision(this.playerRight);
@@ -132,6 +146,16 @@ export default class LevelScene extends Phaser.Scene {
         this.playerLeft.setCollideWorldBounds(true);
         this.playerRight.setCollideWorldBounds(true);
         this.cameras.main.setBounds(0, 0, LEVEL_WIDTH, LEVEL_HEIGHT);
+
+        // Array de colliders para pasarlo a cualquier overlap externo
+        this.colliders = [
+            this.playerLeft,
+            this.playerRight,
+            this.pilars,
+            this.bridge.getSegments(),
+            this.boxes
+        ];
+
         // const breakable = new BreakableGround(this, 400, 300, 'suelo');
         // breakable.setScale(0.3);
         // breakable.body.setSize(breakable.displayWidth, breakable.displayHeight);
@@ -148,55 +172,54 @@ export default class LevelScene extends Phaser.Scene {
         //     breakable.touch(player);
         // }, null, this);
 
-        this.spawnTea();
+        // Inicializamos el temporizador para la primera ardilla
+        this.nextTea = this.time.now + Phaser.Math.Between(5000, 10000);
     }
 
     isGameOver() {
-        if (!this.playerLeft.isAlive()) {
+        let result = null;
+
+        // Comprobar si algún jugador ha muerto
+        if (!this.playerLeft.isAlive()) result = { winner: 'right', type: this.playerRight.type };
+        else if (!this.playerRight.isAlive()) result = { winner: 'left', type: this.playerLeft.type };
+
+        // Si alguno ha muerto, ocultar UI y pasar de escena
+        if (result) {
             SoundManager.stopMusic();
-            if (this.clock) this.clock.style.display = 'none';
-            if (this.healthbarLeft) this.healthbarLeft.style.display = 'none';
-            if (this.healthbarRight) this.healthbarRight.style.display = 'none';
-            this.scene.start('result', { winner: 'right', type: this.playerRight.type });
-        } else if (!this.playerRight.isAlive()) {
-            SoundManager.stopMusic();
-            if (this.clock) this.clock.style.display = 'none';
-            if (this.healthbarLeft) this.healthbarLeft.style.display = 'none';
-            if (this.healthbarRight) this.healthbarRight.style.display = 'none';
-            this.scene.start('result', { winner: 'left', type: this.playerLeft.type });
+            this.clock.style.display = 'none';
+            this.healthbarLeft.style.display = 'none';
+            this.healthbarRight.style.display = 'none';
+            this.scene.start('result', result);
         }
     }
 
-    spawnTea() {
-        const delay = Phaser.Math.Between(5000, 10000); // tiempo aleatorio entre 5 y 10 segundos
-        const soundTime = delay - 1300; // sonar 1.3 segundos antes de que aparezca el té
-        this.time.delayedCall(soundTime, () => {
-            SoundManager.play('tea');
-        });
-        this.time.delayedCall(delay, () => {
-            const x = Phaser.Math.Between(50, this.scale.width - 50);
-            const y = this.scale.height - 1200;
-            this.te = new Te(this, x, y, 'tea', 7500);
-            this.te.addCollision(this.playerLeft);
-            this.te.addCollision(this.playerRight);
-            this.physics.add.collider(this.te, this.grounds);
-            this.physics.add.collider(this.te, this.bridge.getSegments());
-
-            this.spawnTea(); // programa el siguiente spawn
-        });
-    }
-
     update() {
-        this.updateClock();
+        // Actualizar plataformas
+        this.platforms.forEach(p => p.update([this.playerLeft, this.playerRight]));
 
-        this.breakables.forEach(b => b.update([this.playerLeft, this.playerRight]));
-
+        // Actualizar jugadores
         this.playerLeft.handleInput();
         this.playerRight.handleInput();
 
+        // Actualizar cámara y reloj
         this.updateCameraFollow();
+        this.updateClock();
 
+        // Spawnear ardillas que lanzan té (después de un tiempo nextTea)
+        if (this.time.now > this.nextTea) this.spawnSquirrel();
+
+        // Comprobar si la partida ha terminado
         this.isGameOver();
+    }
+
+    // Spawnea una ardilla que lanza té en una posición x aleatoria
+    spawnSquirrel() {
+        // Elegir posición x aleatoria dentro del ancho del nivel
+        const x = Phaser.Math.Between(0, Math.max(1, Math.floor(this.scale.width)));
+        // Crear ardilla con los colliders del nivel (para el té)
+        new Squirrel(this, x, this.colliders);
+        // Actualizar el timer para la próxima ardilla
+        this.nextTea = this.time.now + Phaser.Math.Between(5000, 10000);
     }
 
     // Actualiza el timer del html (clock)
@@ -212,11 +235,10 @@ export default class LevelScene extends Phaser.Scene {
         }
     }
 
-    // Cámara sigue al punto medio entre ambos jugadores
+    // Actualiza la cámara para que siga a ambos jugadores
     updateCameraFollow() {
         const x = (this.playerLeft.x + this.playerRight.x) / 2;
         const y = (this.playerLeft.y + this.playerRight.y) / 2;
-
         this.cameras.main.centerOn(x, y);
     }
 }

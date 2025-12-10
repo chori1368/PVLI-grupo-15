@@ -1,35 +1,66 @@
 import SoundManager from '../manager/soundManager.js';
-export default class Te extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, lifetime = 5000) {
-        super(scene, x, y, texture);
 
-        scene.add.existing(this);
-        scene.physics.add.existing(this);
+export default class Tea extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y, target, colliders) {
+        super(scene, x, y, 'tea');
 
+        // Añadimos el objeto a escena
+        this.scene.add.existing(this);
+
+        // Algunas variables del té
+        this.target = target; // Posición objetivo a la que volar
+        this.heal = 2000; // Cantidad de vida que cura
+        this.expire = 7500; // Tiempo antes de desaparecer (ms)
+        this.colliders = colliders;
+
+        // Filtrar los colliders por jugadores (objetos con propiedad life)
+        this.players = colliders.filter(c => c.life !== undefined);
+
+        // Algunas propiedades visuales
         this.setScale(0.5);
-        this.body.allowGravity = true;  // si no quieres que caiga
-        this.healAmount = 2000;
+        this.setDepth(19);
 
-        this.scene = scene;
-        // Tiempo de vida en ms; por defecto 5000 (5 segundos)
-        this.lifetime = lifetime;
-
-        // Programar autodestrucción si nadie lo recoge en el tiempo indicado
-        this.destroyTimer = this.scene.time.delayedCall(this.lifetime, () => {
-            // Si sigue activo en la escena, lo destruimos
-            if (this && this.active) {
-                this.destroy();
-            }
-        }, [], this);
+        // Iniciamos la animación hacia el target pos
+        this.flyToTarget();
     }
 
-    addCollision(player) {
-        this.scene.physics.add.overlap(player, this, () => {
-            // Curar al jugador
-            SoundManager.play('swallow');
-            player.life = Math.min(player.maxLife, player.life + this.healAmount);
-            // Destruir el objeto te después de recogerlo
-            this.destroy();
+    flyToTarget() {
+        this.scene.tweens.add({
+            targets: this,
+            x: this.target.x,
+            y: this.target.y,
+            angle: 360,
+            duration: 850,
+            ease: 'Sine.easeInOut',
+            onComplete: () => this.enablePhysics()
         });
+    }
+
+    enablePhysics() {
+        // Algunas propiedades físicas...
+        this.scene.physics.add.existing(this);
+        this.body.setAllowGravity(true);
+        this.body.setBounce(0.05);
+        this.body.setDamping(true);
+        this.body.setDrag(1200, 0);
+        this.body.setFriction(1, 0);
+
+        // Comprobar colisión con colliders
+        for (let i = 0; i < this.colliders.length; i++) {
+            this.scene.physics.add.collider(this, this.colliders[i]);
+        }
+
+        // Comprobar colisión con jugadores
+        for (let j = 0; j < this.players.length; j++) {
+            this.scene.physics.add.overlap(this.players[j], this, () => {
+                SoundManager.play('swallow');
+                this.players[j].life = Math.min(this.players[j].maxLife, this.players[j].life + this.healAmount);
+                if (this.players[j].updateHealthBar) this.players[j].updateHealthBar();
+                this.destroy();
+            });
+        }
+
+        // Destrucción tras lifetime ms
+        this.scene.time.delayedCall(this.lifetime, () => { this.destroy(); });
     }
 }
