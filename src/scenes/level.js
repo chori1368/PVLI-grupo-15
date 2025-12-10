@@ -39,8 +39,8 @@ export default class LevelScene extends Phaser.Scene {
         this.load.image('coliseum', 'assets/level/coliseum.png');
 
         // Preload spritesheets
-        this.load.spritesheet('sword', 'assets/characters/sword.png', { frameWidth: 593, frameHeight: 593 });
-        this.load.spritesheet('spear', 'assets/characters/spear.png', { frameWidth: 593, frameHeight: 593 });
+        this.load.spritesheet('sword', 'assets/characters/sword.png', { frameWidth: 916, frameHeight: 593 });
+        this.load.spritesheet('spear', 'assets/characters/spear.png', { frameWidth: 926, frameHeight: 593 });
     }
 
     create(data) {
@@ -212,8 +212,11 @@ export default class LevelScene extends Phaser.Scene {
 
     // Spawnea una ardilla que lanza té en una posición x aleatoria
     spawnSquirrel() {
+        let x;
         // Elegir posición x aleatoria dentro del ancho del nivel
-        const x = Phaser.Math.Between(0, Math.max(1, Math.floor(this.scale.width)));
+        if (Phaser.Math.Between(0, 1) === 0) x = (window.outterWidth - window.innerWidth) / 2 + this.displayWidth;
+        else x = (window.outterWidth + window.innerWidth) / 2 - this.displayWidth;
+
         // Crear ardilla con los colliders del nivel (para el té)
         new Squirrel(this, x);
         // Actualizar el timer para la próxima ardilla
