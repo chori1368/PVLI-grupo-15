@@ -1,7 +1,7 @@
 import SoundManager from '../manager/soundManager.js';
 
 export default class Tea extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, target, colliders) {
+    constructor(scene, x, y, target) {
         super(scene, x, y, 'tea');
 
         // Añadimos el objeto a escena
@@ -11,10 +11,6 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         this.target = target; // Posición objetivo a la que volar
         this.heal = 2000; // Cantidad de vida que cura
         this.expire = 7500; // Tiempo antes de desaparecer (ms)
-        this.colliders = colliders;
-
-        // Filtrar los colliders por jugadores (objetos con propiedad life)
-        this.players = colliders.filter(c => c.life !== undefined);
 
         // Algunas propiedades visuales
         this.setScale(0.5);
@@ -24,6 +20,7 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         this.flyToTarget();
     }
 
+    // Animación de vuelo hacia la posición objetivo
     flyToTarget() {
         this.scene.tweens.add({
             targets: this,
@@ -36,6 +33,7 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         });
     }
 
+    // Habilitar físicas y colisiones (para dejar caer el té)
     enablePhysics() {
         // Algunas propiedades físicas...
         this.scene.physics.add.existing(this);
@@ -50,17 +48,19 @@ export default class Tea extends Phaser.GameObjects.Sprite {
             this.scene.physics.add.collider(this, this.colliders[i]);
         }
 
-        // Comprobar colisión con jugadores
-        for (let j = 0; j < this.players.length; j++) {
-            this.scene.physics.add.overlap(this.players[j], this, () => {
-                SoundManager.play('swallow');
-                this.players[j].life = Math.min(this.players[j].maxLife, this.players[j].life + this.healAmount);
-                if (this.players[j].updateHealthBar) this.players[j].updateHealthBar();
-                this.destroy();
-            });
-        }
-
         // Destrucción tras lifetime ms
         this.scene.time.delayedCall(this.lifetime, () => { this.destroy(); });
+    }
+
+    // Añadir collisión con jugador (y lo que se hace al colisionar)
+    addCollision(player) {
+        this.scene.physics.add.overlap(player, this, () => {
+            SoundManager.play('swallow');
+            // Curar al jugador
+            player.life = Math.min(player.maxLife, player.life + this.healAmount);
+            player.updateHealthBar();
+            // Destruir el objeto te después de recogerlo
+            this.destroy();
+        });
     }
 }

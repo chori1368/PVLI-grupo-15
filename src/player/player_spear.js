@@ -5,17 +5,22 @@ export default class PlayerSpear extends Player {
     constructor(scene, side) {
         super(scene, side, 'spear');
         this.jumpSpeed = -750;
+        /** booleano para comprobar si el player ya ha hecho daño con ese dash */
         this.dashing = false;
         this.type = 1; //spear type
 
         // Ajustar collider del arma
         if (this.hattackbox && this.hattackbox.body) {
-            this.hattackbox.setSize(140, 30);
-            this.hattackbox.body.setSize(140, 30);
+            this.hattackbox.setSize(120, 30);
+            this.hattackbox.body.setSize(120, 30);
+            this.hxoffsetplus = 180;
+            this.hxoffsetminus = 60;
         }
         if (this.vattackbox && this.vattackbox.body) {
-            this.vattackbox.setSize(40, 120);
-            this.vattackbox.body.setSize(40, 120);
+            this.vattackbox.setSize(40, 100);
+            this.vattackbox.body.setSize(40, 100);
+            this.vxoffsetplus = 140;
+            this.vxoffsetminus = 25;
         }
     }
 

@@ -99,8 +99,8 @@ export default class LevelScene extends Phaser.Scene {
 
         // Pilares (columnas con plataformas)
         this.pilars = [
-            new Ground(this, 500, this.scale.height - 450, 'pilar', 0.35, 0.35),
-            //new Ground(this, 1200, 500, 'suelo', 0.25, 0.3)
+            new Ground(this, this.scale.width - 1800, this.scale.height - 450, 'pilar', 0.35, 0.35),
+            new Ground(this, this.scale.width - 800, this.scale.height - 550, 'pilar', 0.5, 0.6)
         ];
 
         this.platforms = [];
@@ -124,11 +124,8 @@ export default class LevelScene extends Phaser.Scene {
         else this.playerRight = new PlayerSpear(this, 'right');
 
         // Colliders jugadores con mundo
-        this.physics.add.collider(this.playerLeft, this.pilars, (player, pilar) => {
-        }, null, this);
-
-        this.physics.add.collider(this.playerRight, this.pilars, (player, pilar) => {
-        }, null, this);
+        this.physics.add.collider(this.playerLeft, this.pilars);
+        this.physics.add.collider(this.playerRight, this.pilars);
         this.physics.add.collider(this.playerLeft, this.bridge.getSegments());
         this.physics.add.collider(this.playerRight, this.bridge.getSegments());
         this.physics.add.collider([this.playerLeft, this.playerRight], this.boxes);
@@ -136,6 +133,7 @@ export default class LevelScene extends Phaser.Scene {
         this.physics.add.collider(this.boxes, this.bridge.getSegments());
         this.physics.add.collider(this.boxes, this.boxes);
 
+        // Eventos de colisión entre jugadores y lava
         this.lava.addCollision(this.playerLeft);
         this.lava.addCollision(this.playerRight);
         this.playerLeft.addCollision(this.playerRight);

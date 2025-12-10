@@ -42,6 +42,21 @@ export default class SelectionScene extends Phaser.Scene {
         this.add.image(this.scale.width/2 + 610, this.scale.height - 160, 'left').setOrigin(0.5);
         this.add.image(this.scale.width/2 - 640, this.scale.height - 160, 'right').setOrigin(0.5);
 
+                //controles seleccion derecha
+        this.add.text(this.scale.width/2 -600, this.scale.height - 200, 'PULSA A o D \n para elegir', {
+            fontSize: '50px',
+            fontFamily: 'Cinzel',
+            fontStyle: 'bold',
+            fill: '#b0a2edf2'
+        }).setOrigin(0.5);
+
+        //controles seleccion izquierda
+        this.add.text(this.scale.width/2 + 600, this.scale.height - 200, 'PULSA < o > \n para elegir', {
+            fontSize: '50px',
+            fontFamily: 'Cinzel',
+            fontStyle: 'bold',
+            fill: '#b0a2edf2'
+        }).setOrigin(0.5);
         // Controles de seleccion Izq
         const A = this.input.keyboard.addKey('A');
         const D = this.input.keyboard.addKey('D');
@@ -58,7 +73,7 @@ export default class SelectionScene extends Phaser.Scene {
         LEFT.on('down', () => { right.setFrame((right.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
         RIGHT.on('down', () => { right.setFrame((right.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
 
-        // Boton de continuar, TODO: reemplazar por una clase button
+        // Boton de continuar
         const button = this.add.text(this.scale.width / 2, this.scale.height - 70, 'CONTINUAR', {
             fontSize: '30px',
             fontFamily: 'Cinzel',

@@ -15,8 +15,8 @@ export default class Ground extends Phaser.GameObjects.Image {
     if (this.active){
       this.scene.tweens.add({
         targets: this,
-        y: this.y -150,
-        duration: Phaser.Math.Between(5000, 10000),
+        y: this.y -250,
+        duration: Phaser.Math.Between(7000, 13000),
         ease: 'Linear',
         onUpdate: () => this.body.updateFromGameObject(),
         onComplete: () => {
@@ -30,8 +30,8 @@ export default class Ground extends Phaser.GameObjects.Image {
   move() {
     this.scene.tweens.add({
       targets: this,
-      y: this.y + 150,
-      duration: Phaser.Math.Between(5000, 10000),
+      y: this.y + 250,
+      duration: Phaser.Math.Between(7000, 13000),
       ease: 'Linear',
       onUpdate: () => this.body.updateFromGameObject(),
       onComplete: () => {
