@@ -6,7 +6,6 @@ import Lava from '../objects/lava.js';
 import Squirrel from '../objects/squirrel.js';
 import Box from '../objects/box.js';
 import BreakableGround from '../objects/breakableGround.js';
-import SoundManager from '../manager/soundManager.js';
 
 export default class LevelScene extends Phaser.Scene {
     constructor() {
@@ -14,19 +13,19 @@ export default class LevelScene extends Phaser.Scene {
     }
 
     preload() {
-        SoundManager.init(this);
-        SoundManager.preload([
-            { key: 'BattleMusic', path: 'assets/sounds/MusicaBatalla.mp3' },
-            { key: 'tea', path: 'assets/sounds/tea.mp3' },
-            { key: 'terremoto', path: 'assets/sounds/terremoto.mp3' },
-            { key: 'spear', path: 'assets/sounds/lanza.mp3' },
-            { key: 'sword', path: 'assets/sounds/sword.mp3' },
-            { key: 'break', path: 'assets/sounds/LadrilloRoto.mp3' },
-            { key: 'swallow', path: 'assets/sounds/swallow.mp3' },
-            { key: 'spinningSword', path: 'assets/sounds/spinningSword.mp3' },
-            { key: 'spinningSpear', path: 'assets/sounds/spinningSpear.mp3' },
-            { key: 'speardash', path: 'assets/sounds/spearDash.mp3' }
-        ]);
+        //Preload audio
+        this.load.audio('BattleMusic', 'assets/sounds/MusicaBatalla.mp3' );
+        this.load.audio('tea', 'assets/sounds/tea.mp3' );
+        this.load.audio('terremoto', 'assets/sounds/terremoto.mp3' );
+        this.load.audio('spear', 'assets/sounds/lanza.mp3' );
+        this.load.audio('sword', 'assets/sounds/sword.mp3' );
+        this.load.audio('break', 'assets/sounds/break.mp3' );
+        this.load.audio('swallow', 'assets/sounds/swallow.mp3');
+        this.load.audio('spinningSword', 'assets/sounds/spinningSword.mp3');
+        this.load.audio('spinningSpear', 'assets/sounds/spinningSpear.mp3');
+        this.load.audio('speardash', 'assets/sounds/spearDash.mp3');
+        this.load.audio('daño', 'assets/sounds/Daño.mp3');
+
 
         // Preload assets
         this.load.image('pilar', 'assets/level/pilar.png');
@@ -78,8 +77,7 @@ export default class LevelScene extends Phaser.Scene {
         const LEVEL_WIDTH = 2400;
         const LEVEL_HEIGHT = 800;
 
-        SoundManager.playMusic('BattleMusic', { loop: true, fade: 0, volume: 0.05 });
-        SoundManager.setSfx(0.1);
+        this.music = this.sound.play('BattleMusic', { loop: true ,  volume: 0.1 });
 
         // Puente
         this.bridge = new Bridge(this, 0, this.scale.height - 190, 'bridge', 0.45, 0.45, LEVEL_WIDTH);
@@ -87,7 +85,7 @@ export default class LevelScene extends Phaser.Scene {
         // Camera shake 5 segundos antes de destruir el puente
         this.time.delayedCall(30000 - 2000, () => {
             // duración 500 ms, intensidad 0.01 
-            SoundManager.play('terremoto');
+            this.sound.play('terremoto');
             this.cameras.main.shake(2000, 0.01);
         });
 
@@ -95,7 +93,7 @@ export default class LevelScene extends Phaser.Scene {
         this.time.delayedCall(30000, () => this.bridge.collapseParts());
 
         // Destruir puente al finalizar la partida
-        this.time.delayedCall(60000, () => { this.bridge.destroy(), SoundManager.play('break'); });
+        this.time.delayedCall(60000, () => { this.bridge.destroy(), this.sound.play('break'); });
 
         // Pilares (columnas con plataformas)
         this.pilars = [
@@ -183,7 +181,7 @@ export default class LevelScene extends Phaser.Scene {
 
         // Si alguno ha muerto, ocultar UI y pasar de escena
         if (result) {
-            SoundManager.stopMusic();
+            this.sound.stopAll();
             this.clock.style.display = 'none';
             this.healthbarLeft.style.display = 'none';
             this.healthbarRight.style.display = 'none';

@@ -1,6 +1,4 @@
 import Ground from './platform.js';
-import SoundManager from '../manager/soundManager.js';
-
 export default class BreakableGround extends Ground {
     constructor(scene, x, y, texture) {
         super(scene, x, y, texture);
@@ -213,7 +211,7 @@ export default class BreakableGround extends Ground {
 
     // Limpieza final al destruir el objeto
     destroy(fromScene) {
-        SoundManager.play('break');
+        if (this.scene && this.scene.sound) this.scene.sound.play('break');        // Crear té en una posición aleatoria en la parte superior de la escena
         this._clearTimers();
         if (this._debugInterval) {
             try { clearInterval(this._debugInterval); } catch(e) {}

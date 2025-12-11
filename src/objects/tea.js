@@ -1,4 +1,3 @@
-import SoundManager from '../manager/soundManager.js';
 
 export default class Tea extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, target, opts = {}) {
@@ -51,7 +50,7 @@ export default class Tea extends Phaser.GameObjects.Sprite {
     // Añadir collisión con jugador (y lo que se hace al colisionar)
     addCollision(player) {
         this.scene.physics.add.overlap(player, this, () => {
-            SoundManager.play('swallow');
+            if (this.scene && this.scene.sound) this.scene.sound.play('tea');        // Crear té en una posición aleatoria en la parte superior de la escena
             // Curar al jugador
             player.life = Math.min(player.maxLife, player.life + this.healAmount);
             player.updateHealthBar();

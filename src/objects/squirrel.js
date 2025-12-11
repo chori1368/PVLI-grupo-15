@@ -1,4 +1,3 @@
-import SoundManager from '../manager/soundManager.js';
 import Tea from './tea.js';
 
 export default class Squirrel extends Phaser.GameObjects.Sprite {
@@ -77,8 +76,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
     // Crear y lanzar el té
     throwTea() {
         // Reproducir sonido de lanzar té
-        SoundManager.play('tea');
-        // Crear té en una posición aleatoria en la parte superior de la escena
+if (this.scene && this.scene.sound) this.scene.sound.play('tea');        // Crear té en una posición aleatoria en la parte superior de la escena
         const tea = new Tea(this.scene, this.x, this.y, this.target);
 
         // Le añadimos al té la colisión con los jugadores

@@ -1,4 +1,3 @@
-import SoundManager from '../manager/soundManager.js';
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, side, texture, opts = {}) {
@@ -233,8 +232,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.hattackbox.x = this.x+this.hxoffsetplus;
         }
 
-        SoundManager.play(this.attackSounds.h);
-
+       if (this.scene && this.scene.sound) this.scene.sound.play(this.attackSounds.h); 
         // Reproducir animación de ataque vertical
         this.anims.play('horizontal', true);
 
@@ -253,7 +251,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.vattackbox.x = this.x+this.vxoffsetplus;
         }
 
-        SoundManager.play(this.attackSounds.v);
+        if (this.scene && this.scene.sound) this.scene.sound.play(this.attackSounds.v);        // Crear té en una posición aleatoria en la parte superior de la escena
 
         // Reproducir animación de ataque vertical
         this.anims.play('vertical', true);

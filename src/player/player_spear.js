@@ -1,5 +1,4 @@
 import Player from './player.js';
-import SoundManager from '../manager/soundManager.js';
 
 export default class PlayerSpear extends Player {
     constructor(scene, side) {
@@ -28,7 +27,7 @@ export default class PlayerSpear extends Player {
         this.dashing = true;
         try {
             if (this.attackSounds && this.attackSounds.dash) {
-                SoundManager.play(this.attackSounds.dash);
+                this.sound.play(this.attackSounds.dash);
             }
         } catch (e) { }
         if (this.flipX) {

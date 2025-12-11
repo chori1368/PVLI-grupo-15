@@ -1,15 +1,11 @@
-import SoundManager from '../manager/soundManager.js';
 export default class SelectionScene extends Phaser.Scene {
     constructor() { super('selection'); }
 
     preload() {
-        SoundManager.init(this);
-        SoundManager.preload([
-        { key: 'seleccionar', path: 'assets/sounds/seleccionar.mp3' },
-        { key: 'click', path: 'assets/sounds/click.mp3' }
-        ]);
-
-
+        //Preload audio
+        this.load.audio('seleccionar', 'assets/sounds/seleccionar.mp3' );
+        this.load.audio('click', 'assets/sounds/click.mp3' );
+        
         // Preload assets
         this.load.image('background', 'assets/selection/background.png');
         this.load.image('left', 'assets/selection/left.png');
@@ -66,12 +62,12 @@ export default class SelectionScene extends Phaser.Scene {
         const RIGHT = this.input.keyboard.addKey('RIGHT');
 
         // Eventos de seleccion Izq
-        A.on('down', () => { left.setFrame((left.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
-        D.on('down', () => { left.setFrame((left.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
+        A.on('down', () => { left.setFrame((left.frame.name + 1)% 2); this.sound.play('seleccionar'); });
+        D.on('down', () => { left.setFrame((left.frame.name + 1)% 2); this.sound.play('seleccionar'); });
 
         // Eventos de seleccion Dcha
-        LEFT.on('down', () => { right.setFrame((right.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
-        RIGHT.on('down', () => { right.setFrame((right.frame.name + 1)% 2); SoundManager.play('seleccionar'); });
+        LEFT.on('down', () => { right.setFrame((right.frame.name + 1)% 2); this.sound.play('seleccionar'); });
+        RIGHT.on('down', () => { right.setFrame((right.frame.name + 1)% 2); this.sound.play('seleccionar'); });
 
         // Boton de continuar
         const button = this.add.text(this.scale.width / 2, this.scale.height - 70, 'CONTINUAR', {
@@ -82,6 +78,6 @@ export default class SelectionScene extends Phaser.Scene {
         }).setOrigin(0.5).setInteractive();
 
         // Pasaremos 0 o 1 en funcion del frame seleccionado de cada jugador
-        button.on('pointerdown', () => {SoundManager.play('click'); this.scene.start('level', { left: left.frame.name, right: right.frame.name });});
+        button.on('pointerdown', () => {this.sound.play('click'); this.scene.start('level', { left: left.frame.name, right: right.frame.name });});
     }
 }
