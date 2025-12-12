@@ -8,5 +8,6 @@ export default class PlayerSword extends Player {
 
     DoubleJump() {
         this.setVelocityY(this.jumpSpeed);
+        this.anims.play('jump', true);
     }
 }

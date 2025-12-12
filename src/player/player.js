@@ -27,7 +27,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setOffset(this.width * 0.39, this.height / 2); // desplazar el hitbox
 
         this.speed = 400;
-        this.jumpSpeed = -600;
+        this.jumpSpeed = -610;
 
         /** boleano para comprobar si ha terminado el cooldown del ataque */
         this.attacking = false;
@@ -57,7 +57,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         // Animación de salto
         this.anims.create({
             key: 'jump',
-            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 6, end: 7 }),
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 17, end: 18 }),
             frameRate: 10,
         });
 
@@ -81,6 +81,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             key: 'vertical',
             frames: this.anims.generateFrameNumbers(this.texture.key, { start: 2, end: 5 }),
             frameRate: 12,
+        });
+
+        // Animación de dash
+        this.anims.create({
+            key: 'dash',
+            frames: this.anims.generateFrameNumbers(this.texture.key, { start: 11, end: 11 }),
+            frameRate: 1,
         });
 
 
@@ -150,6 +157,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         // Empezar con animación idle
         this.anims.play('idle');
+
+        this.jumpAnimLocked = false;
     }
 
     _inferWeaponFromTexture(textureKey) {
@@ -212,9 +221,23 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (this.attacking) return;
 
-        if (this.body.velocity.y > 40 || this.body.velocity.y < -40) {
-            this.anims.play('jump', true);
-        } else if (this.body.velocity.x !== 0) {
+        const grounded = this.body.blocked.down || this.body.touching.down || this.body.onFloor();
+
+        if (!grounded) {
+            if (!this.jumpAnimLocked) {
+                this.anims.play('jump', true);
+                this.jumpAnimLocked = true;
+            }
+
+            if (!this.anims.isPlaying) {
+                this.setFrame(18);
+            }
+            return;
+        }
+
+        this.jumpAnimLocked = false;
+
+        if (this.body.velocity.x !== 0) {
             this.anims.play('run', true);
         } else {
             this.anims.play('idle', true);
@@ -267,8 +290,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     DoubleJump() {
-        this.setVelocityY(this.jumpSpeed);
         this.anims.play('jump', true);
+        this.setVelocityY(this.jumpSpeed);
     }
 
     reduceLife(amount) {

@@ -44,9 +44,6 @@ export default class LevelScene extends Phaser.Scene {
     }
 
     create(data) {
-        // Iniciar temporizador (para el clock)
-        this.startTime = this.time.now;
-
         // Dimensiones del mundo
         this.worldWidth = 3000;
         this.worldHeight = 2000;
@@ -179,6 +176,9 @@ export default class LevelScene extends Phaser.Scene {
             this.bridge.destroy();
             this.sound.play('break');
         });
+
+        // Iniciar temporizador (para el clock)
+        this.startTime = this.time.now;
 
         // Inicializamos el temporizador para la primera ardilla
         this.nextTea = this.time.now + Phaser.Math.Between(5000, 10000);
