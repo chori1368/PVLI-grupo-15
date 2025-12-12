@@ -1,17 +1,12 @@
-# Souls' Arena
-by Gehena Games (Grupo 15)
+# Assets
+Menos los sonidos los assets son creados por nosotros
 
-### Descripción:
-Juego de lucha estilo “smash-bros” en el que dos jugadores pelean entre sí de forma local 
-para determinar quien cruza la frontera del inframundo y regresa al mundo de los vivos. 
-Ciertos eventos y plataformas podrán determinarán el curso de las partidas.
+## Dirección artística
+El arte tiene una paleta de tonos oscuro-rojizos-morados para transmitir esa atmósfera de infierno caótico y oscuro que se pretende reflejar. Utilizando un estilo minimalista y gráfico para transmitir una estética arcade moderna.
 
-### Lore:
-Destinado a la condena eterna, Hades, deidad del infierno, te concede una gran oportunidad: 
-salir victorioso en un combate impredecible sobre el río Estigia para volver a la vida 
-cruzando la frontera del inframundo.
+## Assets externos
+Todos los sonidos son de youtube con una licencia de uso libre.
 
-### Autores:
-- Tomás Arévalo Almagro
-- Andrés bartolomé Diaz
-- Carlos Dochao Moreno
+## Nuestro Assets
+Todos los dibujos y fondos son creados por nosotros.
+Todos nuestros assets tienen una lizencia CC-BY 4.0
