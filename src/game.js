@@ -53,3 +53,6 @@ play?.addEventListener('change', toggleState);
 pause?.addEventListener('change', toggleState);
 
 toggleState(); // Inicializamos para sincronizar correctamente el s0
+
+// Recargar la página al redimensionar la ventana
+window.addEventListener('resize', () => window.location.reload());

@@ -53,7 +53,7 @@ export default class LevelScene extends Phaser.Scene {
         this.physics.world.setBoundsCollision(true, true, false, true);
 
         // Fondo
-        this.add.image(this.worldWidth / 2 * 0.8, this.scale.height / 2, 'coliseum').setScrollFactor(0.3);
+        this.add.image(this.worldWidth / 2 * 0.8, this.scale.height / 2, 'coliseum').setOrigin(0.5, 0.62).setScrollFactor(0.3);
 
         // Color de fondo de cámara
         this.cameras.main.setBackgroundColor('#161338');
@@ -100,10 +100,11 @@ export default class LevelScene extends Phaser.Scene {
             new Platform(this, 800, this.scale.height - 465, 'platform', 0.4)
         ];
 
+        // Plataformas flotantes que se rompen al pisarlas
         this.floating = [];
 
         // Lava
-        this.lava = new Lava(this, this.scale.width / 2, this.scale.height, 'lava', 20, 1);
+        this.lava = new Lava(this, this.scale.width / 2, this.scale.height - 90, 'lava').setOrigin(0.5, 0);
 
         // Cajas
         this.boxes = [
