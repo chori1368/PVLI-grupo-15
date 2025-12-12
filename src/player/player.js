@@ -9,14 +9,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         opts = { ...defaultOpts, ...opts };
 
         let x; // Posicionar jugador según el lado
-        if (side == 'left') x = scene.scale.width / 3;
-        else x = scene.scale.width * 2 / 3;
+        if (side == 'left') x = scene.worldWidth / 3;
+        else x = scene.worldWidth * 2 / 3;
 
         // Llamada al constructor padre con posición inicial (según lado)
         super(scene, x, scene.scale.height / 2.5, texture);
 
-        scene.add.existing(this);
-        scene.physics.add.existing(this);
+        this.scene.add.existing(this);
+        this.scene.physics.add.existing(this);
 
         this.setScale(0.5);
         this.setOrigin(0.1);
@@ -26,7 +26,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setSize(this.width * 0.2, this.height/2); // ancho, alto
         this.body.setOffset(this.width * 0.39, this.height/2); // desplazar el hitbox
 
-        this.speed = 300;
+        this.speed = 400;
         this.jumpSpeed = -650;
         /** boleano para comprobar si ha terminado el cooldown del ataque */
         this.attacking = false;
@@ -41,7 +41,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         /** zona invisible que sirve para la hitbox del ataque vertical*/
         this.vattackbox = scene.add.zone(0, 0, 40, 90);
-        scene.physics.add.existing(this.vattackbox, false);
+        this.scene.physics.add.existing(this.vattackbox, false);
         this.vattackbox.body.allowGravity = false;
         this.vattackbox.body.enable = false;
 
@@ -149,7 +149,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.updateHealthBar();
 
         this.side = side;
-        this.scene = scene; //se guarda la escena para poder hacer los timer de los ataques
 
         // Empezar con animación idle
         this.anims.play('idle');

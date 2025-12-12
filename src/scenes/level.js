@@ -1,11 +1,11 @@
 import PlayerSpear from '../player/player_spear.js';
 import PlayerSword from '../player/player_sword.js';
-import Ground from '../objects/platform.js';
+import Platform from '../objects/platform.js';
+import Floating from '../objects/floating.js';
 import Bridge from '../objects/bridge.js';
 import Lava from '../objects/lava.js';
 import Squirrel from '../objects/squirrel.js';
 import Box from '../objects/box.js';
-import BreakableGround from '../objects/breakableGround.js';
 
 export default class LevelScene extends Phaser.Scene {
     constructor() {
@@ -14,12 +14,12 @@ export default class LevelScene extends Phaser.Scene {
 
     preload() {
         //Preload audio
-        this.load.audio('BattleMusic', 'assets/sounds/MusicaBatalla.mp3' );
-        this.load.audio('tea', 'assets/sounds/tea.mp3' );
-        this.load.audio('terremoto', 'assets/sounds/terremoto.mp3' );
-        this.load.audio('spear', 'assets/sounds/lanza.mp3' );
-        this.load.audio('sword', 'assets/sounds/sword.mp3' );
-        this.load.audio('break', 'assets/sounds/break.mp3' );
+        this.load.audio('BattleMusic', 'assets/sounds/MusicaBatalla.mp3');
+        this.load.audio('tea', 'assets/sounds/tea.mp3');
+        this.load.audio('terremoto', 'assets/sounds/terremoto.mp3');
+        this.load.audio('spear', 'assets/sounds/lanza.mp3');
+        this.load.audio('sword', 'assets/sounds/sword.mp3');
+        //this.load.audio('break', 'assets/sounds/break.mp3' );
         this.load.audio('swallow', 'assets/sounds/swallow.mp3');
         this.load.audio('spinningSword', 'assets/sounds/spinningSword.mp3');
         this.load.audio('spinningSpear', 'assets/sounds/spinningSpear.mp3');
@@ -28,8 +28,8 @@ export default class LevelScene extends Phaser.Scene {
 
 
         // Preload assets
-        this.load.image('pilar', 'assets/level/pilar.png');
         this.load.image('platform', 'assets/level/platform.png');
+        this.load.image('floating', 'assets/level/floating.png');
         this.load.image('bridge', 'assets/level/bridge.png');
         this.load.image('lava', 'assets/level/lava.png');
         this.load.image('tea', 'assets/level/tea.png');
@@ -44,8 +44,16 @@ export default class LevelScene extends Phaser.Scene {
 
     create(data) {
 
+        // Dimensiones del mundo
+        this.worldWidth = 3000;
+        this.worldHeight = 2000;
+
+        this.physics.world.setBounds(0, 0, this.worldWidth + 750, this.worldHeight);
+        this.cameras.main.setBounds(0, 0, this.worldWidth + 750, this.worldHeight);
+        this.physics.world.setBoundsCollision(true, true, false, true);
+
         // Fondo
-        this.add.image(this.scale.width / 2, this.scale.height / 2, 'coliseum').setScrollFactor(0.5).setOrigin(0.5);
+        this.add.image(this.worldWidth / 2 * 0.8, this.scale.height / 2, 'coliseum').setScrollFactor(0.3);
 
         // Color de fondo de cámara
         this.cameras.main.setBackgroundColor('#161338');
@@ -68,19 +76,17 @@ export default class LevelScene extends Phaser.Scene {
         this.healthbarLeft.style.display = 'flex';
         this.healthbarRight.style.display = 'flex';
 
-        // Tiempo de partida (1 minuto en ms), se invoca la destruccion del puente
-        this.time.delayedCall(this.matchDurationMs, null, null, this);
-
         // Momento (en ms del reloj de Phaser) en el que termina la partida
         this.matchEndTime = this.time.now + this.matchDurationMs;
 
-        const LEVEL_WIDTH = 2400;
-        const LEVEL_HEIGHT = 800;
-
-        this.music = this.sound.play('BattleMusic', { loop: true ,  volume: 0.1 });
+        // Música de batalla
+        this.music = this.sound.play('BattleMusic', { loop: true, volume: 0.1 });
 
         // Puente
-        this.bridge = new Bridge(this, 0, this.scale.height - 190, 'bridge', 0.45, 0.45, LEVEL_WIDTH);
+        this.bridge = new Bridge(this);
+
+        // Y del "suelo" que queremos mantener fijo en pantalla (borde inferior de cámara)
+        this.groundY = this.scale.height - 180;
 
         // Camera shake 5 segundos antes de destruir el puente
         this.time.delayedCall(30000 - 2000, () => {
@@ -89,19 +95,12 @@ export default class LevelScene extends Phaser.Scene {
             this.cameras.main.shake(2000, 0.01);
         });
 
-        // Puente hundiéndose a los 30 segundos
-        this.time.delayedCall(30000, () => this.bridge.collapseParts());
-
-        // Destruir puente al finalizar la partida
-        this.time.delayedCall(60000, () => { this.bridge.destroy(), this.sound.play('break'); });
-
-        // Pilares (columnas con plataformas)
-        this.pilars = [
-            new Ground(this, this.scale.width - 1800, this.scale.height - 450, 'pilar', 0.35, 0.35),
-            new Ground(this, this.scale.width - 800, this.scale.height - 550, 'pilar', 0.5, 0.6)
+        // Pilares/Platformas (columnas con plataformas)
+        this.platforms = [
+            new Platform(this, 800, this.scale.height - 465, 'platform', 0.4)
         ];
 
-        this.platforms = [];
+        this.floating = [];
 
         // Lava
         this.lava = new Lava(this, this.scale.width / 2, this.scale.height, 'lava', 20, 1);
@@ -122,12 +121,12 @@ export default class LevelScene extends Phaser.Scene {
         else this.playerRight = new PlayerSpear(this, 'right');
 
         // Colliders jugadores con mundo
-        this.physics.add.collider(this.playerLeft, this.pilars);
-        this.physics.add.collider(this.playerRight, this.pilars);
+        this.physics.add.collider(this.playerLeft, this.platforms);
+        this.physics.add.collider(this.playerRight, this.platforms);
         this.physics.add.collider(this.playerLeft, this.bridge.getSegments());
         this.physics.add.collider(this.playerRight, this.bridge.getSegments());
         this.physics.add.collider([this.playerLeft, this.playerRight], this.boxes);
-        this.physics.add.collider(this.boxes, this.pilars);
+        this.physics.add.collider(this.boxes, this.platforms);
         this.physics.add.collider(this.boxes, this.bridge.getSegments());
         this.physics.add.collider(this.boxes, this.boxes);
 
@@ -136,37 +135,24 @@ export default class LevelScene extends Phaser.Scene {
         this.lava.addCollision(this.playerRight);
         this.playerLeft.addCollision(this.playerRight);
         this.playerRight.addCollision(this.playerLeft);
-        //Paredes invisibles
-        this.physics.world.setBounds(0, 1000, LEVEL_WIDTH, LEVEL_HEIGHT);
-        this.physics.world.setBoundsCollision(true, true, false, true); // ejemplo: permitir salir por arriba (false) pero bloquear left/right/down
-        this.playerLeft.setCollideWorldBounds(true);
-        this.playerRight.setCollideWorldBounds(true);
-        this.cameras.main.setBounds(0, 0, LEVEL_WIDTH, LEVEL_HEIGHT);
 
         // Array de colliders para pasarlo a cualquier overlap externo
         this.colliders = [
             this.playerLeft,
             this.playerRight,
-            this.pilars,
+            this.platforms,
             this.bridge.getSegments(),
             this.boxes
         ];
 
-        // const breakable = new BreakableGround(this, 400, 300, 'suelo');
-        // breakable.setScale(0.3);
-        // breakable.body.setSize(breakable.displayWidth, breakable.displayHeight);
-        // breakable.body.setOffset((breakable.width - breakable.displayWidth) / 2, (breakable.height - breakable.displayHeight) / 2);
-        // this.breakables.push(breakable);
+        // Tiempo de partida (1 minuto en ms), se invoca la destruccion del puente
+        this.time.delayedCall(this.matchDurationMs, null, null, this);
 
+        // Puente hundiéndose a los 30 segundos
+        this.time.delayedCall(30000, () => this.bridge.break());
 
-        // usa el sprite (o gameobject real) para la colisión, pero llama al wrapper
-        // this.physics.add.collider(this.playerLeft, breakable.sprite ?? breakable, (player, sprite) => {
-        //     breakable.touch(player);
-        // }, null, this);
-
-        // this.physics.add.collider(this.playerRight, breakable.sprite ?? breakable, (player, sprite) => {
-        //     breakable.touch(player);
-        // }, null, this);
+        // Destruir puente al finalizar la partida
+        this.time.delayedCall(60000, () => { this.bridge.destroy(), this.sound.play('break'); });
 
         // Inicializamos el temporizador para la primera ardilla
         this.nextTea = this.time.now + Phaser.Math.Between(5000, 10000);
@@ -198,7 +184,7 @@ export default class LevelScene extends Phaser.Scene {
         this.playerRight.handleInput();
 
         // Actualizar cámara y reloj
-        this.updateCameraFollow();
+        this.cameraFollow();
         this.updateClock();
 
         // Spawnear ardillas que lanzan té (después de un tiempo nextTea)
@@ -212,8 +198,8 @@ export default class LevelScene extends Phaser.Scene {
     spawnSquirrel() {
         let x;
         // Elegir posición x aleatoria dentro del ancho del nivel
-        if (Phaser.Math.Between(0, 1) === 0) x = (window.outterWidth - window.innerWidth) / 2 + this.displayWidth;
-        else x = (window.outterWidth + window.innerWidth) / 2 - this.displayWidth;
+        if (Phaser.Math.Between(0, 1) === 0) x = (window.outterWidth - window.innerWidth) / 2 + 20;
+        else x = (window.outterWidth + window.innerWidth) / 2 - 20;
 
         // Crear ardilla con los colliders del nivel (para el té)
         new Squirrel(this, x);
@@ -235,9 +221,31 @@ export default class LevelScene extends Phaser.Scene {
     }
 
     // Actualiza la cámara para que siga a ambos jugadores
-    updateCameraFollow() {
-        const x = (this.playerLeft.x + this.playerRight.x) / 2;
-        const y = (this.playerLeft.y + this.playerRight.y) / 2;
-        this.cameras.main.centerOn(x, y);
+    cameraFollow() {
+        const cam = this.cameras.main;
+        const midX = (this.playerLeft.x + this.playerRight.x) / 2;
+        const dx = Math.abs(this.playerLeft.x - this.playerRight.x);
+
+        // Más dx => menos zoom; menos dx => más zoom
+        let targetZoom = cam.width * 0.7 / Math.max(dx, 1);
+
+        // Zoom mínimo consistente entre resoluciones:
+        // LENGTH = tamaño máximo (en píxeles de mundo) que queremos ver en el eje dominante
+        const LENGTH = this.worldWidth + 700;
+        const minZoom = Math.max(this.scale.width / LENGTH, this.scale.height / LENGTH);
+        targetZoom = Phaser.Math.Clamp(targetZoom, minZoom, 1.1);
+
+        // Suavizado para evitar saltos
+        cam.zoom = Phaser.Math.Linear(cam.zoom, targetZoom, 0.05);
+
+        // Centrar entre jugadores solo en X (manteniendo tu offset)
+        cam.centerOnX(midX + 180);
+
+        // Anclar el borde inferior de la cámara al suelo: el zoom solo abre hacia arriba
+        const visibleH = cam.height / cam.zoom;
+        let desiredScrollY = this.groundY - visibleH;
+        desiredScrollY = Phaser.Math.Clamp(desiredScrollY, 0, this.worldHeight - visibleH);
+        cam.scrollY = desiredScrollY;
     }
+
 }

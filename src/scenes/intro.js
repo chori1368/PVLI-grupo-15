@@ -7,7 +7,7 @@ export default class IntroScene extends Phaser.Scene {
     }
 
     create() {
-        // Al pulsar ENTER o SPACE, ir a escena de selección
+        // Al pulsar ENTER o ESPACIO, ir a la escena de selección
         this.input.keyboard.on('keydown-ENTER', () => this.scene.start('selection'));
         this.input.keyboard.on('keydown-SPACE', () => this.scene.start('selection'));
 

@@ -1,42 +1,69 @@
-import Ground from './ground.js';
+/** Grupo de segmentos que conforman el puente entero, 
+ * se gestiona su animación de hundirse/flotar y su destrucción */
 
-export default class Bridge {
-    constructor(scene, x, y, textureKey, scaleX = 0.1, scaleY = 0.1, totalWidth = null) {
-        this.scene = scene;
+import Platform from './platform.js';
+
+export default class Bridge extends Phaser.GameObjects.Group {
+    constructor(scene) {
+        super(scene);
+
+        // Algunas constantes
+        this.diveTime = 1000; // Tiempo entre hundirse y flotar
+
+        // Obtenemos el ancho de la textura de puente
+        this.width = scene.textures.get('bridge').getSourceImage().width * 0.45;
+
+        // Calculamos cuantos segmentos de puente necesitamos
+        const numSegments = Math.ceil(scene.worldWidth / this.width) + 2;
+
+        // Array de segmentos de puente
         this.segments = [];
 
-        const widthToCover = totalWidth ?? scene.scale.width;
-
-        const temp = scene.add.image(0, 0, textureKey).setScale(scaleX, scaleY);
-        const segmentWidth = temp.displayWidth;
-        temp.destroy();
-
-        const left = x;
-
-        // cuantos segmentos necesitamos (añadimos 1 por seguridad contra huecos)
-        const numSegments = Math.ceil(widthToCover / segmentWidth) + 1 ;
-
+        // Creamos tantos segmentos como numSegments
         for (let i = 0; i < numSegments; i++) {
-            // centramos cada segmento en su "celda"
-            const segX = left + i * segmentWidth + segmentWidth / 2;
-            const segment = new Ground(scene, segX, y, textureKey, scaleX, scaleY);
 
-            // Si Ground no ajusta el body internamente, ajustar aquí:
-            if (segment.body && segment.displayWidth) {
-                segment.body.setSize(Math.round(segment.displayWidth), Math.round(segment.displayHeight));
-                segment.body.setOffset(0, 0); // o ajusta el offset si tu sprite no está anclado en (0,0)
-            }
+            // Creamos un segmento en la posición determindada
+            const segment = new Platform(scene, i * this.width, scene.scale.height - 180, 'bridge', 0.45);
 
+            // Ajustamos la escala
+            segment.setScale(0.45);
+
+            // Animación de hundirse/flotar
+            // scene.tweens.add({
+            //     targets: segment,
+            //     y: segment.y + 20,
+            //     duration: 1000,
+            //     ease: 'Linear',
+            //     yoyo: true,
+            //     repeat: -1,
+            //     onUpdate: () => segment.body.updateFromGameObject(),
+            // });
+
+            // Añadimos el segmento al grupo
             this.segments.push(segment);
         }
     }
 
-    collapseParts() {
-        this.segments.forEach(seg => seg.move() );
+    move(distance = 250, duration = 1000) {
+    this.scene.tweens.add({
+      targets: this,
+      y: this.y + distance,
+      duration,
+      ease: 'Linear',
+      onUpdate: () => segment.body.updateFromGameObject(),
+      onComplete: () => this.destroy()
+    });
+  }
+
+    break() {
+        // Animación de hundirse de todos los segmentos
+        this.segments.forEach(segment => {
+            segment.move(300, 500);
+        });
     }
 
     destroy() {
-        this.segments.forEach(seg => seg.setActive(false));
+        this.segments.forEach(s => s.setActive(false));
         this.segments = [];
     }
 
