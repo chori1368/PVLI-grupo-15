@@ -77,7 +77,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
     // Crear y lanzar el té
     throwTea() {
         // Posición objetivo del té lanzado segun lado
-        let target = { x: 0, y: Phaser.Math.Between(60, 80) };
+        let target = { x: 0, y: Phaser.Math.Between(80, 100) };
 
         if (this.x > this.scene.cameras.main.worldView.centerX) 
             target.x = Phaser.Math.Between(this.scene.cameras.main.worldView.left + 50, this.scene.cameras.main.worldView.centerX - 100);
@@ -85,7 +85,8 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
             target.x = Phaser.Math.Between(this.scene.cameras.main.worldView.centerX + 100, this.scene.cameras.main.worldView.right - 100);
 
         // Reproducir sonido de lanzar té
-        this.scene.sound.play('tea');        // Crear té en una posición aleatoria en la parte superior de la escena
+        this.scene.sound.play('tea');
+        // Crear el té
         const tea = new Tea(this.scene, this.x, this.y, target);
 
         // Le añadimos al té la colisión con los jugadores
