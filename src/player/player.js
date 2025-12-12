@@ -9,11 +9,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         opts = { ...defaultOpts, ...opts };
 
         let x; // Posicionar jugador según el lado
-        if (side == 'left') x = scene.worldWidth / 3;
-        else x = scene.worldWidth * 2 / 3;
+        if (side == 'left') x = scene.worldWidth / 4;
+        else x = scene.worldWidth * 4 / 5;
 
         // Llamada al constructor padre con posición inicial (según lado)
-        super(scene, x, scene.scale.height / 2.5, texture);
+        super(scene, x, scene.scale.height - 570, texture);
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
@@ -27,7 +27,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setOffset(this.width * 0.39, this.height/2); // desplazar el hitbox
 
         this.speed = 400;
-        this.jumpSpeed = -650;
+        this.jumpSpeed = -600;
+
         /** boleano para comprobar si ha terminado el cooldown del ataque */
         this.attacking = false;
         this.maxJumps = 2;
@@ -49,7 +50,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.create({
             key: 'idle',
             frames: this.anims.generateFrameNumbers(this.texture.key, { start: 0, end: 1 }),
-            frameRate: 2,
+            frameRate: 3,
             repeat: -1
         });
 
@@ -58,7 +59,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             key: 'jump',
             frames: this.anims.generateFrameNumbers(this.texture.key, { start: 6, end: 7 }),
             frameRate: 10,
-            repeat: 0
         });
 
         // Animación de movimiento
@@ -73,16 +73,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.create({
             key: 'horizontal',
             frames: this.anims.generateFrameNumbers(this.texture.key, { start: 8, end: 11 }),
-            frameRate: 20,
-            repeat: 0
+            frameRate: 12,
         });
 
         // Animación de ataque vertical
         this.anims.create({
             key: 'vertical',
             frames: this.anims.generateFrameNumbers(this.texture.key, { start: 2, end: 5 }),
-            frameRate: 20,
-            repeat: 0
+            frameRate: 12,
         });
 
 

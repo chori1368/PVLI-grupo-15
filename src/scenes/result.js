@@ -45,6 +45,6 @@ export default class ResultScene extends Phaser.Scene {
             fill: '#a7a2edf2'
         }).setOrigin(0.5).setInteractive();
 
-        button.on('pointerup', () => {this.scene.start('selection'); soun.play('click') });
+        button.on('pointerup', () => { this.scene.start('selection'); this.sound.play('click'); });
     }
 }

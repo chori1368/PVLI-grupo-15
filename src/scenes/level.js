@@ -27,6 +27,7 @@ export default class LevelScene extends Phaser.Scene {
 
         // Preload assets
         this.load.image('platform', 'assets/level/platform.png');
+        this.load.image('ledge', 'assets/level/ledge.png');
         this.load.image('floating', 'assets/level/floating.png');
         this.load.image('bridge', 'assets/level/bridge.png');
         this.load.image('lava', 'assets/level/lava.png');
@@ -65,8 +66,7 @@ export default class LevelScene extends Phaser.Scene {
         this.healthbarRight = document.querySelector('healthbar.right');
 
         // Duración de la partida en milisegundos (1 minuto)
-        this.matchDurationMs = 60000;
-        this.matchEndTime = null;
+        this.duration = 60000;
 
         // Al iniciar el nivel mostramos el reloj
         this.clock.style.display = 'block';
@@ -74,9 +74,6 @@ export default class LevelScene extends Phaser.Scene {
         // Y las barras de vida
         this.healthbarLeft.style.display = 'flex';
         this.healthbarRight.style.display = 'flex';
-
-        // Momento (en ms del reloj de Phaser) en el que termina la partida
-        this.matchEndTime = this.time.now + this.matchDurationMs;
 
         // Música de batalla
         this.music = this.sound.play('BattleMusic', { loop: true, volume: 0.1 });
@@ -90,27 +87,27 @@ export default class LevelScene extends Phaser.Scene {
         // Pilares/Platformas (columnas con plataformas)
         this.platforms = [
             // Extremo izquierdo
-            new Platform(this, 100, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 80, this.scale.height - 465, 'ledge', 0.4),
             new Platform(this, 335, this.scale.height - 465, 'platform', 0.4),
-            new Platform(this, 570, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 590, this.scale.height - 465, 'ledge', 0.4).setFlipX(true),
 
             // Centro
-            new Platform(this, 1600, this.scale.height - 465, 'platform', 0.4),
-            new Platform(this, 1835, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 1570, this.scale.height - 465, 'ledge', 0.4),
+            new Platform(this, 1840, this.scale.height - 465, 'ledge', 0.4).setFlipX(true),
 
             // Lateral derecho
-            new Platform(this, 2600, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 2580, this.scale.height - 465, 'ledge', 0.4),
             new Platform(this, 2835, this.scale.height - 465, 'platform', 0.4),
-            new Platform(this, 3070, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 3085, this.scale.height - 465, 'ledge', 0.4).setFlipX(true),
 
             // Extremo derecho
-            new Platform(this, 3605, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 3585, this.scale.height - 465, 'ledge', 0.4),
             new Platform(this, 3835, this.scale.height - 465, 'platform', 0.4),
         ];
 
         // Plataformas flotantes que se rompen al pisarlas
         this.floating = [];
-        
+
         // Cajas
         this.boxes = [
             new Box(this, 700, this.scale.height - 500),
@@ -118,57 +115,62 @@ export default class LevelScene extends Phaser.Scene {
             new Box(this, 1700, this.scale.height - 500)
         ];
 
-        // Lava
-        this.lava = new Lava(this, this.scale.width / 2, this.scale.height - 90, 'lava').setOrigin(0.5, 0);
-        
         // Crear jugador izquierdo (según tipo)
         if (data.left == 0) this.playerLeft = new PlayerSword(this, 'left');
         else this.playerLeft = new PlayerSpear(this, 'left');
-
+    
         // Crear jugador derecho (según tipo)
         if (data.right == 0) this.playerRight = new PlayerSword(this, 'right');
         else this.playerRight = new PlayerSpear(this, 'right');
-
-        // Colliders jugadores con mundo
-        this.physics.add.collider(this.playerLeft, this.platforms);
-        this.physics.add.collider(this.playerRight, this.platforms);
-        this.physics.add.collider(this.playerLeft, this.bridge.getSegments());
-        this.physics.add.collider(this.playerRight, this.bridge.getSegments());
-        this.physics.add.collider([this.playerLeft, this.playerRight], this.boxes);
-        this.physics.add.collider(this.boxes, this.platforms);
-        this.physics.add.collider(this.boxes, this.bridge.getSegments());
-        this.physics.add.collider(this.boxes, this.boxes);
-
-        // Eventos de colisión entre jugadores y lava
-        this.lava.addCollision(this.playerLeft);
-        this.lava.addCollision(this.playerRight);
-        this.playerLeft.addCollision(this.playerRight);
-        this.playerRight.addCollision(this.playerLeft);
-
+        
         // Array de colliders para pasarlo a cualquier overlap externo
         this.colliders = [
-            this.playerLeft,
-            this.playerRight,
+            //this.playerLeft,
+            //this.playerRight,
             this.platforms,
-            this.bridge.getSegments(),
+            this.bridge.segments,
             this.boxes
         ];
 
-        // Tiempo de partida (1 minuto en ms), se invoca la destruccion del puente
-        this.time.delayedCall(this.matchDurationMs, null, null, this);
+        // Asignar colliders entre jugadores
+        this.playerLeft.addCollision(this.playerRight);
+        this.playerRight.addCollision(this.playerLeft);
 
-        // Puente hundiéndose a los 30 segundos
-        this.time.delayedCall(30000, () => this.bridge.break());
+        // Colliders jugadores con objetos del nivel
+        this.colliders.forEach(c => this.physics.add.collider(this.playerLeft, c));
+        this.colliders.forEach(c => this.physics.add.collider(this.playerRight, c));
 
-        // Camera shake 5 segundos antes de destruir el puente
-        this.time.delayedCall(30000 - 2000, () => {
-            // duración 500 ms, intensidad 0.01 
+        // Crear lava y añadir colisión con jugadores
+        this.lava = new Lava(this, this.scale.width / 2, this.scale.height - 90, 'lava').setOrigin(0.5, 0);
+        this.lava.addCollision(this.playerLeft);
+        this.lava.addCollision(this.playerRight);
+        
+        // A la mitad de partida se rompe el puente
+        this.time.delayedCall(this.duration / 2, () => {
             this.sound.play('terremoto');
+            // Ocultamos las plataformas
+            this.platforms.forEach(p => p.break());
             this.cameras.main.shake(2000, 0.01);
+
+            // LLamamos a break cada 4 segundos
+            this.bridgeBreakEvent = this.time.addEvent({
+                delay: 4000,
+                loop: true,
+                callback: () => {
+                    // Rompemos el puente (con velocidad de hundimiento/flotamiento de 2 seg)
+                    this.bridge.break(2000);
+                    // Efecto de temblor de camara
+                    this.cameras.main.shake(2000, 0.01);
+                }
+            });
         });
 
         // Destruir puente al finalizar la partida
-        this.time.delayedCall(60000, () => { this.bridge.destroy(), this.sound.play('break'); });
+        this.time.delayedCall(this.duration, () => {
+            if (this.bridgeBreakEvent) this.bridgeBreakEvent.remove(false);
+            this.bridge.destroy();
+            this.sound.play('break');
+        });
 
         // Inicializamos el temporizador para la primera ardilla
         this.nextTea = this.time.now + Phaser.Math.Between(5000, 10000);
@@ -226,7 +228,7 @@ export default class LevelScene extends Phaser.Scene {
     // Actualiza el timer del html (clock)
     updateClock() {
         // Calculamos el tiempo restante en segundos
-        const time = Math.floor((this.matchEndTime - this.time.now) / 1000);
+        const time = Math.max(0, Math.ceil((this.duration - this.time.now) / 1000));
 
         // Actualizamos el DOM cada segundo (y no cada frame)
         if (this.lastT !== time) {

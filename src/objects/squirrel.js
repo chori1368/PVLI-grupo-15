@@ -84,7 +84,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
         tea.addCollision(this.scene.playerRight);
 
         // Le añadimos colisiones con colliders de la escena al té creado
-        this.scene.colliders.forEach(collider => this.scene.physics.add.collider(tea, collider));        
+        this.scene.colliders.forEach(collider => this.scene.physics.add.collider(tea, collider));   
     }
 
     // Animación de desaparecer

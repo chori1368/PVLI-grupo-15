@@ -44,13 +44,13 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         this.body.setFriction(1, 0);
 
         // Destrucción tras lifetime ms
-        this.scene.time.delayedCall(this.lifetime, () => { this.destroy(); });
+        this.scene.time.delayedCall(this.lifetime, () => this.destroy());
     }
 
     // Añadir collisión con jugador (y lo que se hace al colisionar)
     addCollision(player) {
         this.scene.physics.add.overlap(player, this, () => {
-            if (this.scene && this.scene.sound) this.scene.sound.play('tea');        // Crear té en una posición aleatoria en la parte superior de la escena
+            if (this.scene && this.scene.sound) this.scene.sound.play('tea');
             // Curar al jugador
             player.life = Math.min(player.maxLife, player.life + this.healAmount);
             player.updateHealthBar();

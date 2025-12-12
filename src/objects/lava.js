@@ -2,25 +2,21 @@ export default class Lava extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y) {
         super(scene, x, y, 'lava');
 
-        // Añadimos el sprite a la escena
+        // Añadimos el sprite a la escena y habilitamos físicas
         scene.add.existing(this);
-
-        // Marcamos el oibjeto como estático
         scene.physics.add.existing(this, true);
 
-        // Ajustamos el collider a la parte inferior del sprite
-        this.body.setSize(this.width, this.height * 0.75);
+        // Ajustar collider a solo la parte superior del sprite
+        this.body.setSize(this.displayWidth, this.displayHeight * 0.5);
+        this.body.setOffset(0, this.displayHeight * 0.5);
     }
 
     addCollision(player) {
-        this.scene.physics.add.overlap(player, this.sprite, () => {
-            if (player.active) {
-                player.reduceLife(3500);
-              if (this.scene && this.scene.sound) this.scene.sound.play('daño');        // Crear té en una posición aleatoria en la parte superior de la escena
-
-                player.setVelocityY(-700);
-                player.resetJumpCount();
-            }
+        this.scene.physics.add.overlap(player, this, () => {
+            player.reduceLife(3500);
+            this.scene.sound.play('daño');
+            player.setVelocityY(-600);
+            player.resetJumpCount();
         });
     }
 }
