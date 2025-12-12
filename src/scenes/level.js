@@ -8,9 +8,7 @@ import Squirrel from '../objects/squirrel.js';
 import Box from '../objects/box.js';
 
 export default class LevelScene extends Phaser.Scene {
-    constructor() {
-        super('level');
-    }
+    constructor() { super('level'); }
 
     preload() {
         //Preload audio
@@ -19,7 +17,7 @@ export default class LevelScene extends Phaser.Scene {
         this.load.audio('terremoto', 'assets/sounds/terremoto.mp3');
         this.load.audio('spear', 'assets/sounds/lanza.mp3');
         this.load.audio('sword', 'assets/sounds/sword.mp3');
-        //this.load.audio('break', 'assets/sounds/break.mp3' );
+        this.load.audio('break', 'assets/sounds/break.mp3');
         this.load.audio('swallow', 'assets/sounds/swallow.mp3');
         this.load.audio('spinningSword', 'assets/sounds/spinningSword.mp3');
         this.load.audio('spinningSpear', 'assets/sounds/spinningSpear.mp3');
@@ -48,12 +46,13 @@ export default class LevelScene extends Phaser.Scene {
         this.worldWidth = 3000;
         this.worldHeight = 2000;
 
+        // Ajustamos los límites del mundo y de la cámara
         this.physics.world.setBounds(0, 0, this.worldWidth + 750, this.worldHeight);
         this.cameras.main.setBounds(0, 0, this.worldWidth + 750, this.worldHeight);
         this.physics.world.setBoundsCollision(true, true, false, true);
 
-        // Fondo
-        this.add.image(this.worldWidth / 2 * 0.8, this.scale.height / 2, 'coliseum').setOrigin(0.5, 0.62).setScrollFactor(0.3);
+        // Fondo del nivel (coliseo)
+        this.add.image(this.worldWidth / 2 * 0.8, this.scale.height / 2, 'coliseum').setOrigin(0.5, 0.4).setScrollFactor(0.3, 0.9);
 
         // Color de fondo de cámara
         this.cameras.main.setBackgroundColor('#161338');
@@ -88,24 +87,30 @@ export default class LevelScene extends Phaser.Scene {
         // Y del "suelo" que queremos mantener fijo en pantalla (borde inferior de cámara)
         this.groundY = this.scale.height - 180;
 
-        // Camera shake 5 segundos antes de destruir el puente
-        this.time.delayedCall(30000 - 2000, () => {
-            // duración 500 ms, intensidad 0.01 
-            this.sound.play('terremoto');
-            this.cameras.main.shake(2000, 0.01);
-        });
-
         // Pilares/Platformas (columnas con plataformas)
         this.platforms = [
-            new Platform(this, 800, this.scale.height - 465, 'platform', 0.4)
+            // Extremo izquierdo
+            new Platform(this, 100, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 335, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 570, this.scale.height - 465, 'platform', 0.4),
+
+            // Centro
+            new Platform(this, 1600, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 1835, this.scale.height - 465, 'platform', 0.4),
+
+            // Lateral derecho
+            new Platform(this, 2600, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 2835, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 3070, this.scale.height - 465, 'platform', 0.4),
+
+            // Extremo derecho
+            new Platform(this, 3605, this.scale.height - 465, 'platform', 0.4),
+            new Platform(this, 3835, this.scale.height - 465, 'platform', 0.4),
         ];
 
         // Plataformas flotantes que se rompen al pisarlas
         this.floating = [];
-
-        // Lava
-        this.lava = new Lava(this, this.scale.width / 2, this.scale.height - 90, 'lava').setOrigin(0.5, 0);
-
+        
         // Cajas
         this.boxes = [
             new Box(this, 700, this.scale.height - 500),
@@ -113,6 +118,9 @@ export default class LevelScene extends Phaser.Scene {
             new Box(this, 1700, this.scale.height - 500)
         ];
 
+        // Lava
+        this.lava = new Lava(this, this.scale.width / 2, this.scale.height - 90, 'lava').setOrigin(0.5, 0);
+        
         // Crear jugador izquierdo (según tipo)
         if (data.left == 0) this.playerLeft = new PlayerSword(this, 'left');
         else this.playerLeft = new PlayerSpear(this, 'left');
@@ -151,6 +159,13 @@ export default class LevelScene extends Phaser.Scene {
 
         // Puente hundiéndose a los 30 segundos
         this.time.delayedCall(30000, () => this.bridge.break());
+
+        // Camera shake 5 segundos antes de destruir el puente
+        this.time.delayedCall(30000 - 2000, () => {
+            // duración 500 ms, intensidad 0.01 
+            this.sound.play('terremoto');
+            this.cameras.main.shake(2000, 0.01);
+        });
 
         // Destruir puente al finalizar la partida
         this.time.delayedCall(60000, () => { this.bridge.destroy(), this.sound.play('break'); });
@@ -223,30 +238,24 @@ export default class LevelScene extends Phaser.Scene {
 
     // Actualiza la cámara para que siga a ambos jugadores
     cameraFollow() {
-        const cam = this.cameras.main;
         const midX = (this.playerLeft.x + this.playerRight.x) / 2;
+        const midY = (this.playerLeft.y + this.playerRight.y) / 2;
         const dx = Math.abs(this.playerLeft.x - this.playerRight.x);
+        const dy = Math.abs(this.playerLeft.y - this.playerRight.y);
 
-        // Más dx => menos zoom; menos dx => más zoom
-        let targetZoom = cam.width * 0.7 / Math.max(dx, 1);
+        // Calculamos el zoom necesario para que quepan tanto horizontal como verticalmente
+        const zoomX = this.cameras.main.width * 0.7 / Math.max(dx, 1);
+        const zoomY = this.cameras.main.height * 0.7 / Math.max(dy, 1);
+        let zoom = Math.min(zoomX, zoomY);
 
         // Zoom mínimo consistente entre resoluciones:
-        // LENGTH = tamaño máximo (en píxeles de mundo) que queremos ver en el eje dominante
-        const LENGTH = this.worldWidth + 700;
-        const minZoom = Math.max(this.scale.width / LENGTH, this.scale.height / LENGTH);
-        targetZoom = Phaser.Math.Clamp(targetZoom, minZoom, 1.1);
+        const min = Math.max(this.scale.width / (this.worldWidth + 700), this.scale.height / (this.worldWidth + 700));
+        zoom = Phaser.Math.Clamp(zoom, min, 1.1);
 
         // Suavizado para evitar saltos
-        cam.zoom = Phaser.Math.Linear(cam.zoom, targetZoom, 0.05);
+        this.cameras.main.zoom = Phaser.Math.Linear(this.cameras.main.zoom, zoom, 0.05);
 
-        // Centrar entre jugadores solo en X (manteniendo tu offset)
-        cam.centerOnX(midX + 180);
-
-        // Anclar el borde inferior de la cámara al suelo: el zoom solo abre hacia arriba
-        const visibleH = cam.height / cam.zoom;
-        let desiredScrollY = this.groundY - visibleH;
-        desiredScrollY = Phaser.Math.Clamp(desiredScrollY, 0, this.worldHeight - visibleH);
-        cam.scrollY = desiredScrollY;
+        // Centrar entre jugadores en X e Y (manteniendo tu offset en X)
+        this.cameras.main.centerOn(midX + 180, midY + 180);
     }
-
 }
