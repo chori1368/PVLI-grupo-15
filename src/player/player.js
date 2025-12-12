@@ -162,6 +162,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (tk.includes('sword') || tk.includes('espada')) return 'sword';
         return 'sword';
     }
+    resetJumpCount() {
+    this.jumpCount = 0;
+    }
 
     handleInput() {
         if (!this.active) return;
@@ -295,13 +298,34 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.add.overlap(player, this.hattackbox, () => {
             if (this.attacking && this.hattackbox.body.enable) {
                 player.reduceLife(400);
+               let knockX;
+            if (this.flipX) {
+                knockX = 600;  // mirando a la izquierda
+            } else {
+                knockX = -600; // mirando a la derecha
+            }
+
+            let knockY = -400;
+
+            player.setVelocityX(knockX);
+            player.setVelocityY(knockY);
                 this.hattackbox.body.enable = false;
             }
         });
         this.scene.physics.add.overlap(player, this.vattackbox, () => {
             if (this.attacking && this.vattackbox.body.enable) {
                 player.reduceLife(400);
-                this.vattackbox.body.enable = false;
+                  let knockX;
+            if (this.flipX) {
+                knockX = 200;
+            } else {
+                knockX = -200;
+            }
+
+            let knockY = -700;
+
+            player.setVelocityX(knockX);
+            player.setVelocityY(knockY);
             }
         });
     }

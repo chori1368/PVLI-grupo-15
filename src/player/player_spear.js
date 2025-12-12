@@ -47,6 +47,7 @@ export default class PlayerSpear extends Player {
         this.scene.physics.add.overlap(player, this.hattackbox, () => {
             if (this.attacking && this.hattackbox.body.enable) {
                 player.reduceLife(400);
+          
                 this.hattackbox.body.enable = false;
 
             }
@@ -55,6 +56,8 @@ export default class PlayerSpear extends Player {
             if (this.attacking && this.vattackbox.body.enable) {
                 player.reduceLife(400);
                 this.vattackbox.body.enable = false;
+    
+
             }
         });
         this.scene.physics.add.overlap(player, this, () => {

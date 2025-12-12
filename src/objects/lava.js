@@ -15,7 +15,7 @@ export default class Lava {
               if (this.scene && this.scene.sound) this.scene.sound.play('daño');        // Crear té en una posición aleatoria en la parte superior de la escena
 
                 player.setVelocityY(-700);
-                
+                player.resetJumpCount();
             }
         });
     }
