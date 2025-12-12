@@ -52,7 +52,7 @@ export default class ResultScene extends Phaser.Scene {
             fontSize: '30px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
-            fill: '#be084dff'
+            fill: '#0e0c25ff'
         }).setOrigin(0.5).setInteractive();
 
         button.on('pointerup', () => { this.scene.start('selection'); this.sound.play('click'); });

@@ -4,9 +4,9 @@ adaptabilidad de la web en torno al menú de pausa y los botónes de acción */
 :root {
   font-family: "Cinzel", serif;
   color-scheme: dark;
-  --text: #0e0c25ff;
-  --background: #be084dff;
-  --border: #890737ff;
+  --text: rgb(206, 3, 98);
+  --background: rgb(6, 7, 53);
+  --border: rgb(206, 3, 98);
 }
 
 * {
@@ -87,6 +87,7 @@ a {
 img {
   width: 100%;
   max-width: 750px;
+  border-radius: 2rem;
 }
 
 content {
@@ -148,7 +149,7 @@ clock {
   border-radius: 1.5rem;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  background: var(--background);
+  background: rgb(206, 3, 98);
   overflow: hidden;
   user-select: none;
   width: 100px;
@@ -160,6 +161,7 @@ clock {
   font-size: 1.5rem;
   font-weight: 600;
   z-index: -2;
+  color: rgb(6, 7, 53);
 }
 
 /* contenedor de vida por defecto */
@@ -196,7 +198,7 @@ healthbar > div {
   width: 100%;
   height: 100%;
   border-radius: inherit;
-  background-color: var(--background);
+  background-color: rgb(206, 3, 98);
   transition: width 0.3s ease-out;
 }
 
@@ -232,11 +234,11 @@ label {
   transition: opacity 0.4s ease-in-out, background 0.2s ease-in-out;
 
   &:hover {
-    background: rgb(210, 16, 90);
+    background: rgb(16, 1, 72);
   }
 
   &:active {
-    background: rgb(136, 3, 54);
+    background: rgb(19, 0, 69);
   }
 }
 
@@ -249,8 +251,8 @@ input {
 label:has(#play-btn) {
   color: var(--background);
   background: var(--text);
-  &:hover { background: rgb(22, 19, 57); }
-  &:active { background: rgb(6, 5, 18);  }
+  &:hover { background: rgb(210, 0, 122); }
+  &:active { background: rgb(122, 0, 85);  }
 }
 
 label:has(#pause-btn) {
