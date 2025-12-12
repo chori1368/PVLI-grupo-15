@@ -8,7 +8,9 @@ import Squirrel from '../objects/squirrel.js';
 import Box from '../objects/box.js';
 
 export default class LevelScene extends Phaser.Scene {
-    constructor() { super('level'); }
+    constructor() {
+        super('level');
+    }
 
     preload() {
         //Preload audio
@@ -42,6 +44,8 @@ export default class LevelScene extends Phaser.Scene {
     }
 
     create(data) {
+        // Iniciar temporizador (para el clock)
+        this.startTime = this.time.now;
 
         // Dimensiones del mundo
         this.worldWidth = 3000;
@@ -118,11 +122,11 @@ export default class LevelScene extends Phaser.Scene {
         // Crear jugador izquierdo (según tipo)
         if (data.left == 0) this.playerLeft = new PlayerSword(this, 'left');
         else this.playerLeft = new PlayerSpear(this, 'left');
-    
+
         // Crear jugador derecho (según tipo)
         if (data.right == 0) this.playerRight = new PlayerSword(this, 'right');
         else this.playerRight = new PlayerSpear(this, 'right');
-        
+
         // Array de colliders para pasarlo a cualquier overlap externo
         this.colliders = [
             //this.playerLeft,
@@ -147,7 +151,7 @@ export default class LevelScene extends Phaser.Scene {
         this.lava = new Lava(this, this.scale.width / 2, this.scale.height - 90, 'lava').setOrigin(0.5, 0);
         this.lava.addCollision(this.playerLeft);
         this.lava.addCollision(this.playerRight);
-        
+
         // A la mitad de partida se rompe el puente
         this.time.delayedCall(this.duration / 2, () => {
             this.sound.play('terremoto');
@@ -231,7 +235,7 @@ export default class LevelScene extends Phaser.Scene {
     // Actualiza el timer del html (clock)
     updateClock() {
         // Calculamos el tiempo restante en segundos
-        const time = Math.max(0, Math.ceil((this.duration - this.time.now) / 1000));
+        const time = Math.max(0, Math.ceil((this.duration - this.time.now - this.startTime) / 1000));
 
         // Actualizamos el DOM cada segundo (y no cada frame)
         if (this.lastT !== time) {

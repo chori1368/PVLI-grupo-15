@@ -23,8 +23,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
 
         // Custom player hitbox
-        this.body.setSize(this.width * 0.2, this.height/2); // ancho, alto
-        this.body.setOffset(this.width * 0.39, this.height/2); // desplazar el hitbox
+        this.body.setSize(this.width * 0.2, this.height / 2); // ancho, alto
+        this.body.setOffset(this.width * 0.39, this.height / 2); // desplazar el hitbox
 
         this.speed = 400;
         this.jumpSpeed = -600;
@@ -160,13 +160,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         return 'sword';
     }
     resetJumpCount() {
-    this.jumpCount = 0;
+        this.jumpCount = 0;
     }
 
     handleInput() {
         if (!this.active) return;
 
-        const { left, right, up, hattack, vattack,vattack2 } = this.keys;
+        const { left, right, up, hattack, vattack, vattack2 } = this.keys;
 
         // Reiniciar contador si está tocando el suelo
         if (this.body.blocked.down || this.body.onFloor()) {
@@ -177,14 +177,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.setVelocityX(-this.speed);
             this.flipX = true;
             //this.body.setOffset(this.width * 0.4, 0);
-        } 
-        
+        }
+
         else if (right.isDown && this.body.velocity.x <= this.speed) {
             this.setVelocityX(this.speed);
             this.flipX = false;
             //this.body.setOffset(this.width * 0.2, 0);
-        } 
-        
+        }
+
         else if (this.body.onFloor()) {
             this.setVelocityX(0);
         }
@@ -193,7 +193,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             if (this.body.onFloor() && this.jumpCount == 0) {
                 this.setVelocityY(this.jumpSpeed);
             }
-            
+
             else if (this.jumpCount < this.maxJumps) {    // Doble salto
                 this.DoubleJump();
             }
@@ -202,12 +202,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (hattack.isDown && !this.attacking) {
             this.hAttack();
-        }if (this.side === 'right'){
-            if((vattack.isDown||vattack2.isDown) && !this.attacking)
+        } if (this.side === 'right') {
+            if ((vattack.isDown || vattack2.isDown) && !this.attacking)
                 this.vAttack();
-        }else {
+        } else {
             if (vattack.isDown && !this.attacking)
-            this.vAttack();
+                this.vAttack();
         }
 
         if (this.attacking) return;
@@ -221,18 +221,18 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
     /** lógica del ataque horizontal */
-    hAttack(){
-        this.attacking = true; 
+    hAttack() {
+        this.attacking = true;
         this.hattackbox.body.enable = true;
-        this.hattackbox.y = this.y+this.hyoffset;
-        if (this.flipX){
-            this.hattackbox.x = this.x-this.hxoffsetminus;
+        this.hattackbox.y = this.y + this.hyoffset;
+        if (this.flipX) {
+            this.hattackbox.x = this.x - this.hxoffsetminus;
         }
-        else{
-            this.hattackbox.x = this.x+this.hxoffsetplus;
+        else {
+            this.hattackbox.x = this.x + this.hxoffsetplus;
         }
 
-       if (this.scene && this.scene.sound) this.scene.sound.play(this.attackSounds.h); 
+        if (this.scene && this.scene.sound) this.scene.sound.play(this.attackSounds.h);
         // Reproducir animación de ataque vertical
         this.anims.play('horizontal', true);
 
@@ -240,15 +240,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.once('animationcomplete-horizontal', () => { this.AttackFinish(); });
     }
     /** lógica del ataque vertical */
-    vAttack(){
-        this.attacking = true; 
+    vAttack() {
+        this.attacking = true;
         this.vattackbox.body.enable = true;
-        this.vattackbox.y = this.y+this.vyoffset;
-        if (this.flipX){
-            this.vattackbox.x = this.x-this.vxoffsetminus;
+        this.vattackbox.y = this.y + this.vyoffset;
+        if (this.flipX) {
+            this.vattackbox.x = this.x - this.vxoffsetminus;
         }
-        else{
-            this.vattackbox.x = this.x+this.vxoffsetplus;
+        else {
+            this.vattackbox.x = this.x + this.vxoffsetplus;
         }
 
         if (this.scene && this.scene.sound) this.scene.sound.play(this.attackSounds.v);        // Crear té en una posición aleatoria en la parte superior de la escena
@@ -295,38 +295,38 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.add.overlap(player, this.hattackbox, () => {
             if (this.attacking && this.hattackbox.body.enable) {
                 player.reduceLife(400);
-               let knockX;
-            if (this.flipX) {
-                knockX = 600;  // mirando a la izquierda
-            } else {
-                knockX = -600; // mirando a la derecha
-            }
+                let knockX;
+                if (this.flipX) {
+                    knockX = 600;  // mirando a la izquierda
+                } else {
+                    knockX = -600; // mirando a la derecha
+                }
 
-            let knockY = -400;
+                let knockY = -400;
 
-            player.setVelocityX(knockX);
-            player.setVelocityY(knockY);
+                player.setVelocityX(knockX);
+                player.setVelocityY(knockY);
                 this.hattackbox.body.enable = false;
             }
         });
         this.scene.physics.add.overlap(player, this.vattackbox, () => {
             if (this.attacking && this.vattackbox.body.enable) {
                 player.reduceLife(400);
-                  let knockX;
-            if (this.flipX) {
-                knockX = 200;
-            } else {
-                knockX = -200;
-            }
+                let knockX;
+                if (this.flipX) {
+                    knockX = 200;
+                } else {
+                    knockX = -200;
+                }
 
-            let knockY = -700;
+                let knockY = -700;
 
-            player.setVelocityX(knockX);
-            player.setVelocityY(knockY);
+                player.setVelocityX(knockX);
+                player.setVelocityY(knockY);
             }
         });
     }
-        /** Actualiza la barra de vida situada en el html*/
+    /** Actualiza la barra de vida situada en el html*/
     updateHealthBar() {
         // Asignamos el ancho según el porcentaje de vida restante
         this.healthBar.style.width = `${(this.life / this.maxLife) * 100}%`;
