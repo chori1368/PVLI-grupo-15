@@ -1,12 +1,22 @@
 import Player from './player.js';
 
+/**
+ * Variante de jugador con lanza.
+ * Su “doble salto” es un dash horizontal que también puede hacer daño.
+ * @extends Player
+ */
 export default class PlayerSpear extends Player {
+    /**
+     * @param {Phaser.Scene} scene
+     * @param {'left'|'right'} side
+     */
     constructor(scene, side) {
         super(scene, side, 'spear');
         this.jumpSpeed = -750;
-        /** booleano para comprobar si el player ya ha hecho daño con ese dash */
+        /** Booleano para comprobar si el dash está activo (y puede hacer daño). */
         this.dashing = false;
-        this.type = 1; //spear type
+        /** Identificador usado por escenas/UI para distinguir personaje. */
+        this.type = 1; // spear type
 
         // Ajustar collider del arma
         if (this.hattackbox && this.hattackbox.body) {
@@ -23,6 +33,7 @@ export default class PlayerSpear extends Player {
         }
     }
 
+    /** Dash horizontal (sustituye al doble salto). */
     DoubleJump() {
         this.dashing = true;
         try {
@@ -39,10 +50,15 @@ export default class PlayerSpear extends Player {
         this.scene.time.delayedCall(300, this.DashFinish, [], this);
     }
 
+    /** Termina el dash y desactiva el daño extra. */
     DashFinish() {
         this.dashing = false;
     }
 
+    /**
+     * Overlaps contra otro jugador: ataques normales + daño al contactar en dash.
+     * @param {Player} player
+     */
     addCollision(player) {
         this.scene.physics.add.overlap(player, this.hattackbox, () => {
             if (this.attacking && this.hattackbox.body.enable) {

@@ -1,10 +1,20 @@
+/**
+ * Escena de resultado: muestra el ganador y permite volver a selección.
+ * @extends Phaser.Scene
+ */
 export default class ResultScene extends Phaser.Scene {
+    /** Crea la escena con la key `result`. */
     constructor() { super('result'); }
 
+    /** Precarga el audio usado en el botón. */
     preload() {
         this.load.audio('click', 'assets/sounds/click.mp3' );
     }
 
+    /**
+     * Renderiza el resultado.
+     * @param {{ winner: 'left'|'right', type?: number }} data Datos pasados desde `level`.
+     */
     create(data) {
         // Background
         this.add.image(this.scale.width/2, this.scale.height/2, 'background').displayHeight = this.scale.height;

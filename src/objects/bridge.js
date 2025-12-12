@@ -1,12 +1,15 @@
-/** Grupo de segmentos que conforman el puente entero, 
- * se gestiona su animación de hundirse/flotar y su destrucción
- * 
+/**
+ * Grupo de segmentos que conforman el puente entero.
+ * Se encarga de hundir/flotar segmentos y de romperlos al final.
  * @extends Phaser.GameObjects.Group
- * */
+ */
 
 import Platform from './platform.js';
 
 export default class Bridge extends Phaser.GameObjects.Group {
+    /**
+     * @param {Phaser.Scene} scene
+     */
     constructor(scene) {
         super(scene);
 
@@ -36,6 +39,10 @@ export default class Bridge extends Phaser.GameObjects.Group {
         }
     }
 
+    /**
+     * Alterna aleatoriamente segmentos arriba/abajo (efecto “puente inestable”).
+     * @param {number} interval Duración del tween (ms).
+     */
     break(interval) {
         this.segments.forEach(s => {
             if (Phaser.Math.Between(0, 1) == 0) {
@@ -47,10 +54,17 @@ export default class Bridge extends Phaser.GameObjects.Group {
         });
     }
 
+    /** Rompe todos los segmentos (animación y destrucción). */
     destroy() {
         this.segments.forEach(s => s.break());
     }
 
+    /**
+     * Mueve un segmento a una altura concreta y actualiza el body.
+     * @param {Platform} segment
+     * @param {number} height
+     * @param {number} interval Duración del tween (ms).
+     */
     move(segment, height, interval) {
         this.scene.tweens.add({
             targets: segment,

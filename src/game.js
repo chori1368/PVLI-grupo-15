@@ -3,6 +3,11 @@ import SelectionScene from './scenes/selection.js';
 import LevelScene from './scenes/level.js';
 import ResultScene from './scenes/result.js';
 
+/**
+ * Entry point del juego (Phaser).
+ * Define la configuración global, crea la instancia y sincroniza play/pause con el DOM.
+ */
+
 // Configuración del juego:
 const config = {
 
@@ -34,14 +39,17 @@ const config = {
     },
 };
 
-// Instancia del juego:
+/** Instancia del juego. */
 const game = new Phaser.Game(config);
 
-// Botones de play y pause
+/** Botones de play y pause (UI HTML). */
 const play = document.getElementById('play-btn');
 const pause = document.getElementById('pause-btn');
 
-// Pausado y reanudado del juego:
+/**
+ * Pausa o reanuda el juego según el estado de los inputs.
+ * Se apoya en `pause.checked` y `play.checked` para decidir.
+ */
 const toggleState = () => {
     // Si pause esta checked o play no lo está:
     if (pause.checked || !play.checked) game.pause(); // Pausamos el juego

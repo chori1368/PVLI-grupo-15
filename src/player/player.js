@@ -1,5 +1,15 @@
-
+/**
+ * Personaje base controlable.
+ * Gestiona movimiento, saltos, animaciones y ataques (con hitboxes invisibles).
+ * @extends Phaser.Physics.Arcade.Sprite
+ */
 export default class Player extends Phaser.Physics.Arcade.Sprite {
+    /**
+     * @param {Phaser.Scene} scene Escena propietaria.
+     * @param {'left'|'right'} side Lado del jugador (control + spawn + UI).
+     * @param {string} texture Key del spritesheet.
+     * @param {{attackSounds?: {h?: string, v?: string, dash?: string}|null, weapon?: 'sword'|'spear'|null}} [opts]
+     */
     constructor(scene, side, texture, opts = {}) {
         const defaultOpts = {
             attackSounds: null,
@@ -29,18 +39,18 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.speed = 400;
         this.jumpSpeed = -610;
 
-        /** boleano para comprobar si ha terminado el cooldown del ataque */
+        /** Booleano para bloquear nuevos ataques mientras dura la animación. */
         this.attacking = false;
         this.maxJumps = 2;
         this.jumpCount = 0;
 
-        /** zona invisible que sirve para la hitbox del ataque horizontal*/
+        /** Zona invisible: hitbox del ataque horizontal. */
         this.hattackbox = scene.add.zone(0, 0, 120, 80);
         scene.physics.add.existing(this.hattackbox, false);
         this.hattackbox.body.allowGravity = false;
         this.hattackbox.body.enable = false;
 
-        /** zona invisible que sirve para la hitbox del ataque vertical*/
+        /** Zona invisible: hitbox del ataque vertical. */
         this.vattackbox = scene.add.zone(0, 0, 40, 90);
         this.scene.physics.add.existing(this.vattackbox, false);
         this.vattackbox.body.allowGravity = false;
@@ -91,17 +101,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         });
 
 
-        /** offset por la derecha del ataque horizontal */
+        /** Offset por la derecha del ataque horizontal. */
         this.hxoffsetplus = 310;
-        /** offset por la izquierda del ataque horizontal */
+        /** Offset por la izquierda del ataque horizontal. */
         this.hxoffsetminus = -60;
-        /** offset vertical del ataque vertical */
+        /** Offset vertical del ataque horizontal. */
         this.hyoffset = 30 + this.height * 0.3;
-        /** offset por la derecha del ataque vertical */
+        /** Offset por la derecha del ataque vertical. */
         this.vxoffsetplus = 200;
-        /** offset por la izquierda del ataque vertical */
+        /** Offset por la izquierda del ataque vertical. */
         this.vxoffsetminus = -160;
-        /** offset vertical del ataque vertical */
+        /** Offset vertical del ataque vertical. */
         this.vyoffset = -120 + this.height * 0.3;
 
         // Guardamos las teclas (pueden ser WASD o flechas)
@@ -161,6 +171,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.jumpAnimLocked = false;
     }
 
+    /**
+     * Intenta inferir el arma por el nombre de la textura.
+     * @param {string} textureKey
+     * @returns {'sword'|'spear'}
+     */
     _inferWeaponFromTexture(textureKey) {
         if (!textureKey) return 'sword';
         const tk = String(textureKey).toLowerCase();
@@ -168,10 +183,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (tk.includes('sword') || tk.includes('espada')) return 'sword';
         return 'sword';
     }
+    /** Resetea el contador de saltos (útil tras rebotes/daño). */
     resetJumpCount() {
         this.jumpCount = 0;
     }
 
+    /** Lee input y actualiza movimiento/animación/ataques. */
     handleInput() {
         if (!this.active) return;
 
@@ -243,7 +260,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.play('idle', true);
         }
     }
-    /** lógica del ataque horizontal */
+    /** Lógica del ataque horizontal: activa hitbox y reproduce animación/sonido. */
     hAttack() {
         this.attacking = true;
         this.hattackbox.body.enable = true;
@@ -262,7 +279,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         // Cuando acabe la animación:
         this.once('animationcomplete-horizontal', () => { this.AttackFinish(); });
     }
-    /** lógica del ataque vertical */
+    /** Lógica del ataque vertical: activa hitbox y reproduce animación/sonido. */
     vAttack() {
         this.attacking = true;
         this.vattackbox.body.enable = true;
@@ -283,17 +300,23 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.once('animationcomplete-vertical', () => { this.AttackFinish(); });
     }
 
+    /** Limpia el estado al terminar una animación de ataque. */
     AttackFinish() {
         this.attacking = false;
         this.hattackbox.body.enable = false;
         this.vattackbox.body.enable = false;
     }
 
+    /** Acción de doble salto (sobrescribible por subclases). */
     DoubleJump() {
         this.anims.play('jump', true);
         this.setVelocityY(this.jumpSpeed);
     }
 
+    /**
+     * Aplica daño y actualiza UI.
+     * @param {number} amount Daño a aplicar.
+     */
     reduceLife(amount) {
         this.life -= amount;
         this.updateHealthBar();
@@ -301,6 +324,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.life <= 0) this.die();
     }
 
+    /** Marca el jugador como muerto e inactivo. */
     die() {
         this.setTint(0xff0000);
         this.setVelocity(0);
@@ -310,10 +334,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.life = 0;
     }
 
+    /**
+     * @returns {boolean} `true` si aún tiene vida.
+     */
     isAlive() {
         return this.life > 0;
     }
 
+    /**
+     * Registra overlaps de esta instancia contra otro jugador.
+     * @param {Player} player Jugador que recibirá daño/knockback.
+     */
     addCollision(player) {
         this.scene.physics.add.overlap(player, this.hattackbox, () => {
             if (this.attacking && this.hattackbox.body.enable) {
@@ -349,7 +380,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
     }
-    /** Actualiza la barra de vida situada en el html*/
+    /** Actualiza la barra de vida situada en el HTML. */
     updateHealthBar() {
         // Asignamos el ancho según el porcentaje de vida restante
         this.healthBar.style.width = `${(this.life / this.maxLife) * 100}%`;

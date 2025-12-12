@@ -1,11 +1,19 @@
+/**
+ * Escena de introducción: muestra el logo y pasa a selección.
+ * También permite saltar con ENTER/ESPACIO.
+ * @extends Phaser.Scene
+ */
 export default class IntroScene extends Phaser.Scene {
+    /** Crea la escena con la key `intro`. */
     constructor() { super('intro'); }
 
+    /** Precarga assets mínimos de la intro. */
     preload() {
         // Preload assets
         this.load.image('logo', 'assets/logo.png');
     }
 
+    /** Monta tweens del logo y listeners de teclado. */
     create() {
         // Al pulsar ENTER o ESPACIO, ir a la escena de selección
         this.input.keyboard.on('keydown-ENTER', () => this.scene.start('selection'));

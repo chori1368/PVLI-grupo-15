@@ -7,11 +7,24 @@ import Lava from '../objects/lava.js';
 import Squirrel from '../objects/squirrel.js';
 import Box from '../objects/box.js';
 
+/**
+ * Datos de selección de personaje, pasados desde `SelectionScene`.
+ * @typedef {Object} SelectionData
+ * @property {number} left Frame/índice del jugador izquierdo (0/1).
+ * @property {number} right Frame/índice del jugador derecho (0/1).
+ */
+
+/**
+ * Escena principal de combate: monta el nivel, spawnea entidades y controla el flow.
+ * @extends Phaser.Scene
+ */
 export default class LevelScene extends Phaser.Scene {
+    /** Crea la escena con la key `level`. */
     constructor() {
         super('level');
     }
 
+    /** Precarga audio, imágenes y spritesheets del nivel. */
     preload() {
         //Preload audio
         this.load.audio('BattleMusic', 'assets/sounds/MusicaBatalla.mp3');
@@ -43,6 +56,10 @@ export default class LevelScene extends Phaser.Scene {
         this.load.spritesheet('spear', 'assets/characters/spear.png', { frameWidth: 926, frameHeight: 593 });
     }
 
+    /**
+     * Inicializa mundo, UI, jugadores y colisiones.
+     * @param {SelectionData} data Selección de personajes de cada jugador.
+     */
     create(data) {
         // Dimensiones del mundo
         this.worldWidth = 3000;
@@ -184,6 +201,10 @@ export default class LevelScene extends Phaser.Scene {
         this.nextTea = this.time.now + Phaser.Math.Between(5000, 10000);
     }
 
+    /**
+     * Comprueba si algún jugador ha muerto y transiciona a `result`.
+     * @returns {void}
+     */
     isGameOver() {
         let result = null;
 
@@ -201,6 +222,7 @@ export default class LevelScene extends Phaser.Scene {
         }
     }
 
+    /** Loop principal: actualiza plataformas, jugadores, cámara, reloj y spawns. */
     update() {
         // Actualizar plataformas
         this.platforms.forEach(p => p.update([this.playerLeft, this.playerRight]));
@@ -220,7 +242,7 @@ export default class LevelScene extends Phaser.Scene {
         this.isGameOver();
     }
 
-    // Spawnea una ardilla que lanza té en una posición x aleatoria
+    /** Spawnea una ardilla que lanza té en una posición X aleatoria. */
     spawnSquirrel() {
         // Elegir lado aleatoriamente
         const x = Phaser.Math.RND.pick([this.cameras.main.worldView.left + 20, this.cameras.main.worldView.right - 20]);
@@ -231,7 +253,7 @@ export default class LevelScene extends Phaser.Scene {
         this.nextTea = this.time.now + Phaser.Math.Between(5000, 10000);
     }
 
-    // Actualiza el timer del html (clock)
+    /** Actualiza el timer del HTML (clock) sin hacerlo cada frame. */
     updateClock() {
         // Calculamos el tiempo restante en segundos
         const time = Math.max(0, Math.ceil((this.duration - (this.time.now - this.startTime)) / 1000));
@@ -244,7 +266,7 @@ export default class LevelScene extends Phaser.Scene {
         }
     }
 
-    // Actualiza la cámara para que siga a ambos jugadores
+    /** Actualiza la cámara para encuadrar a ambos jugadores con zoom suave. */
     cameraFollow() {
         const midX = (this.playerLeft.x + this.playerRight.x) / 2;
         const midY = (this.playerLeft.y + this.playerRight.y) / 2;

@@ -1,4 +1,13 @@
+/**
+ * Zona de daño (lava): usa un collider en la parte superior.
+ * @extends Phaser.GameObjects.Sprite
+ */
 export default class Lava extends Phaser.GameObjects.Sprite {
+    /**
+     * @param {Phaser.Scene} scene
+     * @param {number} x
+     * @param {number} y
+     */
     constructor(scene, x, y) {
         super(scene, x, y, 'lava');
 
@@ -11,6 +20,10 @@ export default class Lava extends Phaser.GameObjects.Sprite {
         this.body.setOffset(0, this.displayHeight * 0.5);
     }
 
+    /**
+     * Aplica daño/impulso al tocar la lava.
+     * @param {import('../player/player.js').default} player
+     */
     addCollision(player) {
         this.scene.physics.add.overlap(player, this, () => {
             player.reduceLife(3500);

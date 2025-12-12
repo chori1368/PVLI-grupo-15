@@ -1,5 +1,16 @@
+/**
+ * Botón clicable basado en `Phaser.GameObjects.Image`.
+ * @extends Phaser.GameObjects.Image
+ */
 export default class Button extends Phaser.GameObjects.Image {
 
+    /**
+     * @param {Phaser.Scene} scene
+     * @param {number} x
+     * @param {number} y
+     * @param {string} texture
+     * @param {Function} callback Acción al soltar el click/touch.
+     */
     constructor(scene, x, y, texture, callback) {
 
         // Llama al constructor de la clase padre

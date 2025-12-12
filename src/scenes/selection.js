@@ -1,6 +1,13 @@
+/**
+ * Escena de selección de personaje (1v1).
+ * Devuelve a `level` los índices seleccionados de cada jugador.
+ * @extends Phaser.Scene
+ */
 export default class SelectionScene extends Phaser.Scene {
+    /** Crea la escena con la key `selection`. */
     constructor() { super('selection'); }
 
+    /** Precarga audio y recursos de la pantalla de selección. */
     preload() {
         //Preload audio
         this.load.audio('seleccionar', 'assets/sounds/seleccionar.mp3' );
@@ -13,6 +20,10 @@ export default class SelectionScene extends Phaser.Scene {
         this.load.spritesheet('characters', 'assets/selection/characters.png', { frameWidth: 462, frameHeight: 387 });
     }
 
+    /**
+     * Construye la UI de selección y arma los controles.
+     * Al continuar, arranca `level` con `{ left, right }` (0/1).
+     */
     create() {
         // Background (ajustado al alto de pantalla)
         this.add.image(this.scale.width/2, this.scale.height/2, 'background').displayHeight = this.scale.height;

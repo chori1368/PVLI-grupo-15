@@ -1,5 +1,15 @@
-
+/**
+ * Proyectil/objeto lanzado por la ardilla.
+ * Vuela hasta un target, cae con físicas y al tocar a un jugador lo cura.
+ * @extends Phaser.GameObjects.Sprite
+ */
 export default class Tea extends Phaser.GameObjects.Sprite {
+    /**
+     * @param {Phaser.Scene} scene
+     * @param {number} x
+     * @param {number} y
+     * @param {{x:number, y:number}} target
+     */
     constructor(scene, x, y, target) {
         super(scene, x, y, 'tea');
 
@@ -19,7 +29,7 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         this.flyToTarget();
     }
 
-    /** Animación de vuelo hacia la posición objetivo */
+    /** Animación de vuelo hacia la posición objetivo. */
     flyToTarget() {
         this.scene.tweens.add({
             targets: this,
@@ -32,7 +42,7 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         });
     }
 
-    // Habilitar físicas y colisiones (para dejar caer el té)
+    /** Habilita físicas/colisiones para que el té caiga y se quede en el suelo. */
     enablePhysics() {
         // Algunas propiedades físicas...
         this.scene.physics.add.existing(this);
@@ -55,7 +65,10 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         });
     }
 
-    // Añadir collisión con jugador (y lo que se hace al colisionar)
+    /**
+     * Overlap contra un jugador: cura y destruye el té.
+     * @param {import('../player/player.js').default} player
+     */
     addCollision(player) {
         this.scene.physics.add.overlap(player, this, () => {
             this.scene.sound.play('tea');

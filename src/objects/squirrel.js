@@ -1,6 +1,15 @@
 import Tea from './tea.js';
 
+/**
+ * Ardilla “spawner” que aparece desde el borde inferior de la cámara,
+ * hace una pequeña animación y lanza un té hacia el otro lado.
+ * @extends Phaser.GameObjects.Sprite
+ */
 export default class Squirrel extends Phaser.GameObjects.Sprite {
+    /**
+     * @param {Phaser.Scene} scene
+     * @param {number} x Posición X (determina el lado y el target del té).
+     */
     constructor(scene, x) {
         super(scene, x, scene.cameras.main.worldView.bottom, 'squirrel');
         // Añadimos el objeto a escena
@@ -20,7 +29,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
         this.appear();
     }
 
-    // Sube desde fuera de pantalla, “escarba”, luego lanza y se oculta
+    /** Sube desde fuera de pantalla, “escarba”, luego lanza y se oculta. */
     appear() {
         this.scene.tweens.add({
             targets: this,
@@ -32,7 +41,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
         });
     }
 
-    // Animación de escarbar
+    /** Animación de escarbar. */
     dig() {
         this.scene.tweens.add({
             targets: this,
@@ -46,7 +55,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
         });
     }
 
-    // Animación de lanzar té
+    /** Animación de lanzamiento (incluye el momento de soltar el té). */
     throw() {
         let dir = -1; // Determinar dirección según posición
         if (this.x < this.scene.cameras.main.worldView.centerX) dir = 1;
@@ -74,7 +83,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
         });
     }
 
-    // Crear y lanzar el té
+    /** Crea y lanza el té hacia un target aleatorio del lado opuesto. */
     throwTea() {
         // Posición objetivo del té lanzado segun lado
         let target = { x: 0, y: Phaser.Math.Between(80, 100) };
@@ -97,7 +106,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
         this.scene.colliders.forEach(collider => this.scene.physics.add.collider(tea, collider));
     }
 
-    // Animación de desaparecer
+    /** Animación de desaparecer y auto-destrucción. */
     disappear() {
         this.scene.tweens.add({
             targets: this,

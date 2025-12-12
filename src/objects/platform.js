@@ -1,7 +1,17 @@
-/** Plataforma estática que usa la textura 'platform' por defecto 
- * y se puede atravesar por abajo y laterales */
+/**
+ * Plataforma estática (Arcade) que se puede atravesar por abajo y laterales.
+ * Por defecto usa la textura `platform`.
+ * @extends Phaser.Physics.Arcade.Sprite
+ */
 
 export default class Platform extends Phaser.Physics.Arcade.Sprite {
+  /**
+   * @param {Phaser.Scene} scene
+   * @param {number} x
+   * @param {number} y
+   * @param {string} [texture='platform']
+   * @param {number} [scale=1]
+   */
   constructor(scene, x, y, texture = 'platform', scale = 1) {
     super(scene, x, y, texture);
     // Añadir a la escena y habilitar físicas
@@ -22,7 +32,7 @@ export default class Platform extends Phaser.Physics.Arcade.Sprite {
     this.body.setOffset(0, 0);
   }
 
-  // Animacion de desaparición (y autoeliminación)
+  /** Animación de desaparición (y auto-eliminación). */
   break() {
     // Tween de caída
     this.scene.tweens.add({
