@@ -13,7 +13,17 @@ Destinado a la condena eterna, Hades, deidad del infierno, te concede una gran o
 salir victorioso en un combate impredecible sobre el río Estigia para volver a la vida 
 cruzando la frontera del inframundo.
 
+### Capturas del juego:
+![](https://i.imgur.com/6tCL44Q.png) 
+![](https://i.imgur.com/YPbKgil.png)
+![](https://i.imgur.com/dueHZWb.png) 
+![](https://i.imgur.com/PfKbtfY.png)
+
 ### Autores:
 - Tomás Arévalo Almagro
 - Andrés Bartolomé Clap
 - Carlos Dochao Moreno
+
+### Página web:
+
+https://chori1368.github.io/PVLI-grupo-15/
