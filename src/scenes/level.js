@@ -190,7 +190,7 @@ export default class LevelScene extends Phaser.Scene {
         // Destruir puente al finalizar la partida
         this.time.delayedCall(this.duration, () => {
             if (this.bridgeBreakEvent) this.bridgeBreakEvent.remove(false);
-            this.bridge.destroy();
+            this.bridge.fall();
             this.sound.play('break');
         });
 
