@@ -55,7 +55,7 @@ export default class Bridge extends Phaser.GameObjects.Group {
     }
 
     /** Rompe todos los segmentos (animación y destrucción). */
-    destroy() {
+    fall() {
         this.segments.forEach(s => s.break());
     }
 
