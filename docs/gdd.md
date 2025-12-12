@@ -32,47 +32,40 @@ Encarnas a un alma en pena destinada al infierno, donde Hades te ofrecerá una o
 
 ### **Objetivo del juego:** 
 
-El objetivo del juego es acabar con tu oponente por medio de golpes con tu correspondiente arma hasta que reduzcas su barra de vida o cero, para ello ambos jugadores disponen de 2 minutos de partida. Si en 1 min 30 seg ambos jugadores siguen con vida se iniciará el evento de "the floor is lava". Que determinará al cabo de 30 seg el vencedor del combate (ver "Floor is Lava" en mecánicas).
+El objetivo del juego es acabar con tu oponente por medio de golpes con tu correspondiente arma hasta que reduzcas su barra de vida o cero, para ello ambos jugadores disponen de 2 minutos de partida. Si en 30 seg ambos jugadores siguen con vida se iniciará el evento de "the floor is lava". Que determinará al cabo de 30 seg el vencedor del combate (ver "Floor is Lava" en mecánicas).
 
 ### **Flujo del juego:** 
-
-![](https://i.imgur.com/tUb0vzM.png)
+![](https://i.imgur.com/l8IztKl.png)
 
 ### **Inicio:** 
 
-![](https://i.imgur.com/Sn3kMTo.png)
+![](https://i.imgur.com/6tCL44Q.png) 
 
-El juego empieza en el menú de inicio, donde se podrá acceder a la selección de personajes (tras una breve animación¿?) por medio del botón “JUGAR”. 
+El juego empieza en el menú de inicio, donde se podrá acceder a la selección de personajes (tras una breve animación, donde se muestra el nombre del estudio) por medio del botón “PLAY”. 
 
 ### **Selección de personajes:** 
 
-![](https://i.imgur.com/9Uyvgc0.png)
+![](https://i.imgur.com/YPbKgil.png)
 
-En el menú de selección, cada jugador podrá elegir un personaje haciendo uso de los controles mostrados en su lado de pantalla correspondiente, también podrán previsualizar el arma y habilidades concretas de los personajes disponibles. Una vez confirmadas las selecciones por ambos jugadores se pasará a la pantalla de controles. 
-
-### **Controles:** 
-
-![](https://i.imgur.com/iRQwl2j.png)
-
-En la visualización de controles cada jugador podrá ver y probar sus controles correspondientes. Se podrá regresar a la pantalla de selección si se desea por medio del botón “VOLVER”, o iniciar la partida por medio del botón “COMENZAR PARTIDA”.
+En el menú de selección, cada jugador podrá elegir un personaje haciendo uso de los controles mostrados en su lado de pantalla correspondiente. Una vez confirmadas las selecciones por ambos jugadores se pasará al combate entre los dos. 
 
 ### **Combate:** 
 
-![](https://i.imgur.com/QQYJY4J.png)
+![](https://i.imgur.com/dueHZWb.png) 
 
-En la pantalla de combate se encuentra el nivel principal (coliseo infernal). Tras una cuenta atrás desde 3 el combate dará comienzo. Tras finalizarse el combate pasarán (tras una breve animación¿?) a la pantalla de resultado. 
+En la pantalla de combate se encuentra el nivel principal (coliseo infernal). Donde según empize los jugadores se pelearán y tras la muerte de uno se pasara a la pantalla de resultados. 
 
 ### **Resultado:** 
 
-![](https://i.imgur.com/WGTI1JF.png)
+![](https://i.imgur.com/PfKbtfY.png)
 
-En esta pantalla se muestra el ganador del combate. Se podrá retroceder al menú de inicio o volver a jugar (que devolverá a los jugadores a la pantalla de selección de personajes¿?)
+En esta pantalla se muestra el ganador del combate. Al darle a continuar se volverá a la selección de personajes.
 
 ### **Estética y contenido:** 
 
-El apartado visual se inspira en los clásicos juegos de lucha arcade, utilizando un estilo pixel-art de baja resolución para transmitir una estética retro. Se utilizará una paleta de tonos oscuro-rojizos-morados para transmitir esa atmósfera de infierno caótico y oscuro que se pretende reflejar.
+El apartado visual se inspira en los clásicos juegos de lucha arcade, utilizando un estilo minimalista y gráfico  para transmitir una estética arcade moderna. Se utilizará una paleta de tonos oscuro-rojizos-morados para transmitir esa atmósfera de infierno caótico y oscuro que se pretende reflejar.
 
-Los jugadores serán representados como gladiadores romanos con prendas perjudicadas y suciedad en el cuerpo, distinguiéndose entre sí por la diferencia del color de su ropaje (ya qu es posible que ambos jugadores escogan el mismo personaje). 
+Los jugadores serán representados como gladiadores romanos con prendas distintivas de cada tipo de jugador siendo el de la lanza una armadura y el de la espada una túnica.
 
 En cuanto al escenario, este se sitúa sobre un puente del río Estigia y funciona como un coliseo-puente, permitiendo a los jugadores moverse lateralmente por él. El agua del río se tornará en lava  cuando de comienzo el evento de "Floor is Lava", quebrándose el puente en múltiples plataformas que se sumergen y aparecen sobre la lava. En el fondo de la escena y alrededor del puente se sitúan las gradas de lo que conforma un gran coliseo sobre el puente, con Hades sentado en la zona central como gran figura divina orquestando el combate. 
 
@@ -96,17 +89,23 @@ Destinado a la condena eterna, Hades, deidad del inframundo, te concede una gran
   - Salto (Flecha Arriba) 
   - "Dash" con lanza (flecha arriba x2) 
   - Golpe de lanza (Shift Derecho) 
-  - Golpe de lanza vertical (Guión)
+  - Golpe de lanza vertical (Guión / Control derecho)
  
     El movimiento de los personajes determinará de forma direccional el ataque de las arams de ambos jugadores en su ataque
     
 - #### **Floor is lava:**
 
-  Cada partida tiene un tiempo limitado de juego de 2 minutos. Al alcanzarse el minuto y medio de partida, el puente se quebrará en 5 secciones y el agua del río se volverá lava, dando así comienzo a este evento. Durante los 30 segundos que dura este evento, las múltiples secciones del puente quebrado se sumergirán y aparecerán cada 5 segundos, dejando sobre el campo de juego 2-3 plataformas (distribuidas de forma aleatoria y no-uniforme sobre el nivel) que permitirán a los jugadores evitar tocar la lava mientras siguen luchando. Al finalizar los 30 segundos del evento las plataformas se sumergirán una vez más para no volver a reaparecer. Cabe mencionar que entonces, el primer jugador en tocar la lava, perderá toda su vida restante y el jugador en pie (en el aire en este caso) obtendrá la victoria. Los jugadores podrán identificar el final del evento mirando al temporizador en el centro superior de la pantalla, de igual manera, un sonido (de campanas¿?) y un sutíl gesto de Hades en el fondo del escenario indicarán a los jugadores que el tiempo ha acabado y que por tanto, cuando uno de ellos caiga en la lava se terminará definitivanmente el combate.
+  Cada partida tiene un tiempo limitado de juego de más o menos 1 minuto. Al alcanzarse el medio minuto de partida, el puente se quebrará en varias secciones y el agua del río se volverá lava, dando así comienzo a este evento. Durante los 30 segundos que dura este evento, las múltiples secciones del puente quebrado se sumergirán y aparecerán cada varios segundos, dejando sobre el campo de juego 2-3 plataformas (distribuidas de forma aleatoria y no-uniforme sobre el nivel) que permitirán a los jugadores evitar tocar la lava mientras siguen luchando. Al finalizar los 30 segundos del evento las plataformas se sumergirán una vez más para no volver a reaparecer. El jugador en pie (en el aire en este caso) obtendrá la victoria. Los jugadores podrán identificar el final del evento mirando al temporizador en el centro superior de la pantalla, de igual manera, un sonido de terremoto y el movimiento de la cámara indicarán a los jugadores que el tiempo ha acabado y que por tanto, cuando uno de ellos muera definitivanmente el combate.
 
-  Nota: Si a lo largo del evento un jugador cae en la lava, este perderá de igual manera toda su vida restante, otorgando igualmente la victoria al jugador en pie.
+  Nota: La lava en todo momento quita una gran cantidad de vida y te hace rebotar a una altura a la que llegarías si hubieses saltado. En la imagen se ve el inicio del evento del floor is lava.
 
-  ![](https://i.imgur.com/Caj0Z8r.jpeg)
+- #### **Té:**
+  
+  Cada cierto tiempo la ardilla invencible, que se va moviendo por la arena, lanzara un té que cúrara una porción de vida al jugador que pase por escima de este.
+
+- #### **Cajas:**
+
+  En el coliseo hay unas cajas que los juagadores pueden mover para entopecer al otro jugador.
   
 ### **Interfaz:** 
 
@@ -116,18 +115,18 @@ La interfaz de juego es la básica de un juego de lucha, contando con dos barras
 
 - **Gladiador espadachín:** Este gladiador posee una espada con la que podrá atacar a corta-media distancia con un intervalo corto de ataque. Este personaje cuenta con la habilidad de doble salto, con la que podrá pulsar dos veces la tecla de salto (en un intervalo muy breve de tiempo) para realizar un segundo salto sin necesidad de tocar ninguna superficie. Esto le beneficiará en eventos de juego donde el salto entre plataformas sea prioritario, el salto doble tiene un ligero cooldown al realizarse, por lo que se evita que el jugador pueda sacar una ventaja extrema con esta habilidad. Este personaje cuenta con la ventaja de un ataque más rápido y un rango de salto y movimiento más variado.
 
-![](https://i.imgur.com/8A5Vim2.jpeg)
+![](https://i.imgur.com/0UVuqVL.jpg)
 
 - **Gladiador con lanza:** Este gladiador cuenta con una lanza de largo alcance con la que podrá atacar a corta-larga distancia con un intervalo de ataque sensiblemente mayor que la del espadachín. Como habilidad, este personaje podrá lanzarse (valga la redundancia) **horizontalmente** haciendo un "dash" tras realizar un salto, pudiendo no solo inlingir daño al enemigo (si se encuentra en su trayectoria) sino también llegar más lejos que con un salto corriente. El "dash" se verá afectado por un cooldown similar al del salto doble del gladiador espadachín. Este personaje cuenta con la ventaja de poder llegar más lejos a la hora de saltar realizando un "dash", así como la posibilidad de atacar en un rango más amplio.
 
-![](https://imgur.com/YV8lzde.jpeg)
+![](https://imgur.com/xyJcOOd.jpg)
 
 ### **Niveles:** 
 
-Existe un único nivel que consiste en un escenario con 3 plataformas fijas elevadas a distintas alturas sobre el suelo para que los jugadores puedan no solo desplazarse por toda la superficie del puente, sino saltar entre estas plataformas del nivel. las plataformas fijas del nivel desaparecerán por completo sumergidas en la lava al dar comienzo el evento de "the floor is lava".
+Existe un único nivel que consiste en un escenario con 2 plataformas fijas elevadas a distintas alturas sobre el suelo para que los jugadores puedan no solo desplazarse por toda la superficie del puente, sino saltar entre estas plataformas del nivel. Las plataformas no se destruyen en el evento de floor is lava.
 
 ### **Referencias:** 
 
 En cuanto a las referencias, podemos encontrar claras inspiraciones en los juegos de lucha antiguos como street fighter, mortal kombat o tekken. También en mecánica de juego con plataformas podemos encontrar inspiración de juegos como el super smash bros. 
 
-En cuanto a la ambientación, se inspira en el infierno de Hades (TODO: poner referencias visuales también). Por último, el apartado visual imita el arte pixel art de las máquinas recreativas antiguas (TODO: poner referencias de pixel arts parecidos)
+En cuanto a la ambientación, se inspira en el infierno de Hades. Por último, el apartado visual imita el arte pixel art de las máquinas recreativas antiguas de forma más moderna.
