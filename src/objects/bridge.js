@@ -48,7 +48,7 @@ export default class Bridge extends Phaser.GameObjects.Group {
     }
 
     destroy() {
-        this.segments.forEach(s => s.destroy());
+        this.segments.forEach(s => s.break());
     }
 
     move(segment, height, interval) {

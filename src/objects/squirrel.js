@@ -2,7 +2,7 @@ import Tea from './tea.js';
 
 export default class Squirrel extends Phaser.GameObjects.Sprite {
     constructor(scene, x) {
-        super(scene, x, scene.scale.height + 80, 'squirrel');
+        super(scene, x, scene.cameras.main.worldView.bottom, 'squirrel');
         // Añadimos el objeto a escena
         this.scene.add.existing(this);
 
@@ -27,7 +27,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
     appear() {
         this.scene.tweens.add({
             targets: this,
-            y: this.scene.scale.height,
+            y: this.scene.cameras.main.worldView.bottom - 20,
             duration: 250,
             ease: 'Sine.easeOut',
             onComplete: () => this.dig()
@@ -91,7 +91,7 @@ export default class Squirrel extends Phaser.GameObjects.Sprite {
     disappear() {
         this.scene.tweens.add({
             targets: this,
-            y: this.scene.scale.height + this.displayHeight,
+            y: this.scene.cameras.main.worldView.bottom + 20,
             delay: 100,
             duration: 250,
             ease: 'Sine.easeIn',

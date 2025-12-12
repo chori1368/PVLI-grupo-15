@@ -221,10 +221,8 @@ export default class LevelScene extends Phaser.Scene {
 
     // Spawnea una ardilla que lanza té en una posición x aleatoria
     spawnSquirrel() {
-        let x;
-        // Elegir posición x aleatoria dentro del ancho del nivel
-        if (Phaser.Math.Between(0, 1) === 0) x = (window.outterWidth - window.innerWidth) / 2 + 20;
-        else x = (window.outterWidth + window.innerWidth) / 2 - 20;
+        // Elegir lado aleatoriamente
+        const x = Phaser.Math.RND.pick([this.cameras.main.worldView.left + 20, this.cameras.main.worldView.right - 20]);
 
         // Crear ardilla con los colliders del nivel (para el té)
         new Squirrel(this, x);
@@ -235,7 +233,7 @@ export default class LevelScene extends Phaser.Scene {
     // Actualiza el timer del html (clock)
     updateClock() {
         // Calculamos el tiempo restante en segundos
-        const time = Math.max(0, Math.ceil((this.duration - this.time.now - this.startTime) / 1000));
+        const time = Math.max(0, Math.ceil((this.duration - (this.time.now - this.startTime)) / 1000));
 
         // Actualizamos el DOM cada segundo (y no cada frame)
         if (this.lastT !== time) {

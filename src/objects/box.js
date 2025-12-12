@@ -6,10 +6,11 @@ export default class Box extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        
+        // Algunas propiedades físicas de la caja
         this.setScale(0.35);
-        this.setBounce(0.1);
-        this.setCollideWorldBounds(true);
-        this.body.setFriction(0.2, 0);
+        this.body.setBounce(0.05);
+        this.body.setDamping(true);
+        this.body.setDrag(1200, 0);
+        this.body.setFriction(1, 0);
     }
 }

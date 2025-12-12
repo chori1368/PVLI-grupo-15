@@ -1,6 +1,6 @@
 
 export default class Tea extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, target, opts = {}) {
+    constructor(scene, x, y, target) {
         super(scene, x, y, 'tea');
 
         // Añadimos el objeto a escena
@@ -8,9 +8,8 @@ export default class Tea extends Phaser.GameObjects.Sprite {
 
         // Algunas variables del té
         this.target = target; // Posición objetivo a la que volar
-        this.colliders = scene.colliders ?? [];
-        this.healAmount = opts.healAmount ?? 2000; // Cantidad de vida que cura
-        this.lifetime = opts.lifetime ?? 7500; // Tiempo antes de desaparecer (ms)
+        this.healAmount = 2000; // Cantidad de vida que cura
+        this.lifetime = 7500; // Tiempo antes de desaparecer (ms)
 
         // Algunas propiedades visuales
         this.setScale(0.5);
@@ -50,7 +49,7 @@ export default class Tea extends Phaser.GameObjects.Sprite {
     // Añadir collisión con jugador (y lo que se hace al colisionar)
     addCollision(player) {
         this.scene.physics.add.overlap(player, this, () => {
-            if (this.scene && this.scene.sound) this.scene.sound.play('tea');
+            this.scene.sound.play('tea');
             // Curar al jugador
             player.life = Math.min(player.maxLife, player.life + this.healAmount);
             player.updateHealthBar();
