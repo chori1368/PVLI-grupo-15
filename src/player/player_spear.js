@@ -59,47 +59,71 @@ export default class PlayerSpear extends Player {
      * Overlaps contra otro jugador: ataques normales + daño al contactar en dash.
      * @param {Player} player
      */
-    addCollision(player) {
-        this.scene.physics.add.overlap(player, this.hattackbox, () => {
+    addCollision(targetPlayer) {
+        this.scene.physics.add.overlap(targetPlayer, this.hattackbox, () => {
             if (this.attacking && this.hattackbox.body.enable) {
-                player.reduceLife(400);
-          
+                targetPlayer.reduceLife(400);
+                
+                // Calcular impulso horizontal
                 let knockX;
                 if (this.flipX) {
-                    knockX = 600;  // mirando a la izquierda
+                    knockX = -200; 
                 } else {
-                    knockX = -600; // mirando a la derecha
+                    knockX = 200; 
                 }
 
-                let knockY = -400;
+                let knockY = -200; 
+                
+                // Desactivar colisión hacia abajo para permitir el knockback
+                targetPlayer.body.checkCollision.down = false;
+                
+                // Aplicar el impulso al jugador contrario
+                targetPlayer.setVelocityX(knockX);
+                targetPlayer.setVelocityY(knockY);
+                
+                //Reactivar la colisión después de un tiempo
+                this.scene.time.delayedCall(100, () => {
+                    targetPlayer.body.checkCollision.down = true;
+                }, [], this);
 
-                player.setVelocityX(knockX);
-                player.setVelocityY(knockY);
-                    this.hattackbox.body.enable = false;
-                }
-        });
-        this.scene.physics.add.overlap(player, this.vattackbox, () => {
-            if (this.attacking && this.vattackbox.body.enable) {
-                player.reduceLife(400);
-            
-                      let knockX;
-                if (this.flipX) {
-                 knockX = 200;
-                } else {
-                    knockX = -200;
-                }
-
-                let knockY = -700;
-
-                player.setVelocityX(knockX);
-                player.setVelocityY(knockY);
-                this.vattackbox.body.enable = false;
+                this.hattackbox.body.enable = false;
             }
         });
-        this.scene.physics.add.overlap(player, this, () => {
+
+        //Ataque vertical
+        this.scene.physics.add.overlap(targetPlayer, this.vattackbox, () => {
+            if (this.attacking && this.vattackbox.body.enable) {
+                targetPlayer.reduceLife(400);
+                
+                // Calcular impulso vertical
+                let knockX;
+                if (this.flipX) {
+                    knockX = -100;
+                } else {
+                    knockX = 100;
+                }
+
+                let knockY = -300; 
+                
+                //Desactivar colisión hacia abajo para permitir el knockback
+                targetPlayer.body.checkCollision.down = false;
+
+                //Aplicar el impulso al otro jugador
+                targetPlayer.setVelocityX(knockX);
+                targetPlayer.setVelocityY(knockY);
+                
+                // Reactivar la colisión después de un tiempo
+                 this.scene.time.delayedCall(100, () => {
+                    targetPlayer.body.checkCollision.down = true;
+                }, [], this);
+
+                this.vattackbox.body.enable = false; 
+            }
+        });
+        this.scene.physics.add.overlap(targetPlayer, this, () => {
             if (this.dashing) {
 
-                player.reduceLife(400);
+                targetPlayer.reduceLife(400);
                 this.dashing = false;
             }
         });

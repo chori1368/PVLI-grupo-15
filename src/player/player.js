@@ -300,12 +300,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                 // Calcular impulso horizontal
                 let knockX;
                 if (this.flipX) {
-                    knockX = -800; 
+                    knockX = -200; 
                 } else {
-                    knockX = 800; 
+                    knockX = 200; 
                 }
 
-                let knockY = -250; 
+                let knockY = -200; 
                 
                 // Desactivar colisión hacia abajo para permitir el knockback
                 targetPlayer.body.checkCollision.down = false;
@@ -336,7 +336,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                     knockX = 100;
                 }
 
-                let knockY = -850; 
+                let knockY = -300; 
                 
                 //Desactivar colisión hacia abajo para permitir el knockback
                 targetPlayer.body.checkCollision.down = false;
