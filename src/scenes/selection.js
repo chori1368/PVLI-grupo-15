@@ -36,7 +36,7 @@ export default class SelectionScene extends Phaser.Scene {
             fontSize: '50px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
-            fill: '#b0a2edf2'
+            fill: '#be084dff'
         }).setOrigin(0.5);
 
         // "Selector" Izq
@@ -50,19 +50,19 @@ export default class SelectionScene extends Phaser.Scene {
         this.add.image(this.scale.width/2 - 640, this.scale.height - 160, 'right').setOrigin(0.5);
 
                 //controles seleccion derecha
-        this.add.text(this.scale.width/2 -600, this.scale.height - 200, 'PULSA A o D \n para elegir', {
-            fontSize: '50px',
+        this.add.text(this.scale.width/2 -600, this.scale.height - 270, '< A          D >', {
+            fontSize: '40px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
-            fill: '#b0a2edf2'
+            fill: '#0e0c25ff'
         }).setOrigin(0.5);
 
         //controles seleccion izquierda
-        this.add.text(this.scale.width/2 + 600, this.scale.height - 200, 'PULSA < o > \n para elegir', {
-            fontSize: '50px',
+        this.add.text(this.scale.width/2 + 600, this.scale.height - 270, '< ↜          ↝ >', {
+            fontSize: '40px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
-            fill: '#b0a2edf2'
+            fill: '#0e0c25ff'
         }).setOrigin(0.5);
         // Controles de seleccion Izq
         const A = this.input.keyboard.addKey('A');
@@ -85,7 +85,7 @@ export default class SelectionScene extends Phaser.Scene {
             fontSize: '30px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
-            fill: '#ada2edf2'
+            fill: '#be084dff'
         }).setOrigin(0.5).setInteractive();
 
         // Pasaremos 0 o 1 en funcion del frame seleccionado de cada jugador

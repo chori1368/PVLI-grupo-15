@@ -79,4 +79,21 @@ export default class Tea extends Phaser.GameObjects.Sprite {
             this.destroy();
         });
     }
+
+    /**
+     * Overlap contra la lava
+     * @param {import('../objects/lava.js) }
+     */
+    addCollision(lava) {
+        this.scene.physics.add.collider(this, lava, () => {
+            this.setDepth(0);
+            this.scene.tweens.add({
+                targets: this,
+                alpha: 0,
+                y: this.y + 50,
+                duration: 300,
+                onComplete: () => this.destroy()
+            });
+        });
+    }
 }

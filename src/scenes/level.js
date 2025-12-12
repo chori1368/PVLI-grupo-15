@@ -187,6 +187,8 @@ export default class LevelScene extends Phaser.Scene {
             });
         });
 
+        //this.input.keyboard.on('keydown-SPACE', () => this.bridge.fall());
+
         // Destruir puente al finalizar la partida
         this.time.delayedCall(this.duration, () => {
             if (this.bridgeBreakEvent) this.bridgeBreakEvent.remove(false);

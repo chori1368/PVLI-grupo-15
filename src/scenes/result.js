@@ -44,7 +44,7 @@ export default class ResultScene extends Phaser.Scene {
             fontSize: '80px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
-            fill: '#a7a2edf2'
+            fill: '#be084dff'
         }).setOrigin(0.5);
 
         // Boton de continuar
@@ -52,7 +52,7 @@ export default class ResultScene extends Phaser.Scene {
             fontSize: '30px',
             fontFamily: 'Cinzel',
             fontStyle: 'bold',
-            fill: '#a7a2edf2'
+            fill: '#be084dff'
         }).setOrigin(0.5).setInteractive();
 
         button.on('pointerup', () => { this.scene.start('selection'); this.sound.play('click'); });

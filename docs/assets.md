@@ -1,12 +1,17 @@
-# Assets
-Menos los sonidos los assets son creados por nosotros
+# Souls' Arena
+by Gehena Games (Grupo 15)
 
-## Dirección artística
-El arte tiene una paleta de tonos oscuro-rojizos-morados para transmitir esa atmósfera de infierno caótico y oscuro que se pretende reflejar. Utilizando un estilo minimalista y gráfico para transmitir una estética arcade moderna.
+### Descripción:
+Juego de lucha estilo “smash-bros” en el que dos jugadores pelean entre sí de forma local 
+para determinar quien cruza la frontera del inframundo y regresa al mundo de los vivos. 
+Ciertos eventos y plataformas podrán determinarán el curso de las partidas.
 
-## Assets externos
-Todos los sonidos son de youtube con una licencia de uso libre.
+### Lore:
+Destinado a la condena eterna, Hades, deidad del infierno, te concede una gran oportunidad: 
+salir victorioso en un combate impredecible sobre el río Estigia para volver a la vida 
+cruzando la frontera del inframundo.
 
-## Nuestro Assets
-Todos los dibujos y fondos son creados por nosotros.
-Todos nuestros assets tienen una lizencia CC-BY 4.0
+### Autores:
+- Tomás Arévalo Almagro
+- Andrés bartolomé Diaz
+- Carlos Dochao Moreno
