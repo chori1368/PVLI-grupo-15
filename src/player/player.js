@@ -351,12 +351,24 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                 player.reduceLife(400);
                 let knockX;
                 if (this.flipX) {
-                    knockX = 600;  // mirando a la izquierda
+                    knockX = -200; 
                 } else {
-                    knockX = -600; // mirando a la derecha
+                    knockX = 200; 
                 }
 
-                let knockY = -400;
+                let knockY = -200; 
+                
+                // Desactivar colisión hacia abajo para permitir el knockback
+                targetPlayer.body.checkCollision.down = false;
+                
+                // Aplicar el impulso al jugador contrario
+                targetPlayer.setVelocityX(knockX);
+                targetPlayer.setVelocityY(knockY);
+                
+                //Reactivar la colisión después de un tiempo
+                this.scene.time.delayedCall(100, () => {
+                    targetPlayer.body.checkCollision.down = true;
+                }, [], this);
 
                 player.setVelocityX(knockX);
                 player.setVelocityY(knockY);
@@ -373,7 +385,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                     knockX = -200;
                 }
 
-                let knockY = -700;
+                let knockY = -300; 
+                
+                //Desactivar colisión hacia abajo para permitir el knockback
+                targetPlayer.body.checkCollision.down = false;
 
                 player.setVelocityX(knockX);
                 player.setVelocityY(knockY);
