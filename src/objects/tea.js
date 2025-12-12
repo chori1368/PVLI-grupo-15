@@ -42,8 +42,14 @@ export default class Tea extends Phaser.GameObjects.Sprite {
         this.body.setDrag(1200, 0);
         this.body.setFriction(1, 0);
 
-        // Destrucción tras lifetime ms
-        this.scene.time.delayedCall(this.lifetime, () => this.destroy());
+        // Destrucción tras lifetime ms (con una leve animacion)
+        this.scene.time.delayedCall(this.lifetime, () =>
+            this.scene.tweens.add({
+                targets: this,
+                alpha: 0,
+                duration: 200,
+                onComplete: () => this.destroy()
+            }));
     }
 
     // Añadir collisión con jugador (y lo que se hace al colisionar)
