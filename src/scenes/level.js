@@ -129,6 +129,8 @@ export default class LevelScene extends Phaser.Scene {
         // Cajas
         this.boxes = [
             new Box(this, 700, this.scale.height - 500),
+            new Box(this, 765, this.scale.height - 500),
+            new Box(this, 735, this.scale.height - 560),
             new Box(this, 1200, this.scale.height - 520),
             new Box(this, 1700, this.scale.height - 500)
         ];

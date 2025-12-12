@@ -84,7 +84,7 @@ export default class Tea extends Phaser.GameObjects.Sprite {
      * Overlap contra la lava
      * @param {import('../objects/lava.js) }
      */
-    addCollision(lava) {
+    addLavaCollision(lava) {
         this.scene.physics.add.collider(this, lava, () => {
             this.setDepth(0);
             this.scene.tweens.add({

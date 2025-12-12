@@ -345,10 +345,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
      * Registra overlaps de esta instancia contra otro jugador.
      * @param {Player} player Jugador que recibirá daño/knockback.
      */
-    addCollision(player) {
-        this.scene.physics.add.overlap(player, this.hattackbox, () => {
+    addCollision(targetPlayer) {
+        this.scene.physics.add.overlap(targetPlayer, this.hattackbox, () => {
             if (this.attacking && this.hattackbox.body.enable) {
-                player.reduceLife(400);
+                targetPlayer.reduceLife(400);
                 let knockX;
                 if (this.flipX) {
                     knockX = -200; 
@@ -370,14 +370,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                     targetPlayer.body.checkCollision.down = true;
                 }, [], this);
 
-                player.setVelocityX(knockX);
-                player.setVelocityY(knockY);
+                targetPlayer.setVelocityX(knockX);
+                targetPlayer.setVelocityY(knockY);
                 this.hattackbox.body.enable = false;
             }
         });
-        this.scene.physics.add.overlap(player, this.vattackbox, () => {
+        this.scene.physics.add.overlap(targetPlayer, this.vattackbox, () => {
             if (this.attacking && this.vattackbox.body.enable) {
-                player.reduceLife(400);
+                targetPlayer.reduceLife(400);
                 let knockX;
                 if (this.flipX) {
                     knockX = 200;
@@ -390,8 +390,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
                 //Desactivar colisión hacia abajo para permitir el knockback
                 targetPlayer.body.checkCollision.down = false;
 
-                player.setVelocityX(knockX);
-                player.setVelocityY(knockY);
+                targetPlayer.setVelocityX(knockX);
+                targetPlayer.setVelocityY(knockY);
             }
         });
     }
