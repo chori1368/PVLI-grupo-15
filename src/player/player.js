@@ -35,7 +35,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.jumpCount = 0;
 
         /** zona invisible que sirve para la hitbox del ataque horizontal*/
-        this.hattackbox = scene.add.zone(0, 0, 80, 30);
+        this.hattackbox = scene.add.zone(0, 0, 120, 80);
         scene.physics.add.existing(this.hattackbox, false);
         this.hattackbox.body.allowGravity = false;
         this.hattackbox.body.enable = false;
@@ -85,17 +85,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
 
         /** offset por la derecha del ataque horizontal */
-        this.hxoffsetplus = 160;
+        this.hxoffsetplus = 310;
         /** offset por la izquierda del ataque horizontal */
-        this.hxoffsetminus = 40;
+        this.hxoffsetminus = -60;
         /** offset vertical del ataque vertical */
-        this.hyoffset = 30+this.height*0.3;
+        this.hyoffset = 30 + this.height * 0.3;
         /** offset por la derecha del ataque vertical */
-        this.vxoffsetplus = 140;
+        this.vxoffsetplus = 200;
         /** offset por la izquierda del ataque vertical */
-        this.vxoffsetminus = 20;
+        this.vxoffsetminus = -160;
         /** offset vertical del ataque vertical */
-        this.vyoffset = 20+this.height*0.3;
+        this.vyoffset = -120 + this.height * 0.3;
 
         // Guardamos las teclas (pueden ser WASD o flechas)
         if (side === 'left') {

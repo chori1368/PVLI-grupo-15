@@ -140,6 +140,9 @@ export default class LevelScene extends Phaser.Scene {
         this.colliders.forEach(c => this.physics.add.collider(this.playerLeft, c));
         this.colliders.forEach(c => this.physics.add.collider(this.playerRight, c));
 
+        // Colliders cajas con plataformas y puente
+        this.colliders.forEach(c => this.boxes.forEach(b => this.physics.add.collider(b, c)));
+
         // Crear lava y añadir colisión con jugadores
         this.lava = new Lava(this, this.scale.width / 2, this.scale.height - 90, 'lava').setOrigin(0.5, 0);
         this.lava.addCollision(this.playerLeft);

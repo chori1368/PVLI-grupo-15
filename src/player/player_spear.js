@@ -10,16 +10,16 @@ export default class PlayerSpear extends Player {
 
         // Ajustar collider del arma
         if (this.hattackbox && this.hattackbox.body) {
-            this.hattackbox.setSize(120, 30);
-            this.hattackbox.body.setSize(120, 30);
-            this.hxoffsetplus = 180;
-            this.hxoffsetminus = 60;
+            this.hattackbox.setSize(120, 40);
+            this.hattackbox.body.setSize(120, 40);
+            this.hxoffsetplus = 340;
+            this.hxoffsetminus = -30;
         }
         if (this.vattackbox && this.vattackbox.body) {
-            this.vattackbox.setSize(40, 100);
-            this.vattackbox.body.setSize(40, 100);
-            this.vxoffsetplus = 140;
-            this.vxoffsetminus = 25;
+            this.vattackbox.setSize(80, 180);
+            this.vattackbox.body.setSize(80, 180);
+            this.vxoffsetplus = 200;
+            this.vxoffsetminus = -140;
         }
     }
 
