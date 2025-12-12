@@ -345,38 +345,47 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
      * Registra overlaps de esta instancia contra otro jugador.
      * @param {Player} player Jugador que recibirá daño/knockback.
      */
-    addCollision(player) {
-        this.scene.physics.add.overlap(player, this.hattackbox, () => {
+    addCollision(targetPlayer) {
+        this.scene.physics.add.overlap(targetPlayer, this.hattackbox, () => {
             if (this.attacking && this.hattackbox.body.enable) {
-                player.reduceLife(400);
+                targetPlayer.reduceLife(400);
+                
                 let knockX;
+                // CORREGIDO: Lógica de dirección.
                 if (this.flipX) {
-                    knockX = 600;  // mirando a la izquierda
+                    // Si yo miro a la izquierda, empujo al enemigo a la IZQUIERDA (negativo)
+                    knockX = -600; 
                 } else {
-                    knockX = -600; // mirando a la derecha
+                    // Si yo miro a la derecha, empujo al enemigo a la DERECHA (positivo)
+                    knockX = 600; 
                 }
 
-                let knockY = -400;
+                let knockY = -400; // Un poco hacia arriba
 
-                player.setVelocityX(knockX);
-                player.setVelocityY(knockY);
+                // APLICAMOS LA VELOCIDAD AL ENEMIGO (targetPlayer)
+                targetPlayer.setVelocityX(knockX);
+                targetPlayer.setVelocityY(knockY);
+                
                 this.hattackbox.body.enable = false;
             }
         });
-        this.scene.physics.add.overlap(player, this.vattackbox, () => {
+
+        this.scene.physics.add.overlap(targetPlayer, this.vattackbox, () => {
             if (this.attacking && this.vattackbox.body.enable) {
-                player.reduceLife(400);
+                targetPlayer.reduceLife(400);
+                
                 let knockX;
                 if (this.flipX) {
-                    knockX = 200;
-                } else {
                     knockX = -200;
+                } else {
+                    knockX = 200;
                 }
+                let knockY = -700; // Golpe fuerte hacia arriba
 
-                let knockY = -700;
-
-                player.setVelocityX(knockX);
-                player.setVelocityY(knockY);
+                targetPlayer.setVelocityX(knockX);
+                targetPlayer.setVelocityY(knockY);
+                
+                this.vattackbox.body.enable = false; // Importante desactivar para que no golpee varias veces
             }
         });
     }
